@@ -1,23 +1,41 @@
-var builder = WebApplication.CreateBuilder(args);
+using backend.Infrastructure.Migrations;
+using DotNetEnv;
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+public partial class Program
 {
-    app.MapOpenApi();
+    private static async Task Main(string[] args)
+    {
+        Env.Load();
+        var builder = WebApplication.CreateBuilder(args);
+        var env = builder.Environment;
+
+        // Getting .env variables for db
+        string connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING") 
+            ?? throw new InvalidOperationException("DB_CONNECTION_STRING is not set");
+        string dbName = Environment.GetEnvironmentVariable("DB_NAME")
+            ?? throw new InvalidOperationException("DB_NAME is not set");
+
+        builder.Services.AddSingleton(new MigrationRunner(connectionString, "Migrations", dbName));
+
+        builder.Services.AddOpenApi();
+        //builder.Services.AddAuthorization();
+        //builder.Services.AddAuthentication();
+
+        var app = builder.Build();
+
+        // Use MigrationRunner while starting the app
+        using (var scope = app.Services.CreateScope())
+        {
+            var runner = scope.ServiceProvider.GetRequiredService<MigrationRunner>();
+            await runner.RunMigrationsAsync();
+        }
+
+        //if (app.Environment.IsDevelopment()){}
+
+        //app.UseHttpsRedirection();
+        //app.UseAuthentication();
+        //app.UseAuthorization();
+
+        app.Run();
+    }
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();

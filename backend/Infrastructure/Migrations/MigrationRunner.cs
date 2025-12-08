@@ -28,13 +28,13 @@ public class MigrationRunner
     private readonly string _migrationsPath;
     private readonly string _databaseName;
 
-    public MigrationRunner(string connectionString, string migrationsPath, string? databaseName = null)
+    public MigrationRunner(string connectionString, string migrationsPath, string databaseName)
     {
         if (string.IsNullOrEmpty(connectionString))
             throw new ArgumentNullException(nameof(connectionString));
 
         // Use provided database name or default to TaskManagementDb
-        _databaseName = databaseName ?? "TaskManagementDb";
+        _databaseName = databaseName;
 
         // Ensure connection string specifies the target database
         _connectionString = EnsureDatabaseInConnectionString(connectionString, _databaseName);
