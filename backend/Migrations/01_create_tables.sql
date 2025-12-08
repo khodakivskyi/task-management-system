@@ -1,4 +1,4 @@
-create table "Users"
+create table if not exists "Users"
 (
     "Id"            serial primary key,
     "Name"          varchar(255) not null,
@@ -9,21 +9,21 @@ create table "Users"
     "CreatedAt"     timestamp not null default current_timestamp
 );
 
-create table "Statuses"
+create table if not exists "Statuses"
 (
     "Id"    serial primary key,
     "Name"  varchar(50) not null,
     "Color" varchar(7)
 );
 
-create table "Categories"
+create table if not exists "Categories"
 (
     "Id"    serial primary key,
     "Name"  varchar(50) not null,
     "Color" varchar(7) not null
 );
 
-create table "Projects"
+create table if not exists "Projects"
 (
     "Id"          serial primary key,
     "OwnerId"     integer not null,
@@ -35,7 +35,7 @@ create table "Projects"
     constraint "FK_Projects_Owner" foreign key ("OwnerId") references "Users"("Id")
 );
 
-create table "ProjectRoles"
+create table if not exists "ProjectRoles"
 (
     "Id"              serial primary key,
     "Name"            varchar(50) not null,
@@ -46,7 +46,7 @@ create table "ProjectRoles"
     "CanManageMembers" boolean not null default false
 );
 
-create table "ProjectMembers"
+create table if not exists "ProjectMembers"
 (
     "Id"         serial primary key,
     "ProjectId"  integer not null,
@@ -59,7 +59,7 @@ create table "ProjectMembers"
     constraint "FK_ProjectMembers_Role" foreign key ("RoleId") references "ProjectRoles"("Id")
 );
 
-create table "Tasks"
+create table if not exists "Tasks"
 (
     "Id"             serial primary key,
     "OwnerId"        integer not null,
@@ -82,7 +82,7 @@ create table "Tasks"
     constraint "Check_Priority" check ("Priority" between 1 and 5)
 );
 
-create table "TaskAssignees"
+create table if not exists "TaskAssignees"
 (
     "Id"      serial primary key,
     "TaskId"  integer not null,
@@ -92,7 +92,7 @@ create table "TaskAssignees"
     constraint "FK_TaskAssignees_Task" foreign key ("TaskId") references "Tasks"("Id")
 );
 
-create table "Comments"
+create table if not exists "Comments"
 (
     "Id"         serial primary key,
     "TaskId"     integer not null,
@@ -104,7 +104,7 @@ create table "Comments"
     constraint "FK_Comments_Task" foreign key ("TaskId") references "Tasks"("Id")
 );
 
-create table "TaskHistory"
+create table if not exists "TaskHistory"
 (
     "Id"         serial primary key,
     "TaskId"     integer not null,
@@ -118,7 +118,7 @@ create table "TaskHistory"
     constraint "FK_TaskHistory_User" foreign key ("UserId") references "Users"("Id")
 );
 
-create table "Favorites"
+create table if not exists "Favorites"
 (
     "Id"         serial primary key,
     "UserId"     integer not null,
