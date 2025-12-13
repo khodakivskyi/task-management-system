@@ -1,3 +1,4 @@
+using backend.Application.Interfaces;
 using backend.Models;
 using backend.Repositories;
 using Dapper;
@@ -7,7 +8,7 @@ namespace backend.Application.Repositories;
 /// <summary>
 /// Write-only repository for Task entity operations (CQRS - Commands)
 /// </summary>
-public class TaskRepository : BaseRepository
+public class TaskRepository : BaseRepository, ITaskRepository
 {
     public TaskRepository(string connectionString) : base(connectionString) { }
 

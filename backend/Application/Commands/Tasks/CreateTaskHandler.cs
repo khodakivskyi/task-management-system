@@ -1,4 +1,4 @@
-using backend.Application.Repositories;
+using backend.Application.Interfaces;
 using backend.Models;
 
 namespace backend.Application.Commands.Tasks;
@@ -8,13 +8,11 @@ namespace backend.Application.Commands.Tasks;
 /// </summary>
 public class CreateTaskHandler
 {
-    private readonly TaskRepository _taskRepository;
-    private readonly string _connectionString;
+    private readonly ITaskRepository _taskRepository;
 
-    public CreateTaskHandler(string connectionString)
+    public CreateTaskHandler(ITaskRepository taskRepository)
     {
-        _connectionString = connectionString;
-        _taskRepository = new TaskRepository(connectionString);
+        _taskRepository = taskRepository;
     }
 
     public async Task<int> HandleAsync(CreateTaskCommand command)

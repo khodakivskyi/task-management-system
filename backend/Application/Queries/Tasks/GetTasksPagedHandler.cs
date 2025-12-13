@@ -1,4 +1,4 @@
-using backend.Application.QueryRepositories;
+using backend.Application.Interfaces;
 using backend.Models;
 
 namespace backend.Application.Queries.Tasks;
@@ -8,13 +8,11 @@ namespace backend.Application.Queries.Tasks;
 /// </summary>
 public class GetTasksPagedHandler
 {
-    private readonly TaskQueryRepository _taskQueryRepository;
-    private readonly string _connectionString;
+    private readonly ITaskQueryRepository _taskQueryRepository;
 
-    public GetTasksPagedHandler(string connectionString)
+    public GetTasksPagedHandler(ITaskQueryRepository taskQueryRepository)
     {
-        _connectionString = connectionString;
-        _taskQueryRepository = new TaskQueryRepository(connectionString);
+        _taskQueryRepository = taskQueryRepository;
     }
 
     public async Task<IEnumerable<TaskWithDetailsDto>> HandleAsync(GetTasksPagedQuery query)

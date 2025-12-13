@@ -1,5 +1,4 @@
-using backend.Application.QueryRepositories;
-using backend.Application.Repositories;
+using backend.Application.Interfaces;
 
 namespace backend.Application.Commands.Tasks;
 
@@ -8,15 +7,13 @@ namespace backend.Application.Commands.Tasks;
 /// </summary>
 public class DeleteTaskHandler
 {
-    private readonly TaskRepository _taskRepository;
-    private readonly TaskQueryRepository _taskQueryRepository;
-    private readonly string _connectionString;
+    private readonly ITaskRepository _taskRepository;
+    private readonly ITaskQueryRepository _taskQueryRepository;
 
-    public DeleteTaskHandler(string connectionString)
+    public DeleteTaskHandler(ITaskRepository taskRepository, ITaskQueryRepository taskQueryRepository)
     {
-        _connectionString = connectionString;
-        _taskRepository = new TaskRepository(connectionString);
-        _taskQueryRepository = new TaskQueryRepository(connectionString);
+        _taskRepository = taskRepository;
+        _taskQueryRepository = taskQueryRepository;
     }
 
     public async Task<bool> HandleAsync(DeleteTaskCommand command)
