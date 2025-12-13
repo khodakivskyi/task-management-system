@@ -1,24 +1,19 @@
-namespace backend.Models;
+namespace backend.Application.Commands.Tasks;
 
 /// <summary>
-/// Represents a task in the system
+/// Command for creating a new task
 /// </summary>
-public class Task
+public class CreateTaskCommand
 {
-    public int Id { get; set; }
     public int OwnerId { get; set; }
     public int StatusId { get; set; }
     public int? CategoryId { get; set; }
     public int? ProjectId { get; set; }
     public string Title { get; set; } = string.Empty;
     public string? Description { get; set; }
-    public int? Priority { get; set; } // Range: 1-5
+    public int? Priority { get; set; }
     public DateTime? Deadline { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
     public int EstimatedHours { get; set; }
     public int ActualHours { get; set; }
-
-    public Task() { }
 }
 

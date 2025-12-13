@@ -1,40 +1,17 @@
-using backend.Interfaces;
 using backend.Models;
+using backend.Repositories;
 using Dapper;
 
-namespace backend.Repositories;
+namespace backend.Application.Repositories;
 
 /// <summary>
-/// Repository for Task entity operations
+/// Write-only repository for Task entity operations (CQRS - Commands)
 /// </summary>
-public class TaskRepository : BaseRepository, IRepository<Task>
+public class TaskRepository : BaseRepository
 {
     public TaskRepository(string connectionString) : base(connectionString) { }
 
-    public async Task<Task?> GetByIdAsync(int id)
-    {
-        await using var connection = await GetConnectionAsync();
-        return await connection.QueryFirstOrDefaultAsync<Task>(
-            @"SELECT ""Id"", ""OwnerId"", ""StatusId"", ""CategoryId"", ""ProjectId"",
-                     ""Title"", ""Description"", ""Priority"", ""Deadline"",
-                     ""CreatedAt"", ""UpdatedAt"", ""EstimatedHours"", ""ActualHours""
-              FROM ""Tasks""
-              WHERE ""Id"" = @Id",
-            new { Id = id });
-    }
-
-    public async Task<IEnumerable<Task>> GetAllAsync()
-    {
-        await using var connection = await GetConnectionAsync();
-        return await connection.QueryAsync<Task>(
-            @"SELECT ""Id"", ""OwnerId"", ""StatusId"", ""CategoryId"", ""ProjectId"",
-                     ""Title"", ""Description"", ""Priority"", ""Deadline"",
-                     ""CreatedAt"", ""UpdatedAt"", ""EstimatedHours"", ""ActualHours""
-              FROM ""Tasks""
-              ORDER BY ""CreatedAt"" DESC");
-    }
-
-    public async Task<int> CreateAsync(Task entity)
+    public async Task<int> CreateAsync(TaskModel entity)
     {
         await using var connection = await GetConnectionAsync();
         return await connection.QuerySingleAsync<int>(
@@ -61,7 +38,7 @@ public class TaskRepository : BaseRepository, IRepository<Task>
             });
     }
 
-    public async Task<bool> UpdateAsync(Task entity)
+    public async Task<bool> UpdateAsync(TaskModel entity)
     {
         await using var connection = await GetConnectionAsync();
         var affected = await connection.ExecuteAsync(
@@ -97,35 +74,5 @@ public class TaskRepository : BaseRepository, IRepository<Task>
             new { Id = id });
         return affected > 0;
     }
-
-    public async Task<IEnumerable<Task>> GetByProjectIdAsync(int projectId)
-    {
-        await using var connection = await GetConnectionAsync();
-        return await connection.QueryAsync<Task>(
-            @"SELECT ""Id"", ""OwnerId"", ""StatusId"", ""CategoryId"", ""ProjectId"",
-                     ""Title"", ""Description"", ""Priority"", ""Deadline"",
-                     ""CreatedAt"", ""UpdatedAt"", ""EstimatedHours"", ""ActualHours""
-              FROM ""Tasks""
-              WHERE ""ProjectId"" = @ProjectId
-              ORDER BY ""CreatedAt"" DESC",
-            new { ProjectId = projectId });
-    }
-
-    public async Task<IEnumerable<Task>> GetByOwnerIdAsync(int ownerId)
-    {
-        await using var connection = await GetConnectionAsync();
-        return await connection.QueryAsync<Task>(
-            @"SELECT ""Id"", ""OwnerId"", ""StatusId"", ""CategoryId"", ""ProjectId"",
-                     ""Title"", ""Description"", ""Priority"", ""Deadline"",
-                     ""CreatedAt"", ""UpdatedAt"", ""EstimatedHours"", ""ActualHours""
-              FROM ""Tasks""
-              WHERE ""OwnerId"" = @OwnerId
-              ORDER BY ""CreatedAt"" DESC",
-            new { OwnerId = ownerId });
-    }
 }
-
-
-
-
 
