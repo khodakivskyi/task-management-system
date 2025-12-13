@@ -1,3 +1,4 @@
+using backend.Application.BulkOperations;
 using backend.Infrastructure.Migrations;
 using DotNetEnv;
 
@@ -17,7 +18,11 @@ public partial class Program
 
         builder.Services.AddSingleton(new MigrationRunner(connectionString, "Migrations", dbName));
 
-        builder.Services.AddOpenApi();
+        builder.Services.AddSingleton(connectionString);
+
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
+
         //builder.Services.AddAuthorization();
         //builder.Services.AddAuthentication();
 
@@ -30,7 +35,15 @@ public partial class Program
             await runner.RunMigrationsAsync();
         }
 
-        //if (app.Environment.IsDevelopment()){}
+        var tester = new BulkOperationsTester(connectionString);
+        await tester.RunTestsAsync();
+
+        // Enable Swagger UI for testing
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+        }
 
         //app.UseHttpsRedirection();
         //app.UseAuthentication();
