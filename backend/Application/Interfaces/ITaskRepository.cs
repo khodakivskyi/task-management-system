@@ -1,4 +1,5 @@
 using backend.Models;
+using Npgsql;
 
 namespace backend.Application.Interfaces;
 
@@ -9,6 +10,6 @@ public interface ITaskRepository
 {
     Task<int> CreateAsync(TaskModel entity);
     Task<bool> UpdateAsync(TaskModel entity);
-    Task<bool> DeleteAsync(int id);
+    Task<bool> DeleteAsync(int id, NpgsqlTransaction? transaction = null);
 }
 

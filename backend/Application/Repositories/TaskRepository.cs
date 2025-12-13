@@ -2,6 +2,7 @@ using backend.Application.Interfaces;
 using backend.Models;
 using backend.Repositories;
 using Dapper;
+using Npgsql;
 
 namespace backend.Application.Repositories;
 
@@ -66,13 +67,14 @@ public class TaskRepository : BaseRepository, ITaskRepository
         return affected > 0;
     }
 
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<bool> DeleteAsync(int id, NpgsqlTransaction? transaction = null)
     {
-        await using var connection = await GetConnectionAsync();
+        var connection = transaction?.Connection ?? await GetConnectionAsync();
         var affected = await connection.ExecuteAsync(
             @"DELETE FROM ""Tasks""
               WHERE ""Id"" = @Id",
-            new { Id = id });
+            new { Id = id },
+            transaction);
         return affected > 0;
     }
 }

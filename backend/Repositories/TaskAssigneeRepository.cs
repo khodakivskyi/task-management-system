@@ -1,13 +1,15 @@
+using backend.Application.Interfaces;
 using backend.Interfaces;
 using backend.Models;
 using Dapper;
+using Npgsql;
 
 namespace backend.Repositories;
 
 /// <summary>
 /// Repository for TaskAssignee entity operations
 /// </summary>
-public class TaskAssigneeRepository : BaseRepository, IRepository<TaskAssignee>
+public class TaskAssigneeRepository : BaseRepository, IRepository<TaskAssignee>, ITaskAssigneeRepository
 {
     public TaskAssigneeRepository(string connectionString) : base(connectionString) { }
 
@@ -88,6 +90,17 @@ public class TaskAssigneeRepository : BaseRepository, IRepository<TaskAssignee>
               FROM ""TaskAssignees""
               WHERE ""UserId"" = @UserId",
             new { UserId = userId });
+    }
+
+    public async Task<bool> DeleteByTaskIdAsync(int taskId, NpgsqlTransaction? transaction = null)
+    {
+        var connection = transaction?.Connection ?? await GetConnectionAsync();
+        var affected = await connection.ExecuteAsync(
+            @"DELETE FROM ""TaskAssignees""
+              WHERE ""TaskId"" = @TaskId",
+            new { TaskId = taskId },
+            transaction);
+        return affected > 0;
     }
 }
 
