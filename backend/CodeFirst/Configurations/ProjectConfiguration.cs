@@ -87,5 +87,46 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
             .WithOne(t => t.Project)
             .HasForeignKey(t => t.ProjectId)
             .OnDelete(DeleteBehavior.SetNull); // If project is deleted, set ProjectId to NULL in tasks
+
+        // Seed data - Projects (child entities with FK to Users)
+        // IMPORTANT: Users must be seeded first (Id 1, 2, 3)
+        builder.HasData(
+            new Project
+            {
+                Id = 1,
+                OwnerId = 1, // FK to User with Id = 1
+                Name = "Website Redesign",
+                Description = "Complete redesign of company website with modern UI/UX",
+                StartDate = new DateTime(2024, 1, 15, 0, 0, 0, DateTimeKind.Unspecified),
+                EndDate = new DateTime(2024, 6, 15, 0, 0, 0, DateTimeKind.Unspecified)
+            },
+            new Project
+            {
+                Id = 2,
+                OwnerId = 1, // FK to User with Id = 1
+                Name = "Mobile App Development",
+                Description = "Development of iOS and Android mobile application",
+                StartDate = new DateTime(2024, 2, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                EndDate = new DateTime(2024, 8, 1, 0, 0, 0, DateTimeKind.Unspecified)
+            },
+            new Project
+            {
+                Id = 3,
+                OwnerId = 2, // FK to User with Id = 2
+                Name = "Database Migration",
+                Description = "Migration from legacy database to PostgreSQL",
+                StartDate = new DateTime(2024, 3, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                EndDate = new DateTime(2024, 5, 1, 0, 0, 0, DateTimeKind.Unspecified)
+            },
+            new Project
+            {
+                Id = 4,
+                OwnerId = 3, // FK to User with Id = 3
+                Name = "API Integration",
+                Description = "Integration with third-party payment and shipping APIs",
+                StartDate = new DateTime(2024, 4, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                EndDate = new DateTime(2024, 7, 1, 0, 0, 0, DateTimeKind.Unspecified)
+            }
+        );
     }
 }

@@ -84,5 +84,39 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .WithOne(p => p.Owner)
             .HasForeignKey(p => p.OwnerId)
             .OnDelete(DeleteBehavior.Restrict); // Cannot delete user if they own projects
+
+        // Seed data - Users (parent entities, must be seeded first)
+        builder.HasData(
+            new User
+            {
+                Id = 1,
+                Name = "John",
+                Surname = "Doe",
+                Login = "john.doe",
+                PasswordHash = "hashed_password_1",
+                Salt = "salt_1",
+                CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Unspecified)
+            },
+            new User
+            {
+                Id = 2,
+                Name = "Jane",
+                Surname = "Smith",
+                Login = "jane.smith",
+                PasswordHash = "hashed_password_2",
+                Salt = "salt_2",
+                CreatedAt = new DateTime(2024, 1, 2, 0, 0, 0, DateTimeKind.Unspecified)
+            },
+            new User
+            {
+                Id = 3,
+                Name = "Bob",
+                Surname = "Johnson",
+                Login = "bob.johnson",
+                PasswordHash = "hashed_password_3",
+                Salt = "salt_3",
+                CreatedAt = new DateTime(2024, 1, 3, 0, 0, 0, DateTimeKind.Unspecified)
+            }
+        );
     }
 }

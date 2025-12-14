@@ -124,5 +124,108 @@ public class TaskConfiguration : IEntityTypeConfiguration<TaskEntity>
             .WithMany(p => p.Tasks)
             .HasForeignKey(t => t.ProjectId)
             .OnDelete(DeleteBehavior.SetNull); // If project is deleted, set ProjectId to NULL
+
+        // Seed data - Tasks (child entities with FK to Users and Projects)
+        // IMPORTANT: Users (Id 1, 2, 3) and Projects (Id 1, 2, 3, 4) must be seeded first
+        builder.HasData(
+            new TaskEntity
+            {
+                Id = 1,
+                OwnerId = 1, // FK to User with Id = 1
+                ProjectId = 1, // FK to Project with Id = 1
+                Title = "Design Homepage Layout",
+                Description = "Create wireframes and mockups for the new homepage design",
+                Priority = 3, // High priority
+                Deadline = new DateTime(2024, 2, 15, 0, 0, 0, DateTimeKind.Unspecified),
+                CreatedAt = new DateTime(2024, 1, 20, 0, 0, 0, DateTimeKind.Unspecified),
+                UpdatedAt = new DateTime(2024, 1, 20, 0, 0, 0, DateTimeKind.Unspecified),
+                EstimatedHours = 40,
+                ActualHours = 0
+            },
+            new TaskEntity
+            {
+                Id = 2,
+                OwnerId = 1, // FK to User with Id = 1
+                ProjectId = 1, // FK to Project with Id = 1
+                Title = "Implement Responsive Navigation",
+                Description = "Build responsive navigation menu with mobile hamburger",
+                Priority = 2, // Medium priority
+                Deadline = new DateTime(2024, 3, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                CreatedAt = new DateTime(2024, 1, 25, 0, 0, 0, DateTimeKind.Unspecified),
+                UpdatedAt = new DateTime(2024, 1, 25, 0, 0, 0, DateTimeKind.Unspecified),
+                EstimatedHours = 24,
+                ActualHours = 8
+            },
+            new TaskEntity
+            {
+                Id = 3,
+                OwnerId = 1, // FK to User with Id = 1
+                ProjectId = 2, // FK to Project with Id = 2
+                Title = "Setup iOS Development Environment",
+                Description = "Configure Xcode, CocoaPods, and development certificates",
+                Priority = 3, // High priority
+                Deadline = new DateTime(2024, 2, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                CreatedAt = new DateTime(2024, 2, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                UpdatedAt = new DateTime(2024, 2, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                EstimatedHours = 16,
+                ActualHours = 16
+            },
+            new TaskEntity
+            {
+                Id = 4,
+                OwnerId = 2, // FK to User with Id = 2
+                ProjectId = 3, // FK to Project with Id = 3
+                Title = "Export Data from Legacy Database",
+                Description = "Create scripts to export all data from SQL Server database",
+                Priority = 3, // High priority
+                Deadline = new DateTime(2024, 3, 15, 0, 0, 0, DateTimeKind.Unspecified),
+                CreatedAt = new DateTime(2024, 3, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                UpdatedAt = new DateTime(2024, 3, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                EstimatedHours = 32,
+                ActualHours = 0
+            },
+            new TaskEntity
+            {
+                Id = 5,
+                OwnerId = 2, // FK to User with Id = 2
+                ProjectId = 3, // FK to Project with Id = 3
+                Title = "Import Data to PostgreSQL",
+                Description = "Import exported data into new PostgreSQL database",
+                Priority = 3, // High priority
+                Deadline = new DateTime(2024, 4, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                CreatedAt = new DateTime(2024, 3, 5, 0, 0, 0, DateTimeKind.Unspecified),
+                UpdatedAt = new DateTime(2024, 3, 5, 0, 0, 0, DateTimeKind.Unspecified),
+                EstimatedHours = 40,
+                ActualHours = 0
+            },
+            new TaskEntity
+            {
+                Id = 6,
+                OwnerId = 3, // FK to User with Id = 3
+                ProjectId = 4, // FK to Project with Id = 4
+                Title = "Integrate Payment Gateway API",
+                Description = "Integrate Stripe payment gateway for processing payments",
+                Priority = 3, // High priority
+                Deadline = new DateTime(2024, 5, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                CreatedAt = new DateTime(2024, 4, 5, 0, 0, 0, DateTimeKind.Unspecified),
+                UpdatedAt = new DateTime(2024, 4, 5, 0, 0, 0, DateTimeKind.Unspecified),
+                EstimatedHours = 48,
+                ActualHours = 12
+            },
+            new TaskEntity
+            {
+                Id = 7,
+                OwnerId = 3, // FK to User with Id = 3
+                ProjectId = null, // Task without project (optional FK)
+                Title = "Update Documentation",
+                Description = "Update API documentation with new endpoints",
+                Priority = 1, // Low priority
+                Deadline = new DateTime(2024, 4, 30, 0, 0, 0, DateTimeKind.Unspecified),
+                CreatedAt = new DateTime(2024, 4, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                UpdatedAt = new DateTime(2024, 4, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                EstimatedHours = 8,
+                ActualHours = 0
+            }
+        );
     }
 }
