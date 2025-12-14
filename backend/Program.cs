@@ -1,5 +1,4 @@
-using backend;
-using backend.EFRepositories;
+using backend.CodeFirst;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,27 +18,13 @@ public partial class Program
 
         builder.Services.AddSingleton(connectionString);
 
-        // Register DbContext
-        builder.Services.AddDbContext<TaskManagementDbContext>(options =>
+        // Register Code-First DbContext (created from scratch)
+        // Only Code-First approach is used in this application
+        builder.Services.AddDbContext<TaskManagementCodeFirstDbContext>(options =>
             options.UseNpgsql(connectionString));
 
-        // Register EF Core Repositories
-        builder.Services.AddScoped<ITaskRepository, TaskRepository>();
-        builder.Services.AddScoped<IUserRepository, UserRepository>();
-        builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
-
-        // Register Repository Demos
-        builder.Services.AddScoped<RepositoryDemo>();
-        builder.Services.AddScoped<AdvancedQueriesDemo>();
-        builder.Services.AddScoped<TransactionDemo>(sp =>
-        {
-            var context = sp.GetRequiredService<TaskManagementDbContext>();
-            var taskRepo = sp.GetRequiredService<ITaskRepository>();
-            var userRepo = sp.GetRequiredService<IUserRepository>();
-            return new TransactionDemo(context, taskRepo, userRepo, connectionString);
-        });
-        builder.Services.AddScoped<PerformanceOptimizationDemo>();
-        builder.Services.AddScoped<AdvancedPatternsDemo>();
+        // Register Code-First Demo
+        builder.Services.AddScoped<CodeFirstDemo>();
 
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
@@ -51,16 +36,11 @@ public partial class Program
 
         using (var scope = app.Services.CreateScope())
         {
-            //var repositoryDemo = scope.ServiceProvider.GetRequiredService<RepositoryDemo>();
-            //var transactionDemo = scope.ServiceProvider.GetRequiredService<TransactionDemo>();
-            //var performanceDemo = scope.ServiceProvider.GetRequiredService<PerformanceOptimizationDemo>();
-            var advancedPatternsDemo = scope.ServiceProvider.GetRequiredService<AdvancedPatternsDemo>();
             var cts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
             
-            //await repositoryDemo.RunAllDemonstrationsAsync(cts.Token);
-            //await transactionDemo.RunAllDemonstrationsAsync(cts.Token);
-            //await performanceDemo.RunAllDemonstrationsAsync(cts.Token);
-            await advancedPatternsDemo.RunAllDemonstrationsAsync(cts.Token);
+            // Demonstrate Code-First DbContext
+            var codeFirstDemo = scope.ServiceProvider.GetRequiredService<CodeFirstDemo>();
+            await codeFirstDemo.RunDemonstrationAsync(cts.Token);
         }
 
         // Enable Swagger UI for testing
