@@ -59,7 +59,7 @@ public class BulkOperationsTester
         var results = new List<BulkInsertResult>();
 
         // Test 1: Loop INSERT
-        Console.WriteLine("▶ Method 1: Individual INSERT statements...");
+        Console.WriteLine("Method 1: Individual INSERT statements...");
         var loopResult = await RunWithTimingAsync(
             () => _service.InsertWithLoopAsync(new List<TaskModel>(testData)),
             "Loop INSERT"
@@ -71,7 +71,7 @@ public class BulkOperationsTester
         Console.WriteLine();
 
         // Test 2: Batched INSERT (50)
-        Console.WriteLine("▶ Method 2: Batched INSERT statements (batch size: 50)...");
+        Console.WriteLine("Method 2: Batched INSERT statements (batch size: 50)...");
         var batch50Result = await RunWithTimingAsync(
             () => _service.InsertWithBatchesAsync(new List<TaskModel>(testData), 50),
             "Batched INSERT (50)"
@@ -83,7 +83,7 @@ public class BulkOperationsTester
         Console.WriteLine();
 
         // Test 3: Batched INSERT (100)
-        Console.WriteLine("▶ Method 2: Batched INSERT statements (batch size: 100)...");
+        Console.WriteLine("Method 2: Batched INSERT statements (batch size: 100)...");
         var batch100Result = await RunWithTimingAsync(
             () => _service.InsertWithBatchesAsync(new List<TaskModel>(testData), 100),
             "Batched INSERT (100)"
@@ -95,7 +95,7 @@ public class BulkOperationsTester
         Console.WriteLine();
 
         // Test 4: COPY
-        Console.WriteLine("▶ Method 3: COPY (PostgreSQL bulk copy)...");
+        Console.WriteLine("Method 3: COPY (PostgreSQL bulk copy)...");
         var copyResult = await RunWithTimingAsync(
             () => _service.InsertWithCopyAsync(new List<TaskModel>(testData), 1000),
             "COPY"
@@ -121,13 +121,13 @@ public class BulkOperationsTester
     private void DisplayResult(BulkInsertResult result)
     {
         var msPerRecord = result.ElapsedMilliseconds / (double)result.InsertedRecords;
-        Console.WriteLine($"✓ Inserted {result.InsertedRecords:N0} tasks in {result.ElapsedMilliseconds:N0} ms ({msPerRecord:F2} ms per task)");
+        Console.WriteLine($"Inserted {result.InsertedRecords:N0} tasks in {result.ElapsedMilliseconds:N0} ms ({msPerRecord:F2} ms per task)");
     }
 
     private void DisplayComparison(List<BulkInsertResult> results, int recordCount)
     {
         var baseline = results[0]; // Loop INSERT as baseline
-        Console.WriteLine($"📊 PERFORMANCE COMPARISON ({recordCount:N0} records):");
+        Console.WriteLine($"PERFORMANCE COMPARISON ({recordCount:N0} records):");
 
         foreach (var result in results)
         {

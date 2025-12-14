@@ -270,9 +270,16 @@ public class TaskBulkInsertService
                 await writer.WriteAsync(task.Title);
                 await writer.WriteAsync(task.Description, NpgsqlDbType.Varchar);
                 await writer.WriteAsync(task.Priority, NpgsqlDbType.Integer);
-                await writer.WriteAsync(task.Deadline, NpgsqlDbType.Timestamp);
-                await writer.WriteAsync(task.CreatedAt);
-                await writer.WriteAsync(task.UpdatedAt);
+                
+                var deadline = task.Deadline.HasValue 
+                    ? DateTime.SpecifyKind(task.Deadline.Value, DateTimeKind.Unspecified) 
+                    : (DateTime?)null;
+                var createdAt = DateTime.SpecifyKind(task.CreatedAt, DateTimeKind.Unspecified);
+                var updatedAt = DateTime.SpecifyKind(task.UpdatedAt, DateTimeKind.Unspecified);
+                
+                await writer.WriteAsync(deadline, NpgsqlDbType.Timestamp);
+                await writer.WriteAsync(createdAt, NpgsqlDbType.Timestamp);
+                await writer.WriteAsync(updatedAt, NpgsqlDbType.Timestamp);
                 await writer.WriteAsync(task.EstimatedHours);
                 await writer.WriteAsync(task.ActualHours);
                 insertedCount++;
