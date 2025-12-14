@@ -11,13 +11,15 @@ public class Task
     public int OwnerId { get; set; }
     public int? ProjectId { get; set; }
     public string Title { get; set; } = null!;
-    public string? Description { get; set; }
+    public string? Details { get; set; } // Renamed from Description
     public int? Priority { get; set; }
     public DateTime? Deadline { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public int EstimatedHours { get; set; }
     public int ActualHours { get; set; }
+    public string? Tags { get; set; } 
+    public string? Status { get; set; } 
 
     // Computed property (configured in Fluent API)
     public decimal? ProgressPercentage { get; set; }

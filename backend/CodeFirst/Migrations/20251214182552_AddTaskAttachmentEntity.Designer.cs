@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using backend.CodeFirst;
@@ -11,9 +12,11 @@ using backend.CodeFirst;
 namespace backend.CodeFirst.Migrations
 {
     [DbContext(typeof(TaskManagementCodeFirstDbContext))]
-    partial class TaskManagementCodeFirstDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251214182552_AddTaskAttachmentEntity")]
+    partial class AddTaskAttachmentEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -140,7 +143,7 @@ namespace backend.CodeFirst.Migrations
                     b.Property<DateTime?>("Deadline")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("Details")
+                    b.Property<string>("Description")
                         .HasMaxLength(2000)
                         .HasColumnType("character varying(2000)");
 
@@ -162,10 +165,6 @@ namespace backend.CodeFirst.Migrations
 
                     b.Property<int?>("ProjectId")
                         .HasColumnType("integer");
-
-                    b.Property<string>("Status")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Tags")
                         .HasMaxLength(500)
@@ -210,18 +209,15 @@ namespace backend.CodeFirst.Migrations
                     b.HasIndex("OwnerId", "CreatedAt")
                         .HasDatabaseName("IX_Tasks_OwnerId_CreatedAt");
 
+                    b.HasIndex("OwnerId", "Priority")
+                        .HasDatabaseName("IX_Tasks_OwnerId_Priority")
+                        .HasFilter("\"Priority\" IS NOT NULL");
+
                     b.HasIndex("ProjectId", "Deadline")
                         .HasDatabaseName("IX_Tasks_ProjectId_Deadline")
                         .HasFilter("\"ProjectId\" IS NOT NULL AND \"Deadline\" IS NOT NULL");
 
-                    b.HasIndex("OwnerId", "Priority", "Deadline")
-                        .HasDatabaseName("IX_Tasks_OwnerId_Priority_Deadline")
-                        .HasFilter("\"Priority\" IS NOT NULL AND \"Deadline\" IS NOT NULL");
-
-                    b.ToTable("Tasks", null, t =>
-                        {
-                            t.HasCheckConstraint("CK_Tasks_Priority", "\"Priority\" IS NULL OR (\"Priority\" >= 1 AND \"Priority\" <= 5)");
-                        });
+                    b.ToTable("Tasks", (string)null);
 
                     b.HasData(
                         new
@@ -230,7 +226,7 @@ namespace backend.CodeFirst.Migrations
                             ActualHours = 0,
                             CreatedAt = new DateTime(2024, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Deadline = new DateTime(2024, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Details = "Create wireframes and mockups for the new homepage design",
+                            Description = "Create wireframes and mockups for the new homepage design",
                             EstimatedHours = 40,
                             OwnerId = 1,
                             Priority = 3,
@@ -244,7 +240,7 @@ namespace backend.CodeFirst.Migrations
                             ActualHours = 8,
                             CreatedAt = new DateTime(2024, 1, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Deadline = new DateTime(2024, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Details = "Build responsive navigation menu with mobile hamburger",
+                            Description = "Build responsive navigation menu with mobile hamburger",
                             EstimatedHours = 24,
                             OwnerId = 1,
                             Priority = 2,
@@ -258,7 +254,7 @@ namespace backend.CodeFirst.Migrations
                             ActualHours = 16,
                             CreatedAt = new DateTime(2024, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Deadline = new DateTime(2024, 2, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Details = "Configure Xcode, CocoaPods, and development certificates",
+                            Description = "Configure Xcode, CocoaPods, and development certificates",
                             EstimatedHours = 16,
                             OwnerId = 1,
                             Priority = 3,
@@ -272,7 +268,7 @@ namespace backend.CodeFirst.Migrations
                             ActualHours = 0,
                             CreatedAt = new DateTime(2024, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Deadline = new DateTime(2024, 3, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Details = "Create scripts to export all data from SQL Server database",
+                            Description = "Create scripts to export all data from SQL Server database",
                             EstimatedHours = 32,
                             OwnerId = 2,
                             Priority = 3,
@@ -286,7 +282,7 @@ namespace backend.CodeFirst.Migrations
                             ActualHours = 0,
                             CreatedAt = new DateTime(2024, 3, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Deadline = new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Details = "Import exported data into new PostgreSQL database",
+                            Description = "Import exported data into new PostgreSQL database",
                             EstimatedHours = 40,
                             OwnerId = 2,
                             Priority = 3,
@@ -300,7 +296,7 @@ namespace backend.CodeFirst.Migrations
                             ActualHours = 12,
                             CreatedAt = new DateTime(2024, 4, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Deadline = new DateTime(2024, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Details = "Integrate Stripe payment gateway for processing payments",
+                            Description = "Integrate Stripe payment gateway for processing payments",
                             EstimatedHours = 48,
                             OwnerId = 3,
                             Priority = 3,
@@ -314,7 +310,7 @@ namespace backend.CodeFirst.Migrations
                             ActualHours = 0,
                             CreatedAt = new DateTime(2024, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Deadline = new DateTime(2024, 4, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Details = "Update API documentation with new endpoints",
+                            Description = "Update API documentation with new endpoints",
                             EstimatedHours = 8,
                             OwnerId = 3,
                             Priority = 1,

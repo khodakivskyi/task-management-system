@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using backend.CodeFirst;
@@ -11,9 +12,11 @@ using backend.CodeFirst;
 namespace backend.CodeFirst.Migrations
 {
     [DbContext(typeof(TaskManagementCodeFirstDbContext))]
-    partial class TaskManagementCodeFirstDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251214182700_RenameDescriptionToDetails")]
+    partial class RenameDescriptionToDetails
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -163,10 +166,6 @@ namespace backend.CodeFirst.Migrations
                     b.Property<int?>("ProjectId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Status")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
                     b.Property<string>("Tags")
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
@@ -210,18 +209,15 @@ namespace backend.CodeFirst.Migrations
                     b.HasIndex("OwnerId", "CreatedAt")
                         .HasDatabaseName("IX_Tasks_OwnerId_CreatedAt");
 
+                    b.HasIndex("OwnerId", "Priority")
+                        .HasDatabaseName("IX_Tasks_OwnerId_Priority")
+                        .HasFilter("\"Priority\" IS NOT NULL");
+
                     b.HasIndex("ProjectId", "Deadline")
                         .HasDatabaseName("IX_Tasks_ProjectId_Deadline")
                         .HasFilter("\"ProjectId\" IS NOT NULL AND \"Deadline\" IS NOT NULL");
 
-                    b.HasIndex("OwnerId", "Priority", "Deadline")
-                        .HasDatabaseName("IX_Tasks_OwnerId_Priority_Deadline")
-                        .HasFilter("\"Priority\" IS NOT NULL AND \"Deadline\" IS NOT NULL");
-
-                    b.ToTable("Tasks", null, t =>
-                        {
-                            t.HasCheckConstraint("CK_Tasks_Priority", "\"Priority\" IS NULL OR (\"Priority\" >= 1 AND \"Priority\" <= 5)");
-                        });
+                    b.ToTable("Tasks", (string)null);
 
                     b.HasData(
                         new

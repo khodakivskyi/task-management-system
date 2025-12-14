@@ -31,11 +31,22 @@ public class TaskConfiguration : IEntityTypeConfiguration<TaskEntity>
             .IsRequired()
             .HasMaxLength(200);
 
-        builder.Property(t => t.Description)
+        builder.Property(t => t.Details)
             .HasMaxLength(2000);
+
+        builder.Property(t => t.Tags)
+            .HasMaxLength(500)
+            .IsRequired(false);
+
+        builder.Property(t => t.Status)
+            .HasMaxLength(50)
+            .IsRequired(false);
 
         builder.Property(t => t.Priority)
             .IsRequired(false);
+
+        // CHECK constraint: Priority must be between 1 and 5
+        builder.HasCheckConstraint("CK_Tasks_Priority", "\"Priority\" IS NULL OR (\"Priority\" >= 1 AND \"Priority\" <= 5)");
 
         builder.Property(t => t.Deadline)
             .IsRequired(false)
@@ -98,10 +109,11 @@ public class TaskConfiguration : IEntityTypeConfiguration<TaskEntity>
         builder.HasIndex(t => t.UpdatedAt)
             .HasDatabaseName("IX_Tasks_UpdatedAt");
 
-        // Composite index on OwnerId and Priority for user's task priority queries
-        builder.HasIndex(t => new { t.OwnerId, t.Priority })
-            .HasDatabaseName("IX_Tasks_OwnerId_Priority")
-            .HasFilter("\"Priority\" IS NOT NULL");
+        // Composite index on OwnerId, Priority, and Deadline for user's task queries
+        // Modified: Added Deadline column to existing composite index
+        builder.HasIndex(t => new { t.OwnerId, t.Priority, t.Deadline })
+            .HasDatabaseName("IX_Tasks_OwnerId_Priority_Deadline")
+            .HasFilter("\"Priority\" IS NOT NULL AND \"Deadline\" IS NOT NULL");
 
         // Composite index on ProjectId and Deadline for project deadline queries
         builder.HasIndex(t => new { t.ProjectId, t.Deadline })
@@ -134,7 +146,7 @@ public class TaskConfiguration : IEntityTypeConfiguration<TaskEntity>
                 OwnerId = 1, // FK to User with Id = 1
                 ProjectId = 1, // FK to Project with Id = 1
                 Title = "Design Homepage Layout",
-                Description = "Create wireframes and mockups for the new homepage design",
+                Details = "Create wireframes and mockups for the new homepage design",
                 Priority = 3, // High priority
                 Deadline = new DateTime(2024, 2, 15, 0, 0, 0, DateTimeKind.Unspecified),
                 CreatedAt = new DateTime(2024, 1, 20, 0, 0, 0, DateTimeKind.Unspecified),
@@ -148,7 +160,7 @@ public class TaskConfiguration : IEntityTypeConfiguration<TaskEntity>
                 OwnerId = 1, // FK to User with Id = 1
                 ProjectId = 1, // FK to Project with Id = 1
                 Title = "Implement Responsive Navigation",
-                Description = "Build responsive navigation menu with mobile hamburger",
+                Details = "Build responsive navigation menu with mobile hamburger",
                 Priority = 2, // Medium priority
                 Deadline = new DateTime(2024, 3, 1, 0, 0, 0, DateTimeKind.Unspecified),
                 CreatedAt = new DateTime(2024, 1, 25, 0, 0, 0, DateTimeKind.Unspecified),
@@ -162,7 +174,7 @@ public class TaskConfiguration : IEntityTypeConfiguration<TaskEntity>
                 OwnerId = 1, // FK to User with Id = 1
                 ProjectId = 2, // FK to Project with Id = 2
                 Title = "Setup iOS Development Environment",
-                Description = "Configure Xcode, CocoaPods, and development certificates",
+                Details = "Configure Xcode, CocoaPods, and development certificates",
                 Priority = 3, // High priority
                 Deadline = new DateTime(2024, 2, 10, 0, 0, 0, DateTimeKind.Unspecified),
                 CreatedAt = new DateTime(2024, 2, 1, 0, 0, 0, DateTimeKind.Unspecified),
@@ -176,7 +188,7 @@ public class TaskConfiguration : IEntityTypeConfiguration<TaskEntity>
                 OwnerId = 2, // FK to User with Id = 2
                 ProjectId = 3, // FK to Project with Id = 3
                 Title = "Export Data from Legacy Database",
-                Description = "Create scripts to export all data from SQL Server database",
+                Details = "Create scripts to export all data from SQL Server database",
                 Priority = 3, // High priority
                 Deadline = new DateTime(2024, 3, 15, 0, 0, 0, DateTimeKind.Unspecified),
                 CreatedAt = new DateTime(2024, 3, 1, 0, 0, 0, DateTimeKind.Unspecified),
@@ -190,7 +202,7 @@ public class TaskConfiguration : IEntityTypeConfiguration<TaskEntity>
                 OwnerId = 2, // FK to User with Id = 2
                 ProjectId = 3, // FK to Project with Id = 3
                 Title = "Import Data to PostgreSQL",
-                Description = "Import exported data into new PostgreSQL database",
+                Details = "Import exported data into new PostgreSQL database",
                 Priority = 3, // High priority
                 Deadline = new DateTime(2024, 4, 1, 0, 0, 0, DateTimeKind.Unspecified),
                 CreatedAt = new DateTime(2024, 3, 5, 0, 0, 0, DateTimeKind.Unspecified),
@@ -204,7 +216,7 @@ public class TaskConfiguration : IEntityTypeConfiguration<TaskEntity>
                 OwnerId = 3, // FK to User with Id = 3
                 ProjectId = 4, // FK to Project with Id = 4
                 Title = "Integrate Payment Gateway API",
-                Description = "Integrate Stripe payment gateway for processing payments",
+                Details = "Integrate Stripe payment gateway for processing payments",
                 Priority = 3, // High priority
                 Deadline = new DateTime(2024, 5, 1, 0, 0, 0, DateTimeKind.Unspecified),
                 CreatedAt = new DateTime(2024, 4, 5, 0, 0, 0, DateTimeKind.Unspecified),
@@ -218,7 +230,7 @@ public class TaskConfiguration : IEntityTypeConfiguration<TaskEntity>
                 OwnerId = 3, // FK to User with Id = 3
                 ProjectId = null, // Task without project (optional FK)
                 Title = "Update Documentation",
-                Description = "Update API documentation with new endpoints",
+                Details = "Update API documentation with new endpoints",
                 Priority = 1, // Low priority
                 Deadline = new DateTime(2024, 4, 30, 0, 0, 0, DateTimeKind.Unspecified),
                 CreatedAt = new DateTime(2024, 4, 10, 0, 0, 0, DateTimeKind.Unspecified),

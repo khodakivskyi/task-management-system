@@ -20,10 +20,11 @@ public class TaskManagementCodeFirstDbContext : DbContext
     {
     }
 
-    // DbSet properties - only User, Task, Project entities
+    // DbSet properties - User, Task, Project, TaskAttachment entities
     public DbSet<User> Users => Set<User>();
     public DbSet<TaskEntity> Tasks => Set<TaskEntity>();
     public DbSet<Project> Projects => Set<Project>();
+    public DbSet<TaskAttachment> TaskAttachments => Set<TaskAttachment>();
 
     /// <summary>
     /// OnModelCreating method to apply all entity configurations
