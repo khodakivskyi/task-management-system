@@ -38,17 +38,22 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
             .IsRequired()
             .HasColumnType("timestamp without time zone");
 
+        builder.Property(p => p.Budget)
+            .HasColumnType("numeric(18,2)") // Decimal with 2 decimal places
+            .IsRequired(false);
+
+        // CHECK constraint: Budget must be >= 0 (if provided)
+        builder.HasCheckConstraint("CK_Projects_Budget", "\"Budget\" IS NULL OR (\"Budget\" >= 0)");
+
         // Computed column: Duration in days
         builder.Property(p => p.DurationDays)
             .HasComputedColumnSql(
                 "EXTRACT(DAY FROM (\"EndDate\" - \"StartDate\"))::integer",
                 stored: true);
 
-        // Computed column: IsActive (true if current date is between StartDate and EndDate)
         builder.Property(p => p.IsActive)
-            .HasComputedColumnSql(
-                "(CURRENT_DATE >= \"StartDate\"::date AND CURRENT_DATE <= \"EndDate\"::date)",
-                stored: true);
+            .IsRequired(false)
+            .HasDefaultValue(false);
 
         // Indexes
         // Regular index on OwnerId (foreign key)
@@ -74,6 +79,11 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
         // Composite index on StartDate and EndDate for active projects queries
         builder.HasIndex(p => new { p.StartDate, p.EndDate })
             .HasDatabaseName("IX_Projects_StartDate_EndDate");
+
+        // Composite index on OwnerId, StartDate, and Budget for user's projects with budget filtering
+        builder.HasIndex(p => new { p.OwnerId, p.StartDate, p.Budget })
+            .HasDatabaseName("IX_Projects_OwnerId_StartDate_Budget")
+            .HasFilter("\"Budget\" IS NOT NULL");
 
         // Relationships
         // Project -> Owner (User) - Many-to-One

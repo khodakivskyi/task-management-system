@@ -13,9 +13,11 @@ public class Project
     public string? Description { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
+    public decimal? Budget { get; set; } // NEW: Project budget in currency
 
-    // Computed properties (configured in Fluent API)
+    // Computed properties
     public int? DurationDays { get; set; }
+    
     public bool? IsActive { get; set; }
 
     // Navigation properties - only User, Task, Project relationships

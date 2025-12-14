@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using backend.CodeFirst;
@@ -11,9 +12,11 @@ using backend.CodeFirst;
 namespace backend.CodeFirst.Migrations
 {
     [DbContext(typeof(TaskManagementCodeFirstDbContext))]
-    partial class TaskManagementCodeFirstDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251214214845_RenameTaskDetailsToDescription")]
+    partial class RenameTaskDetailsToDescription
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -136,14 +139,7 @@ namespace backend.CodeFirst.Migrations
                     b.HasIndex("StartDate", "EndDate")
                         .HasDatabaseName("IX_Projects_StartDate_EndDate");
 
-                    b.HasIndex("OwnerId", "StartDate", "Budget")
-                        .HasDatabaseName("IX_Projects_OwnerId_StartDate_Budget")
-                        .HasFilter("\"Budget\" IS NOT NULL");
-
-                    b.ToTable("Projects", null, t =>
-                        {
-                            t.HasCheckConstraint("CK_Projects_Budget", "\"Budget\" IS NULL OR (\"Budget\" >= 0)");
-                        });
+                    b.ToTable("Projects", (string)null);
 
                     b.HasData(
                         new

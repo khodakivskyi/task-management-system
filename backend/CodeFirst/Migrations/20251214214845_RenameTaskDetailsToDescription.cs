@@ -5,24 +5,24 @@
 namespace backend.CodeFirst.Migrations
 {
     /// <inheritdoc />
-    public partial class RenameDescriptionToDetails : Migration
+    public partial class RenameTaskDetailsToDescription : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.RenameColumn(
-                name: "Description",
+                name: "Details",
                 table: "Tasks",
-                newName: "Details");
+                newName: "Description");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.RenameColumn(
-                name: "Details",
+                name: "Description",
                 table: "Tasks",
-                newName: "Description");
+                newName: "Details");
         }
     }
 }

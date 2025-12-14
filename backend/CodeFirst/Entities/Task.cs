@@ -11,7 +11,7 @@ public class Task
     public int OwnerId { get; set; }
     public int? ProjectId { get; set; }
     public string Title { get; set; } = null!;
-    public string? Details { get; set; } // Renamed from Description
+    public string? Description { get; set; } // Renamed from Details
     public int? Priority { get; set; }
     public DateTime? Deadline { get; set; }
     public DateTime CreatedAt { get; set; }
@@ -20,12 +20,18 @@ public class Task
     public int ActualHours { get; set; }
     public string? Tags { get; set; } 
     public string? Status { get; set; } 
+    
+    // Foreign keys for lookup tables
+    public int? CategoryId { get; set; }
+    public int? StatusId { get; set; }
 
     // Computed property (configured in Fluent API)
     public decimal? ProgressPercentage { get; set; }
 
-    // Navigation properties - only User, Task, Project relationships
+    // Navigation properties
     public User Owner { get; set; } = null!;
     public Project? Project { get; set; }
+    public Category? Category { get; set; }
+    public Status? TaskStatus { get; set; }
 }
 

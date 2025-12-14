@@ -20,11 +20,17 @@ public class TaskManagementCodeFirstDbContext : DbContext
     {
     }
 
-    // DbSet properties - User, Task, Project, TaskAttachment entities
+    // DbSet properties - Main entities
     public DbSet<User> Users => Set<User>();
     public DbSet<TaskEntity> Tasks => Set<TaskEntity>();
     public DbSet<Project> Projects => Set<Project>();
     public DbSet<TaskAttachment> TaskAttachments => Set<TaskAttachment>();
+    public DbSet<TaskComment> TaskComments => Set<TaskComment>();
+    
+    // DbSet properties - Lookup/Reference tables (for seed data)
+    public DbSet<Status> Statuses => Set<Status>();
+    public DbSet<Category> Categories => Set<Category>();
+    public DbSet<ProjectRole> ProjectRoles => Set<ProjectRole>();
 
     /// <summary>
     /// OnModelCreating method to apply all entity configurations

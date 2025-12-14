@@ -12,8 +12,8 @@ using backend.CodeFirst;
 namespace backend.CodeFirst.Migrations
 {
     [DbContext(typeof(TaskManagementCodeFirstDbContext))]
-    [Migration("20251214182911_AddStatusToTask")]
-    partial class AddStatusToTask
+    [Migration("20251214213751_SeedLookupData")]
+    partial class SeedLookupData
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,61 @@ namespace backend.CodeFirst.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("backend.CodeFirst.Entities.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasMaxLength(7)
+                        .HasColumnType("character varying(7)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Color = "#3498DB",
+                            Name = "Development"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Color = "#9B59B6",
+                            Name = "Design"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Color = "#E67E22",
+                            Name = "Testing"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Color = "#1ABC9C",
+                            Name = "Documentation"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Color = "#E74C3C",
+                            Name = "Bug Fix"
+                        });
+                });
 
             modelBuilder.Entity("backend.CodeFirst.Entities.Project", b =>
                 {
@@ -46,9 +101,9 @@ namespace backend.CodeFirst.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<bool?>("IsActive")
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
-                        .HasComputedColumnSql("(CURRENT_DATE >= \"StartDate\"::date AND CURRENT_DATE <= \"EndDate\"::date)", true);
+                        .HasDefaultValue(false);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -122,6 +177,176 @@ namespace backend.CodeFirst.Migrations
                         });
                 });
 
+            modelBuilder.Entity("backend.CodeFirst.Entities.ProjectMember", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("JoinedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ProjectMember");
+                });
+
+            modelBuilder.Entity("backend.CodeFirst.Entities.ProjectRole", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("CanAssignTasks")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
+                    b.Property<bool>("CanCreateTasks")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
+                    b.Property<bool>("CanDeleteTasks")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
+                    b.Property<bool>("CanEditTasks")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
+                    b.Property<bool>("CanManageMembers")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProjectRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CanAssignTasks = true,
+                            CanCreateTasks = true,
+                            CanDeleteTasks = true,
+                            CanEditTasks = true,
+                            CanManageMembers = true,
+                            Name = "Owner"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CanAssignTasks = true,
+                            CanCreateTasks = true,
+                            CanDeleteTasks = true,
+                            CanEditTasks = true,
+                            CanManageMembers = false,
+                            Name = "Manager"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CanAssignTasks = false,
+                            CanCreateTasks = true,
+                            CanDeleteTasks = false,
+                            CanEditTasks = true,
+                            CanManageMembers = false,
+                            Name = "Developer"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CanAssignTasks = false,
+                            CanCreateTasks = false,
+                            CanDeleteTasks = false,
+                            CanEditTasks = false,
+                            CanManageMembers = false,
+                            Name = "Viewer"
+                        });
+                });
+
+            modelBuilder.Entity("backend.CodeFirst.Entities.Status", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Color")
+                        .HasMaxLength(7)
+                        .HasColumnType("character varying(7)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Statuses", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Color = "#FF6B6B",
+                            Name = "To Do"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Color = "#4ECDC4",
+                            Name = "In Progress"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Color = "#FFE66D",
+                            Name = "In Review"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Color = "#95E1D3",
+                            Name = "Done"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Color = "#C7C7C7",
+                            Name = "Cancelled"
+                        });
+                });
+
             modelBuilder.Entity("backend.CodeFirst.Entities.Task", b =>
                 {
                     b.Property<int>("Id")
@@ -134,6 +359,9 @@ namespace backend.CodeFirst.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasDefaultValue(0);
+
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -170,6 +398,9 @@ namespace backend.CodeFirst.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
+                    b.Property<int?>("StatusId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Tags")
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
@@ -185,6 +416,8 @@ namespace backend.CodeFirst.Migrations
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
 
                     b.HasIndex("CreatedAt")
                         .HasDatabaseName("IX_Tasks_CreatedAt");
@@ -203,6 +436,8 @@ namespace backend.CodeFirst.Migrations
                     b.HasIndex("ProjectId")
                         .HasDatabaseName("IX_Tasks_ProjectId")
                         .HasFilter("\"ProjectId\" IS NOT NULL");
+
+                    b.HasIndex("StatusId");
 
                     b.HasIndex("Title")
                         .HasDatabaseName("IX_Tasks_Title");
@@ -487,8 +722,39 @@ namespace backend.CodeFirst.Migrations
                     b.Navigation("Owner");
                 });
 
+            modelBuilder.Entity("backend.CodeFirst.Entities.ProjectMember", b =>
+                {
+                    b.HasOne("backend.CodeFirst.Entities.Project", "Project")
+                        .WithMany()
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend.CodeFirst.Entities.ProjectRole", "Role")
+                        .WithMany("ProjectMembers")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend.CodeFirst.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("backend.CodeFirst.Entities.Task", b =>
                 {
+                    b.HasOne("backend.CodeFirst.Entities.Category", null)
+                        .WithMany("Tasks")
+                        .HasForeignKey("CategoryId");
+
                     b.HasOne("backend.CodeFirst.Entities.User", "Owner")
                         .WithMany("Tasks")
                         .HasForeignKey("OwnerId")
@@ -499,6 +765,10 @@ namespace backend.CodeFirst.Migrations
                         .WithMany("Tasks")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("backend.CodeFirst.Entities.Status", null)
+                        .WithMany("Tasks")
+                        .HasForeignKey("StatusId");
 
                     b.Navigation("Owner");
 
@@ -524,7 +794,22 @@ namespace backend.CodeFirst.Migrations
                     b.Navigation("UploadedBy");
                 });
 
+            modelBuilder.Entity("backend.CodeFirst.Entities.Category", b =>
+                {
+                    b.Navigation("Tasks");
+                });
+
             modelBuilder.Entity("backend.CodeFirst.Entities.Project", b =>
+                {
+                    b.Navigation("Tasks");
+                });
+
+            modelBuilder.Entity("backend.CodeFirst.Entities.ProjectRole", b =>
+                {
+                    b.Navigation("ProjectMembers");
+                });
+
+            modelBuilder.Entity("backend.CodeFirst.Entities.Status", b =>
                 {
                     b.Navigation("Tasks");
                 });
