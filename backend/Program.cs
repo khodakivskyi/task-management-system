@@ -12,7 +12,7 @@ public partial class Program
         var env = builder.Environment;
 
         // Getting .env variables for db
-        string connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING") 
+        string connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING")
             ?? throw new InvalidOperationException("DB_CONNECTION_STRING is not set");
         string dbName = Environment.GetEnvironmentVariable("DB_NAME")
             ?? throw new InvalidOperationException("DB_NAME is not set");
@@ -28,6 +28,9 @@ public partial class Program
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 
+        // Register Repository Demo
+        builder.Services.AddScoped<RepositoryDemo>();
+
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
@@ -36,7 +39,13 @@ public partial class Program
 
         var app = builder.Build();
 
-        // Use MigrationRunner while starting the app
+        using (var scope = app.Services.CreateScope())
+        {
+            var demo = scope.ServiceProvider.GetRequiredService<RepositoryDemo>();
+            var cts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
+            await demo.RunAllDemonstrationsAsync(cts.Token);
+        }
+
         // Enable Swagger UI for testing
         if (app.Environment.IsDevelopment())
         {

@@ -7,13 +7,10 @@ namespace backend.EFRepositories;
 /// </summary>
 public interface ITaskRepository
 {
-    Task<TaskModel?> GetByIdAsync(int id);
-    Task<IEnumerable<TaskModel>> GetAllAsync();
-    Task<IEnumerable<TaskModel>> GetByProjectIdAsync(int projectId);
-    Task<IEnumerable<TaskModel>> GetByOwnerIdAsync(int ownerId);
-    Task<TaskModel> CreateAsync(TaskModel task);
-    Task<TaskModel> UpdateAsync(TaskModel task);
-    Task<bool> DeleteAsync(int id);
-    Task<int> CountAsync();
+    Task<TaskModel?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
+    Task<IEnumerable<TaskModel>> GetAllAsync(bool trackChanges = false, CancellationToken cancellationToken = default);
+    Task<TaskModel> CreateAsync(TaskModel task, CancellationToken cancellationToken = default);
+    Task<TaskModel> UpdateAsync(TaskModel task, CancellationToken cancellationToken = default);
+    Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default);
 }
 

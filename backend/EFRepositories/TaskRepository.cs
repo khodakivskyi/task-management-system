@@ -5,7 +5,7 @@ namespace backend.EFRepositories;
 
 /// <summary>
 /// Repository implementation for Task entity using Entity Framework Core
-/// Demonstrates repository pattern on top of scaffolded entities
+/// Demonstrates proper change tracking, AsNoTracking, and async operations with CancellationToken
 /// </summary>
 public class TaskRepository : ITaskRepository
 {
@@ -16,78 +16,101 @@ public class TaskRepository : ITaskRepository
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
-    public async Task<TaskModel?> GetByIdAsync(int id)
+    /// <summary>
+    /// Gets a task by ID using FindAsync() for tracked entity
+    /// </summary>
+    public async Task<TaskModel?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-        return await _context.Tasks
-            .Include(t => t.Owner)
-            .Include(t => t.Status)
-            .Include(t => t.Category)
-            .Include(t => t.Project)
-            .Include(t => t.TaskAssignees)
-                .ThenInclude(ta => ta.User)
-            .FirstOrDefaultAsync(t => t.Id == id);
+        return await _context.Set<TaskModel>()
+            .FindAsync(new object[] { id }, cancellationToken);
     }
 
-    public async Task<IEnumerable<TaskModel>> GetAllAsync()
+    /// <summary>
+    /// Gets all tasks with optional change tracking
+    /// Uses AsNoTracking() when trackChanges = false for better performance in read-only scenarios
+    /// </summary>
+    public async Task<IEnumerable<TaskModel>> GetAllAsync(bool trackChanges = false, CancellationToken cancellationToken = default)
     {
-        return await _context.Tasks
-            .Include(t => t.Owner)
-            .Include(t => t.Status)
-            .Include(t => t.Category)
+        var query = _context.Set<TaskModel>().AsQueryable();
+
+        if (!trackChanges)
+        {
+            query = query.AsNoTracking();
+        }
+
+        return await query
             .OrderByDescending(t => t.CreatedAt)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<TaskModel>> GetByProjectIdAsync(int projectId)
+    /// <summary>
+    /// Creates a new task using context.Set<T>().Add() and SaveChangesAsync()
+    /// </summary>
+    public async Task<TaskModel> CreateAsync(TaskModel task, CancellationToken cancellationToken = default)
     {
-        return await _context.GetTasksByProjectId(projectId).ToListAsync();
-    }
+        if (task == null)
+            throw new ArgumentNullException(nameof(task));
 
-    public async Task<IEnumerable<TaskModel>> GetByOwnerIdAsync(int ownerId)
-    {
-        return await _context.Tasks
-            .Where(t => t.OwnerId == ownerId)
-            .Include(t => t.Status)
-            .Include(t => t.Category)
-            .Include(t => t.Project)
-            .OrderByDescending(t => t.CreatedAt)
-            .ToListAsync();
-    }
+        task.CreatedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified);
+        task.UpdatedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified);
 
-    public async Task<TaskModel> CreateAsync(TaskModel task)
-    {
-        task.CreatedAt = DateTime.UtcNow;
-        task.UpdatedAt = DateTime.UtcNow;
-
-        _context.Tasks.Add(task);
-        await _context.SaveChangesAsync();
+        await _context.Set<TaskModel>().AddAsync(task, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
         return task;
     }
 
-    public async Task<TaskModel> UpdateAsync(TaskModel task)
+    /// <summary>
+    /// Updates an existing task using change tracking
+    /// Supports both tracked and detached entities:
+    /// - Tracked: Entity is already being tracked, changes are detected automatically
+    /// - Detached: Entity is not tracked, Update() attaches and marks as modified
+    /// </summary>
+    public async Task<TaskModel> UpdateAsync(TaskModel task, CancellationToken cancellationToken = default)
     {
-        task.UpdatedAt = DateTime.UtcNow;
-        _context.Tasks.Update(task);
-        await _context.SaveChangesAsync();
-        return task;
+        if (task == null)
+            throw new ArgumentNullException(nameof(task));
+
+        // Check if entity is already tracked
+        var existing = await _context.Set<TaskModel>()
+            .FindAsync(new object[] { task.Id }, cancellationToken);
+
+        if (existing == null)
+            throw new InvalidOperationException($"Task with Id {task.Id} not found");
+
+        // Method 1: Tracked entity (automatic change detection)
+        // EF Core automatically tracks changes to existing entity
+        existing.Title = task.Title;
+        existing.Description = task.Description;
+        existing.Priority = task.Priority;
+        existing.Deadline = task.Deadline;
+        existing.StatusId = task.StatusId;
+        existing.CategoryId = task.CategoryId;
+        existing.ProjectId = task.ProjectId;
+        existing.EstimatedHours = task.EstimatedHours;
+        existing.ActualHours = task.ActualHours;
+        existing.UpdatedAt = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified);
+
+        // EF Core detects changes automatically for tracked entities
+        await _context.SaveChangesAsync(cancellationToken);
+        return existing;
     }
 
-    public async Task<bool> DeleteAsync(int id)
+    /// <summary>
+    /// Deletes a task by ID using Remove() and SaveChangesAsync()
+    /// </summary>
+    public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
-        var task = await _context.Tasks.FindAsync(id);
+        var task = await _context.Set<TaskModel>()
+            .FindAsync(new object[] { id }, cancellationToken);
+
         if (task == null)
         {
             return false;
         }
 
-        _context.Tasks.Remove(task);
-        await _context.SaveChangesAsync();
+        _context.Set<TaskModel>().Remove(task);
+        await _context.SaveChangesAsync(cancellationToken);
         return true;
-    }
-
-    public async Task<int> CountAsync()
-    {
-        return await _context.Tasks.CountAsync();
     }
 }
 

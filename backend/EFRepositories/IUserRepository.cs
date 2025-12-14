@@ -7,13 +7,10 @@ namespace backend.EFRepositories;
 /// </summary>
 public interface IUserRepository
 {
-    Task<User?> GetByIdAsync(int id);
-    Task<User?> GetByLoginAsync(string login);
-    Task<User?> GetWithDetailsAsync(int userId);
-    Task<IEnumerable<User>> GetAllAsync();
-    Task<User> CreateAsync(User user);
-    Task<User> UpdateAsync(User user);
-    Task<bool> DeleteAsync(int id);
-    Task<bool> ExistsByLoginAsync(string login);
+    Task<User?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
+    Task<IEnumerable<User>> GetAllAsync(bool trackChanges = false, CancellationToken cancellationToken = default);
+    Task<User> CreateAsync(User user, CancellationToken cancellationToken = default);
+    Task<User> UpdateAsync(User user, CancellationToken cancellationToken = default);
+    Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default);
 }
 

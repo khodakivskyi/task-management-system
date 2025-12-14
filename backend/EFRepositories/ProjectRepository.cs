@@ -15,59 +15,92 @@ public class ProjectRepository : IProjectRepository
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
-    public async Task<Project?> GetByIdAsync(int id)
+    /// <summary>
+    /// Gets a project by ID using FindAsync() for tracked entity
+    /// </summary>
+    public async Task<Project?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-        return await _context.Projects
-            .Include(p => p.Owner)
-            .FirstOrDefaultAsync(p => p.Id == id);
+        return await _context.Set<Project>()
+            .FindAsync(new object[] { id }, cancellationToken);
     }
 
-    public async Task<Project?> GetWithDetailsAsync(int projectId)
+    /// <summary>
+    /// Gets all projects with optional change tracking
+    /// Uses AsNoTracking() when trackChanges = false for better performance in read-only scenarios
+    /// </summary>
+    public async Task<IEnumerable<Project>> GetAllAsync(bool trackChanges = false, CancellationToken cancellationToken = default)
     {
-        return await _context.GetProjectWithDetailsAsync(projectId);
-    }
+        var query = _context.Set<Project>().AsQueryable();
 
-    public async Task<IEnumerable<Project>> GetAllAsync()
-    {
-        return await _context.Projects
-            .Include(p => p.Owner)
+        if (!trackChanges)
+        {
+            query = query.AsNoTracking();
+        }
+
+        return await query
             .OrderByDescending(p => p.StartDate)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<Project>> GetByOwnerIdAsync(int ownerId)
+    /// <summary>
+    /// Creates a new project using context.Set<T>().Add() and SaveChangesAsync()
+    /// </summary>
+    public async Task<Project> CreateAsync(Project project, CancellationToken cancellationToken = default)
     {
-        return await _context.Projects
-            .Where(p => p.OwnerId == ownerId)
-            .Include(p => p.Owner)
-            .OrderByDescending(p => p.StartDate)
-            .ToListAsync();
-    }
+        if (project == null)
+            throw new ArgumentNullException(nameof(project));
 
-    public async Task<Project> CreateAsync(Project project)
-    {
-        _context.Projects.Add(project);
-        await _context.SaveChangesAsync();
+        await _context.Set<Project>().AddAsync(project, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
         return project;
     }
 
-    public async Task<Project> UpdateAsync(Project project)
+    /// <summary>
+    /// Updates an existing project using change tracking
+    /// Supports both tracked and detached entities:
+    /// - Tracked: Entity is already being tracked, changes are detected automatically
+    /// - Detached: Entity is not tracked, Update() attaches and marks as modified
+    /// </summary>
+    public async Task<Project> UpdateAsync(Project project, CancellationToken cancellationToken = default)
     {
-        _context.Projects.Update(project);
-        await _context.SaveChangesAsync();
-        return project;
+        if (project == null)
+            throw new ArgumentNullException(nameof(project));
+
+        // Check if entity is already tracked
+        var existing = await _context.Set<Project>()
+            .FindAsync(new object[] { project.Id }, cancellationToken);
+
+        if (existing == null)
+            throw new InvalidOperationException($"Project with Id {project.Id} not found");
+
+        // Method 1: Tracked entity (automatic change detection)
+        // EF Core automatically tracks changes to existing entity
+        existing.Name = project.Name;
+        existing.Description = project.Description;
+        existing.StartDate = project.StartDate;
+        existing.EndDate = project.EndDate;
+        existing.OwnerId = project.OwnerId;
+
+        // EF Core detects changes automatically for tracked entities
+        await _context.SaveChangesAsync(cancellationToken);
+        return existing;
     }
 
-    public async Task<bool> DeleteAsync(int id)
+    /// <summary>
+    /// Deletes a project by ID using Remove() and SaveChangesAsync()
+    /// </summary>
+    public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
-        var project = await _context.Projects.FindAsync(id);
+        var project = await _context.Set<Project>()
+            .FindAsync(new object[] { id }, cancellationToken);
+
         if (project == null)
         {
             return false;
         }
 
-        _context.Projects.Remove(project);
-        await _context.SaveChangesAsync();
+        _context.Set<Project>().Remove(project);
+        await _context.SaveChangesAsync(cancellationToken);
         return true;
     }
 }

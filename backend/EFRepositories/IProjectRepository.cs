@@ -7,12 +7,10 @@ namespace backend.EFRepositories;
 /// </summary>
 public interface IProjectRepository
 {
-    Task<Project?> GetByIdAsync(int id);
-    Task<Project?> GetWithDetailsAsync(int projectId);
-    Task<IEnumerable<Project>> GetAllAsync();
-    Task<IEnumerable<Project>> GetByOwnerIdAsync(int ownerId);
-    Task<Project> CreateAsync(Project project);
-    Task<Project> UpdateAsync(Project project);
-    Task<bool> DeleteAsync(int id);
+    Task<Project?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
+    Task<IEnumerable<Project>> GetAllAsync(bool trackChanges = false, CancellationToken cancellationToken = default);
+    Task<Project> CreateAsync(Project project, CancellationToken cancellationToken = default);
+    Task<Project> UpdateAsync(Project project, CancellationToken cancellationToken = default);
+    Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default);
 }
 
