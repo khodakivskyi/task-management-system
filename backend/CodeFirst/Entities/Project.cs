@@ -14,9 +14,12 @@ public class Project
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
 
-    // Navigation properties
+    // Computed properties (configured in Fluent API)
+    public int? DurationDays { get; set; }
+    public bool? IsActive { get; set; }
+
+    // Navigation properties - only User, Task, Project relationships
     public User Owner { get; set; } = null!;
-    public ICollection<ProjectMember> ProjectMembers { get; set; } = new List<ProjectMember>();
     public ICollection<Task> Tasks { get; set; } = new List<Task>();
 }
 

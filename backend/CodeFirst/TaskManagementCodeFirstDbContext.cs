@@ -1,5 +1,4 @@
 using backend.CodeFirst.Entities;
-using backend.CodeFirst.Configurations;
 using Microsoft.EntityFrameworkCore;
 using TaskEntity = backend.CodeFirst.Entities.Task;
 
@@ -21,19 +20,10 @@ public class TaskManagementCodeFirstDbContext : DbContext
     {
     }
 
-    // DbSet properties for each entity
-    public DbSet<Category> Categories => Set<Category>();
-    public DbSet<Comment> Comments => Set<Comment>();
-    public DbSet<EntityType> EntityTypes => Set<EntityType>();
-    public DbSet<Favorite> Favorites => Set<Favorite>();
-    public DbSet<Project> Projects => Set<Project>();
-    public DbSet<ProjectMember> ProjectMembers => Set<ProjectMember>();
-    public DbSet<ProjectRole> ProjectRoles => Set<ProjectRole>();
-    public DbSet<Status> Statuses => Set<Status>();
-    public DbSet<TaskEntity> Tasks => Set<TaskEntity>();
-    public DbSet<TaskAssignee> TaskAssignees => Set<TaskAssignee>();
-    public DbSet<TaskHistory> TaskHistories => Set<TaskHistory>();
+    // DbSet properties - only User, Task, Project entities
     public DbSet<User> Users => Set<User>();
+    public DbSet<TaskEntity> Tasks => Set<TaskEntity>();
+    public DbSet<Project> Projects => Set<Project>();
 
     /// <summary>
     /// OnModelCreating method to apply all entity configurations
@@ -47,14 +37,6 @@ public class TaskManagementCodeFirstDbContext : DbContext
         // This automatically loads all classes that implement IEntityTypeConfiguration<T>
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(TaskManagementCodeFirstDbContext).Assembly);
 
-        // Alternative approach (manual registration):
-        // modelBuilder.ApplyConfiguration(new CategoryConfiguration());
-        // modelBuilder.ApplyConfiguration(new StatusConfiguration());
-        // ... etc
     }
-
-    // NOTE: OnConfiguring is NOT used for connection string
-    // Connection string is provided through DbContextOptions in constructor
-    // This is configured in Program.cs via dependency injection
 }
 

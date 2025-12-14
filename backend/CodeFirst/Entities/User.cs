@@ -15,13 +15,8 @@ public class User
     public string Salt { get; set; } = null!;
     public DateTime CreatedAt { get; set; }
 
-    // Navigation properties
+    // Navigation properties - only User, Task, Project relationships
     public ICollection<Task> Tasks { get; set; } = new List<Task>();
     public ICollection<Project> Projects { get; set; } = new List<Project>();
-    public ICollection<Comment> Comments { get; set; } = new List<Comment>();
-    public ICollection<TaskAssignee> TaskAssignees { get; set; } = new List<TaskAssignee>();
-    public ICollection<TaskHistory> TaskHistories { get; set; } = new List<TaskHistory>();
-    public ICollection<ProjectMember> ProjectMembers { get; set; } = new List<ProjectMember>();
-    public ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();
 }
 

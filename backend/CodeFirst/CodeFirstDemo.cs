@@ -38,22 +38,16 @@ public class CodeFirstDemo
             var userCount = await _context.Users.CountAsync(cancellationToken);
             var taskCount = await _context.Tasks.CountAsync(cancellationToken);
             var projectCount = await _context.Projects.CountAsync(cancellationToken);
-            var categoryCount = await _context.Categories.CountAsync(cancellationToken);
-            var statusCount = await _context.Statuses.CountAsync(cancellationToken);
 
             Console.WriteLine($"   Users: {userCount}");
             Console.WriteLine($"   Tasks: {taskCount}");
-            Console.WriteLine($"   Projects: {projectCount}");
-            Console.WriteLine($"   Categories: {categoryCount}");
-            Console.WriteLine($"   Statuses: {statusCount}\n");
+            Console.WriteLine($"   Projects: {projectCount}\n");
 
             // Verify relationships work
             Console.WriteLine("3. Testing relationships:");
             var taskWithRelations = await _context.Tasks
                 .OrderBy(t => t.Id)
                 .Include(t => t.Owner)
-                .Include(t => t.Status)
-                .Include(t => t.Category)
                 .Include(t => t.Project)
                 .FirstOrDefaultAsync(cancellationToken);
 
@@ -61,13 +55,34 @@ public class CodeFirstDemo
             {
                 Console.WriteLine($"   Task: {taskWithRelations.Title}");
                 Console.WriteLine($"   Owner: {taskWithRelations.Owner?.Name}");
-                Console.WriteLine($"   Status: {taskWithRelations.Status?.Name}");
-                Console.WriteLine($"   Category: {taskWithRelations.Category?.Name ?? "None"}");
-                Console.WriteLine($"   Project: {taskWithRelations.Project?.Name ?? "None"}\n");
+                Console.WriteLine($"   Project: {taskWithRelations.Project?.Name ?? "None"}");
+                // ProgressPercentage will be available after migration is applied
+                Console.WriteLine();
             }
             else
             {
                 Console.WriteLine("   No tasks found in database\n");
+            }
+
+            // Test Project relationships
+            Console.WriteLine("4. Testing Project relationships:");
+            var projectWithRelations = await _context.Projects
+                .OrderBy(p => p.Id)
+                .Include(p => p.Owner)
+                .Include(p => p.Tasks)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            if (projectWithRelations != null)
+            {
+                Console.WriteLine($"   Project: {projectWithRelations.Name}");
+                Console.WriteLine($"   Owner: {projectWithRelations.Owner?.Name}");
+                Console.WriteLine($"   Tasks count: {projectWithRelations.Tasks.Count}");
+                // DurationDays and IsActive will be available after migration is applied
+                Console.WriteLine();
+            }
+            else
+            {
+                Console.WriteLine("   No projects found in database\n");
             }
 
             Console.WriteLine("╔════════════════════════════════════════════════════════════════╗");

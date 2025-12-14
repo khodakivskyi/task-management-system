@@ -6,12 +6,16 @@ namespace backend.CodeFirst.Configurations;
 
 /// <summary>
 /// Code-First configuration for User entity using Fluent API
-/// Replaces all data annotations from scaffolded entity
+/// Implements IEntityTypeConfiguration<T> pattern
+/// Configures: primary keys, properties, indexes, relationships
 /// </summary>
 public class UserConfiguration : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
+        // Table name
+        builder.ToTable("Users");
+
         // Primary key
         builder.HasKey(u => u.Id);
 
@@ -25,80 +29,60 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(u => u.Login)
             .IsRequired()
-            .HasMaxLength(255);
+            .HasMaxLength(255)
+            .IsUnicode(false); // Login typically doesn't need Unicode
 
         builder.Property(u => u.PasswordHash)
             .IsRequired()
-            .HasMaxLength(255);
+            .HasMaxLength(255)
+            .IsUnicode(false);
 
         builder.Property(u => u.Salt)
             .IsRequired()
-            .HasMaxLength(255);
+            .HasMaxLength(255)
+            .IsUnicode(false);
 
         builder.Property(u => u.CreatedAt)
             .IsRequired()
             .HasColumnType("timestamp without time zone")
             .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-        // Table name
-        builder.ToTable("Users");
-
         // Indexes
+        // Unique index on Login (filtered to exclude NULL, though Login is required)
         builder.HasIndex(u => u.Login)
             .IsUnique()
-            .HasDatabaseName("IX_Users_Login");
+            .HasDatabaseName("IX_Users_Login")
+            .HasFilter("\"Login\" IS NOT NULL");
 
+        // Regular index on Name for search operations
         builder.HasIndex(u => u.Name)
             .HasDatabaseName("IX_Users_Name");
 
+        // Regular index on Surname (filtered to exclude NULL)
         builder.HasIndex(u => u.Surname)
-            .HasDatabaseName("IX_Users_Surname");
+            .HasDatabaseName("IX_Users_Surname")
+            .HasFilter("\"Surname\" IS NOT NULL");
 
+        // Composite index on Name and Surname for full name searches
         builder.HasIndex(u => new { u.Name, u.Surname })
-            .HasDatabaseName("IX_Users_Name_Surname");
+            .HasDatabaseName("IX_Users_Name_Surname")
+            .HasFilter("\"Surname\" IS NOT NULL");
 
-        // Navigation properties - One-to-many relationships
-        // User -> Tasks (as Owner)
+        // Index on CreatedAt for date range queries
+        builder.HasIndex(u => u.CreatedAt)
+            .HasDatabaseName("IX_Users_CreatedAt");
+
+        // Relationships
+        // User -> Tasks (One-to-Many: User owns many Tasks)
         builder.HasMany(u => u.Tasks)
             .WithOne(t => t.Owner)
             .HasForeignKey(t => t.OwnerId)
             .OnDelete(DeleteBehavior.Restrict); // Cannot delete user if they own tasks
 
-        // User -> Projects (as Owner)
+        // User -> Projects (One-to-Many: User owns many Projects)
         builder.HasMany(u => u.Projects)
             .WithOne(p => p.Owner)
             .HasForeignKey(p => p.OwnerId)
             .OnDelete(DeleteBehavior.Restrict); // Cannot delete user if they own projects
-
-        // User -> Comments
-        builder.HasMany(u => u.Comments)
-            .WithOne(c => c.User)
-            .HasForeignKey(c => c.UserId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        // User -> TaskAssignees (many-to-many through join table)
-        builder.HasMany(u => u.TaskAssignees)
-            .WithOne(ta => ta.User)
-            .HasForeignKey(ta => ta.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        // User -> TaskHistories
-        builder.HasMany(u => u.TaskHistories)
-            .WithOne(th => th.User)
-            .HasForeignKey(th => th.UserId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        // User -> ProjectMembers (many-to-many through join table)
-        builder.HasMany(u => u.ProjectMembers)
-            .WithOne(pm => pm.User)
-            .HasForeignKey(pm => pm.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        // User -> Favorites
-        builder.HasMany(u => u.Favorites)
-            .WithOne(f => f.User)
-            .HasForeignKey(f => f.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
     }
 }
-

@@ -7,12 +7,16 @@ namespace backend.CodeFirst.Configurations;
 
 /// <summary>
 /// Code-First configuration for Task entity using Fluent API
-/// Replaces all data annotations from scaffolded entity
+/// Implements IEntityTypeConfiguration<T> pattern
+/// Configures: primary keys, properties, indexes, relationships
 /// </summary>
 public class TaskConfiguration : IEntityTypeConfiguration<TaskEntity>
 {
     public void Configure(EntityTypeBuilder<TaskEntity> builder)
     {
+        // Table name
+        builder.ToTable("Tasks");
+
         // Primary key
         builder.HasKey(t => t.Id);
 
@@ -20,17 +24,21 @@ public class TaskConfiguration : IEntityTypeConfiguration<TaskEntity>
         builder.Property(t => t.OwnerId)
             .IsRequired();
 
-        builder.Property(t => t.StatusId)
-            .IsRequired();
+        builder.Property(t => t.ProjectId)
+            .IsRequired(false);
 
         builder.Property(t => t.Title)
             .IsRequired()
-            .HasMaxLength(50);
+            .HasMaxLength(200);
 
         builder.Property(t => t.Description)
-            .HasMaxLength(250);
+            .HasMaxLength(2000);
+
+        builder.Property(t => t.Priority)
+            .IsRequired(false);
 
         builder.Property(t => t.Deadline)
+            .IsRequired(false)
             .HasColumnType("timestamp without time zone");
 
         builder.Property(t => t.CreatedAt)
@@ -51,83 +59,74 @@ public class TaskConfiguration : IEntityTypeConfiguration<TaskEntity>
             .IsRequired()
             .HasDefaultValue(0);
 
-        // Table name
-        builder.ToTable("Tasks");
+        // Computed column: Progress percentage (if EstimatedHours > 0)
+        // NOTE: Temporarily ignored until migration is created and applied
+        // Uncomment after running migration that creates this column
+        // builder.Property(t => t.ProgressPercentage)
+        //     .HasComputedColumnSql(
+        //         "CASE WHEN \"EstimatedHours\" > 0 THEN ROUND((\"ActualHours\"::numeric / \"EstimatedHours\"::numeric * 100.0), 2) ELSE 0.0 END",
+        //         stored: true);
+        
+        // Temporarily ignore computed property until migration is applied
+        builder.Ignore(t => t.ProgressPercentage);
 
         // Indexes
-        builder.HasIndex(t => t.CategoryId)
-            .HasDatabaseName("IX_Tasks_CategoryId");
-
-        builder.HasIndex(t => t.CreatedAt)
-            .HasDatabaseName("IX_Tasks_CreatedAt");
-
-        builder.HasIndex(t => t.Deadline)
-            .HasDatabaseName("IX_Tasks_Deadline");
-
+        // Regular index on OwnerId (foreign key)
         builder.HasIndex(t => t.OwnerId)
             .HasDatabaseName("IX_Tasks_OwnerId");
 
-        builder.HasIndex(t => t.Priority)
-            .HasDatabaseName("IX_Tasks_Priority");
-
+        // Regular index on ProjectId (foreign key, filtered to exclude NULL)
         builder.HasIndex(t => t.ProjectId)
-            .HasDatabaseName("IX_Tasks_ProjectId");
+            .HasDatabaseName("IX_Tasks_ProjectId")
+            .HasFilter("\"ProjectId\" IS NOT NULL");
 
-        builder.HasIndex(t => t.StatusId)
-            .HasDatabaseName("IX_Tasks_StatusId");
+        // Regular index on Title for search operations
+        builder.HasIndex(t => t.Title)
+            .HasDatabaseName("IX_Tasks_Title");
 
+        // Regular index on Priority (filtered to exclude NULL)
+        builder.HasIndex(t => t.Priority)
+            .HasDatabaseName("IX_Tasks_Priority")
+            .HasFilter("\"Priority\" IS NOT NULL");
+
+        // Regular index on Deadline (filtered to exclude NULL)
+        builder.HasIndex(t => t.Deadline)
+            .HasDatabaseName("IX_Tasks_Deadline")
+            .HasFilter("\"Deadline\" IS NOT NULL");
+
+        // Regular index on CreatedAt for date range queries
+        builder.HasIndex(t => t.CreatedAt)
+            .HasDatabaseName("IX_Tasks_CreatedAt");
+
+        // Regular index on UpdatedAt for tracking recent changes
         builder.HasIndex(t => t.UpdatedAt)
             .HasDatabaseName("IX_Tasks_UpdatedAt");
 
-        // Composite indexes
-        builder.HasIndex(t => new { t.OwnerId, t.StatusId })
-            .HasDatabaseName("IX_Tasks_OwnerId_StatusId");
+        // Composite index on OwnerId and Priority for user's task priority queries
+        builder.HasIndex(t => new { t.OwnerId, t.Priority })
+            .HasDatabaseName("IX_Tasks_OwnerId_Priority")
+            .HasFilter("\"Priority\" IS NOT NULL");
 
-        builder.HasIndex(t => new { t.ProjectId, t.StatusId })
-            .HasDatabaseName("IX_Tasks_ProjectId_StatusId");
+        // Composite index on ProjectId and Deadline for project deadline queries
+        builder.HasIndex(t => new { t.ProjectId, t.Deadline })
+            .HasDatabaseName("IX_Tasks_ProjectId_Deadline")
+            .HasFilter("\"ProjectId\" IS NOT NULL AND \"Deadline\" IS NOT NULL");
 
-        // Foreign keys and relationships
-        // Task -> Owner (User)
+        // Composite index on OwnerId and CreatedAt for user's recent tasks
+        builder.HasIndex(t => new { t.OwnerId, t.CreatedAt })
+            .HasDatabaseName("IX_Tasks_OwnerId_CreatedAt");
+
+        // Relationships
+        // Task -> Owner (User) - Many-to-One
         builder.HasOne(t => t.Owner)
             .WithMany(u => u.Tasks)
             .HasForeignKey(t => t.OwnerId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Restrict); // Cannot delete user if they own tasks
 
-        // Task -> Status
-        builder.HasOne(t => t.Status)
-            .WithMany(s => s.Tasks)
-            .HasForeignKey(t => t.StatusId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        // Task -> Category (optional)
-        builder.HasOne(t => t.Category)
-            .WithMany(c => c.Tasks)
-            .HasForeignKey(t => t.CategoryId)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        // Task -> Project (optional)
+        // Task -> Project - Many-to-One (optional)
         builder.HasOne(t => t.Project)
             .WithMany(p => p.Tasks)
             .HasForeignKey(t => t.ProjectId)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        // Task -> Comments
-        builder.HasMany(t => t.Comments)
-            .WithOne(c => c.Task)
-            .HasForeignKey(c => c.TaskId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        // Task -> TaskAssignees (many-to-many through join table)
-        builder.HasMany(t => t.TaskAssignees)
-            .WithOne(ta => ta.Task)
-            .HasForeignKey(ta => ta.TaskId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        // Task -> TaskHistories
-        builder.HasMany(t => t.TaskHistories)
-            .WithOne(th => th.Task)
-            .HasForeignKey(th => th.TaskId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.SetNull); // If project is deleted, set ProjectId to NULL
     }
 }
-

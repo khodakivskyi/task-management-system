@@ -9,8 +9,6 @@ public class Task
 {
     public int Id { get; set; }
     public int OwnerId { get; set; }
-    public int StatusId { get; set; }
-    public int? CategoryId { get; set; }
     public int? ProjectId { get; set; }
     public string Title { get; set; } = null!;
     public string? Description { get; set; }
@@ -21,13 +19,11 @@ public class Task
     public int EstimatedHours { get; set; }
     public int ActualHours { get; set; }
 
-    // Navigation properties
+    // Computed property (configured in Fluent API)
+    public decimal? ProgressPercentage { get; set; }
+
+    // Navigation properties - only User, Task, Project relationships
     public User Owner { get; set; } = null!;
-    public Status Status { get; set; } = null!;
-    public Category? Category { get; set; }
     public Project? Project { get; set; }
-    public ICollection<Comment> Comments { get; set; } = new List<Comment>();
-    public ICollection<TaskAssignee> TaskAssignees { get; set; } = new List<TaskAssignee>();
-    public ICollection<TaskHistory> TaskHistories { get; set; } = new List<TaskHistory>();
 }
 
