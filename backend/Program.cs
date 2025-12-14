@@ -1,7 +1,7 @@
-using backend.Application.AsyncOperations;
-using backend.Application.BulkOperations;
-using backend.Infrastructure.Migrations;
+using backend;
+using backend.EFRepositories;
 using DotNetEnv;
+using Microsoft.EntityFrameworkCore;
 
 public partial class Program
 {
@@ -17,9 +17,16 @@ public partial class Program
         string dbName = Environment.GetEnvironmentVariable("DB_NAME")
             ?? throw new InvalidOperationException("DB_NAME is not set");
 
-        builder.Services.AddSingleton(new MigrationRunner(connectionString, "Migrations", dbName));
-
         builder.Services.AddSingleton(connectionString);
+
+        // Register DbContext
+        builder.Services.AddDbContext<TaskManagementDbContext>(options =>
+            options.UseNpgsql(connectionString));
+
+        // Register EF Core Repositories
+        builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
@@ -30,24 +37,6 @@ public partial class Program
         var app = builder.Build();
 
         // Use MigrationRunner while starting the app
-        using (var scope = app.Services.CreateScope())
-        {
-            var runner = scope.ServiceProvider.GetRequiredService<MigrationRunner>();
-            await runner.RunMigrationsAsync();
-        }
-
-        
-        // Run Bulk Operations Demonstrations
-        //var tester = new BulkOperationsTester(connectionString);
-        //await tester.RunTestsAsync();
-
-
-        // Run Long Running Operations Demonstrations
-        var longRunningService = new LongRunningOperationService(connectionString);
-        var asyncDemo = new AsyncCancellationDemo(longRunningService);
-        await asyncDemo.RunAllDemonstrationsAsync();   
-        
-
         // Enable Swagger UI for testing
         if (app.Environment.IsDevelopment())
         {
