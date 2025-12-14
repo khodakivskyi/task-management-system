@@ -28,8 +28,16 @@ public partial class Program
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 
-        // Register Repository Demo
+        // Register Repository Demos
         builder.Services.AddScoped<RepositoryDemo>();
+        builder.Services.AddScoped<AdvancedQueriesDemo>();
+        builder.Services.AddScoped<TransactionDemo>(sp =>
+        {
+            var context = sp.GetRequiredService<TaskManagementDbContext>();
+            var taskRepo = sp.GetRequiredService<ITaskRepository>();
+            var userRepo = sp.GetRequiredService<IUserRepository>();
+            return new TransactionDemo(context, taskRepo, userRepo, connectionString);
+        });
 
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
@@ -41,9 +49,12 @@ public partial class Program
 
         using (var scope = app.Services.CreateScope())
         {
-            var demo = scope.ServiceProvider.GetRequiredService<RepositoryDemo>();
+            var repositoryDemo = scope.ServiceProvider.GetRequiredService<RepositoryDemo>();
+            var transactionDemo = scope.ServiceProvider.GetRequiredService<TransactionDemo>();
             var cts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
-            await demo.RunAllDemonstrationsAsync(cts.Token);
+            
+            await repositoryDemo.RunAllDemonstrationsAsync(cts.Token);
+            await transactionDemo.RunAllDemonstrationsAsync(cts.Token);
         }
 
         // Enable Swagger UI for testing

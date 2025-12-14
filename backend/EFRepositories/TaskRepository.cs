@@ -1,5 +1,7 @@
 using backend.EFModels;
+using backend.EFRepositories.DTOs;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace backend.EFRepositories;
 
@@ -111,6 +113,212 @@ public class TaskRepository : ITaskRepository
         _context.Set<TaskModel>().Remove(task);
         await _context.SaveChangesAsync(cancellationToken);
         return true;
+    }
+
+    /// <summary>
+    /// Gets a task by ID with all related entities using eager loading (Include/ThenInclude)
+    /// Demonstrates eager loading to avoid N+1 problem
+    /// </summary>
+    public async Task<TaskModel?> GetByIdWithRelationsAsync(int id, CancellationToken cancellationToken = default)
+    {
+        return await _context.Set<TaskModel>()
+            .Include(t => t.Owner)
+            .Include(t => t.Status)
+            .Include(t => t.Category)
+            .Include(t => t.Project)
+            .Include(t => t.TaskAssignees)
+                .ThenInclude(ta => ta.User)
+            .Include(t => t.Comments)
+                .ThenInclude(c => c.User)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
+    }
+
+    /// <summary>
+    /// Gets all tasks with all related entities using eager loading
+    /// Uses Include() and ThenInclude() to load related data in a single query
+    /// </summary>
+    public async Task<IEnumerable<TaskModel>> GetAllWithRelationsAsync(bool trackChanges = false, CancellationToken cancellationToken = default)
+    {
+        var query = _context.Set<TaskModel>()
+            .Include(t => t.Owner)
+            .Include(t => t.Status)
+            .Include(t => t.Category)
+            .Include(t => t.Project)
+            .Include(t => t.TaskAssignees)
+                .ThenInclude(ta => ta.User)
+            .AsQueryable();
+
+        if (!trackChanges)
+        {
+            query = query.AsNoTracking();
+        }
+
+        return await query
+            .OrderByDescending(t => t.CreatedAt)
+            .ToListAsync(cancellationToken);
+    }
+
+    /// <summary>
+    /// Gets tasks as DTO using projection (Select)
+    /// Benefits: less data transferred, automatic AsNoTracking, better performance
+    /// </summary>
+    public async Task<IEnumerable<TaskDto>> GetTasksAsDtoAsync(CancellationToken cancellationToken = default)
+    {
+        return await _context.Set<TaskModel>()
+            .AsNoTracking()
+            .Select(t => new TaskDto
+            {
+                Id = t.Id,
+                Title = t.Title,
+                Description = t.Description,
+                Priority = t.Priority,
+                Deadline = t.Deadline,
+                OwnerName = t.Owner.Name + " " + (t.Owner.Surname ?? ""),
+                StatusName = t.Status.Name,
+                CategoryName = t.Category != null ? t.Category.Name : null,
+                ProjectName = t.Project != null ? t.Project.Name : null,
+                CreatedAt = t.CreatedAt,
+                EstimatedHours = t.EstimatedHours,
+                ActualHours = t.ActualHours
+            })
+            .OrderByDescending(t => t.CreatedAt)
+            .ToListAsync(cancellationToken);
+    }
+
+    /// <summary>
+    /// Gets paged tasks with dynamic sorting
+    /// Returns both data and total count for pagination UI
+    /// </summary>
+    public async Task<PagedResult<TaskModel>> GetPagedAsync(
+        int pageNumber,
+        int pageSize,
+        string? sortBy = null,
+        string? sortDirection = "asc",
+        CancellationToken cancellationToken = default)
+    {
+        if (pageNumber < 1) pageNumber = 1;
+        if (pageSize < 1) pageSize = 10;
+
+        var query = _context.Set<TaskModel>().AsNoTracking().AsQueryable();
+
+        // Dynamic sorting
+        if (!string.IsNullOrWhiteSpace(sortBy))
+        {
+            var isDescending = sortDirection?.ToLower() == "desc";
+            query = sortBy.ToLower() switch
+            {
+                "title" => isDescending ? query.OrderByDescending(t => t.Title) : query.OrderBy(t => t.Title),
+                "createdat" => isDescending ? query.OrderByDescending(t => t.CreatedAt) : query.OrderBy(t => t.CreatedAt),
+                "priority" => isDescending ? query.OrderByDescending(t => t.Priority) : query.OrderBy(t => t.Priority),
+                "deadline" => isDescending ? query.OrderByDescending(t => t.Deadline) : query.OrderBy(t => t.Deadline),
+                _ => query.OrderByDescending(t => t.CreatedAt) // Default sorting
+            };
+        }
+        else
+        {
+            query = query.OrderByDescending(t => t.CreatedAt);
+        }
+
+        var totalCount = await query.CountAsync(cancellationToken);
+
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        return new PagedResult<TaskModel>
+        {
+            Items = items,
+            TotalCount = totalCount,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
+    }
+
+    /// <summary>
+    /// Groups tasks by status with aggregation (Count, Average, Sum)
+    /// Demonstrates GroupBy with aggregation functions
+    /// </summary>
+    public async Task<IEnumerable<TaskGroupByStatusDto>> GetTasksGroupedByStatusAsync(CancellationToken cancellationToken = default)
+    {
+        return await _context.Set<TaskModel>()
+            .AsNoTracking()
+            .GroupBy(t => new { t.StatusId, t.Status.Name })
+            .Select(g => new TaskGroupByStatusDto
+            {
+                StatusId = g.Key.StatusId,
+                StatusName = g.Key.Name,
+                TaskCount = g.Count(),
+                AveragePriority = (int?)g.Average(t => (int?)t.Priority),
+                TotalEstimatedHours = g.Sum(t => t.EstimatedHours),
+                TotalActualHours = g.Sum(t => t.ActualHours)
+            })
+            .OrderByDescending(g => g.TaskCount)
+            .ToListAsync(cancellationToken);
+    }
+
+    /// <summary>
+    /// Gets filtered tasks with dynamic WHERE conditions
+    /// Combines multiple filter conditions using && and ||
+    /// </summary>
+    public async Task<IEnumerable<TaskModel>> GetFilteredTasksAsync(
+        int? ownerId = null,
+        int? statusId = null,
+        int? projectId = null,
+        int? minPriority = null,
+        int? maxPriority = null,
+        DateTime? deadlineFrom = null,
+        DateTime? deadlineTo = null,
+        bool trackChanges = false,
+        CancellationToken cancellationToken = default)
+    {
+        var query = _context.Set<TaskModel>().AsQueryable();
+
+        // Dynamic filtering - build WHERE conditions based on parameters
+        if (ownerId.HasValue)
+        {
+            query = query.Where(t => t.OwnerId == ownerId.Value);
+        }
+
+        if (statusId.HasValue)
+        {
+            query = query.Where(t => t.StatusId == statusId.Value);
+        }
+
+        if (projectId.HasValue)
+        {
+            query = query.Where(t => t.ProjectId == projectId.Value);
+        }
+
+        if (minPriority.HasValue)
+        {
+            query = query.Where(t => t.Priority.HasValue && t.Priority >= minPriority.Value);
+        }
+
+        if (maxPriority.HasValue)
+        {
+            query = query.Where(t => t.Priority.HasValue && t.Priority <= maxPriority.Value);
+        }
+
+        if (deadlineFrom.HasValue)
+        {
+            query = query.Where(t => t.Deadline.HasValue && t.Deadline >= deadlineFrom.Value);
+        }
+
+        if (deadlineTo.HasValue)
+        {
+            query = query.Where(t => t.Deadline.HasValue && t.Deadline <= deadlineTo.Value);
+        }
+
+        if (!trackChanges)
+        {
+            query = query.AsNoTracking();
+        }
+
+        return await query
+            .OrderByDescending(t => t.CreatedAt)
+            .ToListAsync(cancellationToken);
     }
 }
 
