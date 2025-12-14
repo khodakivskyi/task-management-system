@@ -60,15 +60,11 @@ public class TaskConfiguration : IEntityTypeConfiguration<TaskEntity>
             .HasDefaultValue(0);
 
         // Computed column: Progress percentage (if EstimatedHours > 0)
-        // NOTE: Temporarily ignored until migration is created and applied
-        // Uncomment after running migration that creates this column
-        // builder.Property(t => t.ProgressPercentage)
-        //     .HasComputedColumnSql(
-        //         "CASE WHEN \"EstimatedHours\" > 0 THEN ROUND((\"ActualHours\"::numeric / \"EstimatedHours\"::numeric * 100.0), 2) ELSE 0.0 END",
-        //         stored: true);
-        
-        // Temporarily ignore computed property until migration is applied
-        builder.Ignore(t => t.ProgressPercentage);
+        // Note: PostgreSQL syntax for computed columns
+        builder.Property(t => t.ProgressPercentage)
+            .HasComputedColumnSql(
+                "CASE WHEN \"EstimatedHours\" > 0 THEN ROUND((\"ActualHours\"::numeric / \"EstimatedHours\"::numeric * 100.0), 2) ELSE 0.0 END",
+                stored: true);
 
         // Indexes
         // Regular index on OwnerId (foreign key)

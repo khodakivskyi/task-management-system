@@ -38,21 +38,17 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
             .IsRequired()
             .HasColumnType("timestamp without time zone");
 
-        // Computed columns: DurationDays and IsActive
-        // NOTE: Temporarily ignored until migration is created and applied
-        // Uncomment after running migration that creates these columns
-        // builder.Property(p => p.DurationDays)
-        //     .HasComputedColumnSql(
-        //         "EXTRACT(DAY FROM (\"EndDate\" - \"StartDate\"))::integer",
-        //         stored: true);
-        // builder.Property(p => p.IsActive)
-        //     .HasComputedColumnSql(
-        //         "(CURRENT_DATE >= \"StartDate\"::date AND CURRENT_DATE <= \"EndDate\"::date)",
-        //         stored: true);
-        
-        // Temporarily ignore computed properties until migration is applied
-        builder.Ignore(p => p.DurationDays);
-        builder.Ignore(p => p.IsActive);
+        // Computed column: Duration in days
+        builder.Property(p => p.DurationDays)
+            .HasComputedColumnSql(
+                "EXTRACT(DAY FROM (\"EndDate\" - \"StartDate\"))::integer",
+                stored: true);
+
+        // Computed column: IsActive (true if current date is between StartDate and EndDate)
+        builder.Property(p => p.IsActive)
+            .HasComputedColumnSql(
+                "(CURRENT_DATE >= \"StartDate\"::date AND CURRENT_DATE <= \"EndDate\"::date)",
+                stored: true);
 
         // Indexes
         // Regular index on OwnerId (foreign key)
