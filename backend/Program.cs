@@ -39,6 +39,7 @@ public partial class Program
             return new TransactionDemo(context, taskRepo, userRepo, connectionString);
         });
         builder.Services.AddScoped<PerformanceOptimizationDemo>();
+        builder.Services.AddScoped<AdvancedPatternsDemo>();
 
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
@@ -52,12 +53,14 @@ public partial class Program
         {
             //var repositoryDemo = scope.ServiceProvider.GetRequiredService<RepositoryDemo>();
             //var transactionDemo = scope.ServiceProvider.GetRequiredService<TransactionDemo>();
-            var performanceDemo = scope.ServiceProvider.GetRequiredService<PerformanceOptimizationDemo>();
+            //var performanceDemo = scope.ServiceProvider.GetRequiredService<PerformanceOptimizationDemo>();
+            var advancedPatternsDemo = scope.ServiceProvider.GetRequiredService<AdvancedPatternsDemo>();
             var cts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
             
             //await repositoryDemo.RunAllDemonstrationsAsync(cts.Token);
             //await transactionDemo.RunAllDemonstrationsAsync(cts.Token);
-            await performanceDemo.RunAllDemonstrationsAsync(cts.Token);
+            //await performanceDemo.RunAllDemonstrationsAsync(cts.Token);
+            await advancedPatternsDemo.RunAllDemonstrationsAsync(cts.Token);
         }
 
         // Enable Swagger UI for testing
