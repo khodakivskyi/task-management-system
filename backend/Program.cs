@@ -1,5 +1,3 @@
-using backend.Application.AsyncOperations;
-using backend.Application.BulkOperations;
 using backend.Infrastructure.Migrations;
 using DotNetEnv;
 
@@ -34,19 +32,7 @@ public partial class Program
         {
             var runner = scope.ServiceProvider.GetRequiredService<MigrationRunner>();
             await runner.RunMigrationsAsync();
-        }
-
-        
-        // Run Bulk Operations Demonstrations
-        //var tester = new BulkOperationsTester(connectionString);
-        //await tester.RunTestsAsync();
-
-
-        // Run Long Running Operations Demonstrations
-        var longRunningService = new LongRunningOperationService(connectionString);
-        var asyncDemo = new AsyncCancellationDemo(longRunningService);
-        await asyncDemo.RunAllDemonstrationsAsync();   
-        
+        }       
 
         // Enable Swagger UI for testing
         if (app.Environment.IsDevelopment())
