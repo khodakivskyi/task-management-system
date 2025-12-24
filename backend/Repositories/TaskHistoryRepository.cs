@@ -1,4 +1,3 @@
-using backend.Application.Interfaces;
 using backend.Interfaces;
 using backend.Models;
 using Dapper;
@@ -9,7 +8,7 @@ namespace backend.Repositories;
 /// <summary>
 /// Repository for TaskHistory entity operations
 /// </summary>
-public class TaskHistoryRepository : BaseRepository, IRepository<TaskHistory>, ITaskHistoryRepository
+public class TaskHistoryRepository : BaseRepository, IRepository<TaskHistory>
 {
     public TaskHistoryRepository(string connectionString) : base(connectionString) { }
 
@@ -93,8 +92,3 @@ public class TaskHistoryRepository : BaseRepository, IRepository<TaskHistory>, I
         return affected > 0;
     }
 }
-
-
-
-
-

@@ -77,18 +77,4 @@ public class UserRepository : BaseRepository, IRepository<User>
             new { Id = id });
         return affected > 0;
     }
-
-    public async Task<User?> GetByLoginAsync(string login)
-    {
-        await using var connection = await GetConnectionAsync();
-        return await connection.QueryFirstOrDefaultAsync<User>(
-            @"SELECT ""Id"", ""Name"", ""Surname"", ""Login"", ""PasswordHash"", ""Salt"", ""CreatedAt""
-              FROM ""Users""
-              WHERE ""Login"" = @Login",
-            new { Login = login });
-    }
 }
-
-
-
-

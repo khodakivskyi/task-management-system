@@ -1,4 +1,3 @@
-using backend.Application.Interfaces;
 using backend.Interfaces;
 using backend.Models;
 using Dapper;
@@ -9,7 +8,7 @@ namespace backend.Repositories;
 /// <summary>
 /// Repository for TaskAssignee entity operations
 /// </summary>
-public class TaskAssigneeRepository : BaseRepository, IRepository<TaskAssignee>, ITaskAssigneeRepository
+public class TaskAssigneeRepository : BaseRepository, IRepository<TaskAssignee>
 {
     public TaskAssigneeRepository(string connectionString) : base(connectionString) { }
 

@@ -1,4 +1,3 @@
-using backend.Application.Interfaces;
 using backend.Interfaces;
 using backend.Models;
 using Dapper;
@@ -9,7 +8,7 @@ namespace backend.Repositories;
 /// <summary>
 /// Repository for Comment entity operations
 /// </summary>
-public class CommentRepository : BaseRepository, IRepository<Comment>, ICommentRepository
+public class CommentRepository : BaseRepository, IRepository<Comment>
 {
     public CommentRepository(string connectionString) : base(connectionString) { }
 
