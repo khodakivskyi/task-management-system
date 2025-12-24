@@ -1,0 +1,71 @@
+name: Build & Lint & Security-scan
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request: 
+    branches: [ "master" ]
+
+jobs:
+  build: 
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with: 
+        dotnet-version: 8.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Set environment variables
+      run:  |
+        echo "DB_CONNECTION_STRING=Host=localhost;Database=test;Username=test;Password=test" >> $GITHUB_ENV
+        echo "DB_NAME=test" >> $GITHUB_ENV
+    - name: Build
+      run: dotnet build --no-restore
+
+  lint:
+    runs-on:  ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Run linter
+      uses: github/super-linter@v4
+      env: 
+        DEFAULT_BRANCH: master
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        VALIDATE_CSHARP: true
+
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    needs: build
+    runs-on:  ubuntu-latest
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - language: csharp
+          build-mode: none
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v4
+      with:
+        languages:  ${{ matrix.language }}
+        build-mode: ${{ matrix.build-mode }}
+
+    - name:  Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v4
+      with:
+        category: "/language:${{matrix.language}}"
