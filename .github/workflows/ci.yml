@@ -17,13 +17,13 @@ jobs:
       with: 
         dotnet-version: 8.0.x
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore backend/backend.csproj
     - name: Set environment variables
       run:  |
         echo "DB_CONNECTION_STRING=${{ secrets.CI_DB_CONNECTION_STRING }}" >> $GITHUB_ENV
         echo "DB_NAME=${{ secrets.CI_DB_NAME }}" >> $GITHUB_ENV
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build backend/backend.csproj --no-restore
 
   lint:
     needs: build
