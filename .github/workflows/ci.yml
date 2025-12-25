@@ -20,19 +20,20 @@ jobs:
       run: dotnet restore
     - name: Set environment variables
       run:  |
-        echo "DB_CONNECTION_STRING=Host=localhost;Database=test;Username=test;Password=test" >> $GITHUB_ENV
-        echo "DB_NAME=test" >> $GITHUB_ENV
+        echo "DB_CONNECTION_STRING=${{ secrets.CI_DB_CONNECTION_STRING }}" >> $GITHUB_ENV
+        echo "DB_NAME=${{ secrets.CI_DB_NAME }}" >> $GITHUB_ENV
     - name: Build
       run: dotnet build --no-restore
 
   lint:
+    needs: build
     runs-on:  ubuntu-latest
     
     steps:
     - uses: actions/checkout@v4
     
     - name: Run linter
-      uses: github/super-linter@v4
+      uses: github/super-linter@v7
       env: 
         DEFAULT_BRANCH: master
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
