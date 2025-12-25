@@ -383,24 +383,24 @@ public class MigrationRunner
                 Console.WriteLine("NOTE: Checksum mismatch detected. This may be due to line ending differences.");
                 Console.WriteLine("      Auto-fixing checksums (normalizing line endings to LF)...");
                 Console.WriteLine();
-                
+
                 await using var connection = new NpgsqlConnection(_connectionString);
                 await connection.OpenAsync();
-                
+
                 var fixedMigrations = new List<MigrationRecord>();
-                
+
                 foreach (var migration in tamperedMigrations)
                 {
                     // Update checksum in database to match normalized content
                     await connection.ExecuteAsync(
                         @"UPDATE ""__MigrationsHistory"" SET ""Checksum"" = @Checksum WHERE ""MigrationVersion"" = @Version",
                         new { Checksum = migration.Checksum, Version = migration.Version });
-                    
+
                     Console.WriteLine($"  ✓ Fixed checksum for {migration.FileName}");
                     migration.DatabaseChecksum = migration.Checksum;  // Update in memory
                     fixedMigrations.Add(migration);
                 }
-                
+
                 Console.WriteLine();
                 Console.WriteLine($"Successfully fixed {fixedMigrations.Count} checksum(s)");
                 Console.WriteLine();

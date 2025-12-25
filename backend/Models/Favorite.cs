@@ -10,7 +10,7 @@ public class Favorite
     public int EntityTypeId { get; set; }
     public int EntityId { get; set; }
     public DateTime CreatedAt { get; set; }
-    
+
     public EntityType? EntityType { get; set; }
 
     public Favorite() { }
