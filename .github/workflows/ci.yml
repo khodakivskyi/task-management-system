@@ -41,7 +41,7 @@ jobs:
       
     - name:  Run dotnet format (check)
       working-directory: ./backend
-      run: dotnet format backend.sln --verify-no-changes --no-restore
+      run: dotnet format backend.csproj --verify-no-changes --no-restore
       
     - name: Build
       run: dotnet build --no-restore
