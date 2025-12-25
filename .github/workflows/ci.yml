@@ -7,40 +7,46 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build: 
+  build and lint: 
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup .NET
+    - uses:  actions/checkout@v4
+    
+    - name: Setup . NET
       uses: actions/setup-dotnet@v4
-      with: 
-        dotnet-version: 8.0.x
-    - name: Restore dependencies
-      run: dotnet restore backend/backend.csproj
-    - name: Set environment variables
-      run:  |
-        echo "DB_CONNECTION_STRING=${{ secrets.CI_DB_CONNECTION_STRING }}" >> $GITHUB_ENV
-        echo "DB_NAME=${{ secrets.CI_DB_NAME }}" >> $GITHUB_ENV
-    - name: Build
-      run: dotnet build backend/backend.csproj --no-restore
-
-  lint:
-    needs: build
-    runs-on:  ubuntu-latest
-    
-    steps:
-    - uses: actions/checkout@v4
       with:
-        fetch-depth: 0
-    
-    - name: Run linter
-      uses: github/super-linter@v7
-      env: 
-        DEFAULT_BRANCH: master
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        VALIDATE_CSHARP: true
+        dotnet-version: 8.0.x
 
+    - name: Cache NuGet
+      id: cache-nuget
+      uses: actions/cache@v4
+      with: 
+        path: ~/.nuget/packages
+        key: dotnet-${{ hashFiles('backend/**/*.csproj') }}
+        restore-keys: |
+          dotnet-
+          
+    - name: NuGet cache status
+      run: |
+        if [ "${{ steps.cache-nuget.outputs.cache-hit }}" = "true" ]; then
+          echo "NuGet cache hit – using cached packages."
+        else
+          echo "NuGet cache miss – packages will be restored from remote."
+        fi
+        
+    - name:  Restore dependencies
+      run: dotnet restore
+      working-directory: ./backend
+      
+    - name:  Run dotnet format (check)
+      working-directory: ./backend
+      run: dotnet format backend. sln --verify-no-changes --no-restore
+      
+    - name: Build
+      run: dotnet build --no-restore
+      working-directory: ./backend
+  
   analyze:
     name: Analyze (${{ matrix.language }})
     needs: build
