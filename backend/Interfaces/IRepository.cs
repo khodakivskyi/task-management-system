@@ -11,4 +11,3 @@ public interface IRepository<T> where T : class
     Task<bool> UpdateAsync(T entity);
     Task<bool> DeleteAsync(int id);
 }
-
