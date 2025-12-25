@@ -1,0 +1,80 @@
+name: Build & Lint & Security-scan
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request: 
+    branches: [ "master" ]
+
+jobs:
+  build_with_lint: 
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses:  actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Cache NuGet
+      id: cache-nuget
+      uses: actions/cache@v4
+      with: 
+        path: ~/.nuget/packages
+        key: dotnet-${{ hashFiles('backend/**/*.csproj') }}
+        restore-keys: |
+          dotnet-
+          
+    - name: NuGet cache status
+      run: |
+        if [ "${{ steps.cache-nuget.outputs.cache-hit }}" = "true" ]; then
+          echo "NuGet cache hit – using cached packages."
+        else
+          echo "NuGet cache miss – packages will be restored from remote."
+        fi
+        
+    - name:  Restore dependencies
+      run: dotnet restore
+      working-directory: ./backend
+      
+    - name:  Run dotnet format (check)
+      working-directory: ./backend
+      run: dotnet format backend.csproj --verify-no-changes --no-restore
+      
+    - name: Build
+      run: dotnet build --no-restore
+      working-directory: ./backend
+  
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    needs: build_with_lint
+    runs-on:  ubuntu-latest
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - language: csharp
+          build-mode: none
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v4
+      with:
+        languages:  ${{ matrix.language }}
+        build-mode: ${{ matrix.build-mode }}
+
+    - name:  Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v4
+      with:
+        category: "/language:${{matrix.language}}"
