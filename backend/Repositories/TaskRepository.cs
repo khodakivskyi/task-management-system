@@ -152,8 +152,8 @@ namespace backend.Repositories
                 { "OwnerName", "u.\"Name\"" }
             };
 
-            var orderByColumn = sortColumnMap.ContainsKey(sortBy) 
-                ? sortColumnMap[sortBy] 
+            var orderByColumn = sortColumnMap.ContainsKey(sortBy)
+                ? sortColumnMap[sortBy]
                 : "t.\"CreatedAt\"";
 
             sortDirection = sortDirection.ToUpper() == "ASC" ? "ASC" : "DESC";

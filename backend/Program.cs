@@ -10,7 +10,7 @@ public partial class Program
         var env = builder.Environment;
 
         // Getting .env variables for db
-        string connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING") 
+        string connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING")
             ?? throw new InvalidOperationException("DB_CONNECTION_STRING is not set");
         string dbName = Environment.GetEnvironmentVariable("DB_NAME")
             ?? throw new InvalidOperationException("DB_NAME is not set");
@@ -32,7 +32,7 @@ public partial class Program
         {
             var runner = scope.ServiceProvider.GetRequiredService<MigrationRunner>();
             await runner.RunMigrationsAsync();
-        }       
+        }
 
         // Enable Swagger UI for testing
         if (app.Environment.IsDevelopment())
