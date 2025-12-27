@@ -24,7 +24,7 @@ namespace backend.GraphQL
             // Error logging
             if (original is not ValidationException and not NotFoundException)
             {
-                _logger.LogError(original, "GraphQL error occurred:  {Message}", original.Message);
+                _logger.LogError(original, "GraphQL error occurred: {Message}", original.Message);
             }
             else
             {
@@ -33,7 +33,12 @@ namespace backend.GraphQL
             }
 
             // Map exceptions to error codes
-            info.Extensions!["code"] = original switch
+            if (info.Extensions == null)
+            {
+                info.Extensions = new Dictionary<string, object?>();
+            }
+            
+            info.Extensions["code"] = original switch
             {
                 UnauthorizedException => "UNAUTHORIZED",
                 ForbiddenException => "FORBIDDEN",
@@ -49,11 +54,7 @@ namespace backend.GraphQL
                 info.Extensions["errors"] = validationEx.Errors;
             }
 
-            return new ErrorInfo
-            {
-                Message = info.Message,
-                Extensions = info.Extensions
-            };
+            return info;
         }
     }
 }
