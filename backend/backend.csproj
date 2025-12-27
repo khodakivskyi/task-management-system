@@ -19,4 +19,8 @@
     <Folder Include="Models\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="W:\2 курс, 1 семестр\db\task-management-system\backend\.editorconfig" />
+  </ItemGroup>
+
 </Project>

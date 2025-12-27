@@ -1,8 +1,7 @@
-﻿namespace backend.Exceptions
+namespace backend.Exceptions;
+
+public class ForbiddenException : Exception
 {
-    public class ForbiddenException : Exception
-    {
-        public ForbiddenException(string message = "Forbidden") : base(message) { }
-        public ForbiddenException(string message, Exception innerException) : base(message, innerException) { }
-    }
+    public ForbiddenException(string message = "Forbidden") : base(message) { }
+    public ForbiddenException(string message, Exception innerException) : base(message, innerException) { }
 }

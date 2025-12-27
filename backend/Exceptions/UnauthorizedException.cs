@@ -1,8 +1,7 @@
-﻿namespace backend.Exceptions
+namespace backend.Exceptions;
+
+public class UnauthorizedException : Exception
 {
-    public class UnauthorizedException : Exception
-    {
-        public UnauthorizedException(string message = "Unauthorized") : base(message) { }
-        public UnauthorizedException(string message, Exception innerException) : base(message, innerException) { }
-    }
+    public UnauthorizedException(string message = "Unauthorized") : base(message) { }
+    public UnauthorizedException(string message, Exception innerException) : base(message, innerException) { }
 }
