@@ -31,7 +31,6 @@ public partial class Program
         builder.Logging.ClearProviders();
         builder.Logging.AddConsole();
 
-
         //builder.Services.AddAuthorization();
         //builder.Services.AddAuthentication();
 
