@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.1.66" />
     <PackageReference Include="DotNetEnv" Version="3.1.1" />
+    <PackageReference Include="GraphQL" Version="8.8.2" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0" />
     <PackageReference Include="Npgsql" Version="10.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.0.1" />
@@ -16,6 +17,10 @@
 
   <ItemGroup>
     <Folder Include="Models\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="W:\2 курс, 1 семестр\db\task-management-system\backend\.editorconfig" />
   </ItemGroup>
 
 </Project>
