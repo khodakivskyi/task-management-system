@@ -1,5 +1,7 @@
+using backend.GraphQL;
 using backend.Infrastructure.Migrations;
 using DotNetEnv;
+using GraphQL.Execution;
 
 public partial class Program
 {
@@ -21,6 +23,14 @@ public partial class Program
 
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+
+        // Exception handling
+        builder.Services.AddScoped<IErrorInfoProvider, CustomErrorInfoProvider>();
+
+        // Logging
+        builder.Logging.ClearProviders();
+        builder.Logging.AddConsole();
+
 
         //builder.Services.AddAuthorization();
         //builder.Services.AddAuthentication();
