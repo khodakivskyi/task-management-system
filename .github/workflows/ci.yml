@@ -36,7 +36,7 @@ jobs:
         fi
         
     - name:  Restore dependencies
-      run: dotnet restore
+      run: dotnet restore backend.csproj
       working-directory: ./backend
       
     - name:  Run dotnet format (check)
@@ -44,7 +44,7 @@ jobs:
       run: dotnet format backend.csproj --verify-no-changes --no-restore
       
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build backend.csproj --no-restore
       working-directory: ./backend
   
   analyze:
