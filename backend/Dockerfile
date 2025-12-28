@@ -37,8 +37,8 @@ FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
 
 # Create a non-root user
-RUN addgroup --system --gid 1001 appuser && \
-    adduser --system --uid 1001 --ingroup appuser appuser
+RUN groupadd --system --gid 1001 appuser && \
+    useradd --system --uid 1001 --gid appuser --shell /bin/bash appuser
 
 # Copy published output from the publish stage
 COPY --from=publish /app/publish .
@@ -57,4 +57,4 @@ EXPOSE 8080
 EXPOSE 8081
 
 # Application entry point
-ENTRYPOINT ["dotnet", "backend. dll"]
+ENTRYPOINT ["dotnet", "backend.dll"]
