@@ -33,7 +33,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
-      - ASPNETCORE_HTTPS_PORTS=8081
+      - ASPNETCORE_URLS=http://+:8080 
       - DB_HOST=db
       - DB_PORT=5432
       - DB_USER=${DB_USER}
@@ -41,7 +41,6 @@ services:
       - DB_NAME=${DB_NAME}
     ports:
       - "${BACKEND_PORT:-5000}:8080"
-      - "${BACKEND_HTTPS_PORT:-5001}:8081"
     depends_on:
       db: 
         condition: service_healthy
