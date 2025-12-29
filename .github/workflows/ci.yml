@@ -31,7 +31,10 @@ jobs:
       # v2.1.0
       uses: SonarSource/sonarcloud-github-action@v2
       with:
-        organization: "khodakivskyi"
-        projectKey: "khodakivskyi_task-management-system"
+        args: >
+          -Dsonar.organization=khodakivskyi
+          -Dsonar.projectKey=khodakivskyi_task-management-system
+          -Dsonar.host.url=https://sonarcloud.io
+          -Dsonar.sources=backend
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
