@@ -1,6 +1,6 @@
 name: CI
 
-on:
+on: 
   pull_request:
     branches: [ master ]
   push:
@@ -12,29 +12,52 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth:  0
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
+      with: 
+        dotnet-version: 10.0.x
 
-    - name: Restore
+    - name: Setup Java 17 (for Sonar)
+      uses: actions/setup-java@v4
+      with: 
+        distribution: 'zulu'
+        java-version: '17'
+
+    - name: Cache SonarCloud packages
+      uses: actions/cache@v4
+      with:
+        path: ~/. sonar/cache
+        key:  ${{ runner.os }}-sonar
+        restore-keys: ${{ runner.os }}-sonar
+
+    - name: Install SonarCloud scanner
+      run: dotnet tool install --global dotnet-sonarscanner
+
+    - name:  Restore
       run: dotnet restore backend/backend.csproj
 
     - name: Format check
-      run: dotnet format backend/backend.csproj --verify-no-changes
+      run:  dotnet format backend/backend.csproj --verify-no-changes
+
+    - name: Begin SonarCloud analysis
+      env:
+        SONAR_TOKEN: ${{ secrets. SONAR_TOKEN }}
+      run: |
+        dotnet-sonarscanner begin \
+          /k:"khodakivskyi_task-management-system" \
+          /o:"khodakivskyi" \
+          /d:sonar. token="${{ secrets.SONAR_TOKEN }}" \
+          /d:sonar.host.url="https://sonarcloud.io" \
+          /d:sonar.sources="backend" \
+          /d:sonar.exclusions="**/obj/**,**/bin/**,**/Migrations/**"
 
     - name: Build
-      run: dotnet build backend/backend.csproj --no-restore
+      run: dotnet build backend/backend. csproj --no-restore --configuration Release
 
-    - name: SonarCloud Scan
-      # v2.1.0
-      uses: SonarSource/sonarcloud-github-action@v2
-      with:
-        args: >
-          -Dsonar.organization=khodakivskyi
-          -Dsonar.projectKey=khodakivskyi_task-management-system
-          -Dsonar.host.url=https://sonarcloud.io
-          -Dsonar.sources=backend
+    - name: End SonarCloud analysis
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
