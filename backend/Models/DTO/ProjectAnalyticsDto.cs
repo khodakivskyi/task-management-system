@@ -1,4 +1,4 @@
-﻿namespace backend.Models.DTO;
+namespace backend.Models.DTO;
 
 /// <summary>
 /// Combined analytics DTO (statistics + progress)

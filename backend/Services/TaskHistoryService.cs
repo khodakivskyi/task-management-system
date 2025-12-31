@@ -15,7 +15,7 @@ public class TaskHistoryService : ITaskHistoryService
 
     public TaskHistoryService(
         TaskHistoryRepository taskHistoryRepository,
-        IRepository<TaskModel> taskRepository )
+        IRepository<TaskModel> taskRepository)
     {
         _taskHistoryRepository = taskHistoryRepository ?? throw new ArgumentNullException(nameof(taskHistoryRepository));
         _taskRepository = taskRepository ?? throw new ArgumentNullException(nameof(taskRepository));

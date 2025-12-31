@@ -1,4 +1,4 @@
-﻿namespace backend.Models.DTO;
+namespace backend.Models.DTO;
 
 /// <summary>
 /// DTO for task search results (matches stored procedure output)

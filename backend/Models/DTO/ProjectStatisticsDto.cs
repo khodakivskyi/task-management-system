@@ -1,4 +1,4 @@
-﻿namespace backend.Models.DTO;
+namespace backend.Models.DTO;
 
 /// <summary>
 /// DTO for project statistics (matches get_project_statistics output)

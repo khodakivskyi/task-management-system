@@ -14,5 +14,5 @@ public interface ITaskRepository : IRepository<Models.TaskModel>
         string sortBy = "CreatedAt",
         string sortDirection = "DESC",
         string? filterValue = null);
-    Task<IEnumerable<TaskSearchResultDto>> SearchTasksAsync(TaskSearchFilter taskSearchFilter)
+    Task<IEnumerable<TaskSearchResultDto>> SearchTasksAsync(TaskSearchFilter taskSearchFilter);
 }

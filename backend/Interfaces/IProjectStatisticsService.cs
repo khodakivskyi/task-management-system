@@ -1,4 +1,4 @@
-﻿using backend.Models.DTO;
+using backend.Models.DTO;
 
 namespace backend.Interfaces;
 

@@ -1,4 +1,4 @@
-﻿using backend.Interfaces;
+using backend.Interfaces;
 using backend.Models.DTO;
 using Dapper;
 
