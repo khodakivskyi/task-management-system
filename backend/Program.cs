@@ -42,6 +42,7 @@ public partial class Program
 
         // Register Repositories
         builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+        builder.Services.AddScoped<IRepository<TaskModel>, TaskRepository>();
         builder.Services.AddScoped<IRepository<Project>, ProjectRepository>();
         builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();
         builder.Services.AddScoped<IRepository<Comment>, CommentRepository>();
