@@ -53,6 +53,7 @@ public partial class Program
         builder.Services.AddScoped<ProjectMemberRepository>();
         builder.Services.AddScoped<IRepository<User>, UserRepository>();
         builder.Services.AddScoped<IRepository<ProjectRole>, ProjectRoleRepository>();
+        builder.Services.AddScoped<IProjectStatisticRepository, ProjectStatisticRepository>();
 
         // Register Services
         builder.Services.AddScoped<ITaskService, TaskService>();
@@ -64,6 +65,7 @@ public partial class Program
         builder.Services.AddScoped<IStatusService, StatusService>();
         builder.Services.AddScoped<ITaskHistoryService, TaskHistoryService>();
         builder.Services.AddScoped<IProjectMemberService, ProjectMemberService>();
+        builder.Services.AddScoped<ITaskSearchService, TaskSearchService>();
 
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
