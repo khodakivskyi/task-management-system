@@ -1,5 +1,6 @@
 using backend.Interfaces;
 using backend.Models;
+using backend.Models.DTO;
 using Dapper;
 using Npgsql;
 
@@ -205,5 +206,22 @@ public class TaskRepository : BaseRepository, ITaskRepository
             PageSize = pageSize,
             FilterValue = string.IsNullOrWhiteSpace(filterValue) ? null : $"%{filterValue}%"
         });
+    }
+
+    public async Task<IEnumerable<TaskSearchResultDto>> SearchTasksAsync(TaskSearchFilter taskSearchFilter)
+    {
+        await using var connection = await GetConnectionAsync();
+        return await connection.QueryAsync<TaskSearchResultDto>(
+             "select * from search_tasks(@user_id_param, @project_id_param, @status_id_param, @priority_min, @priority_max, @search_text)",
+             new
+             {
+                 user_id_param = taskSearchFilter.UserId,
+                 project_id_param = taskSearchFilter.ProjectId,
+                 status_id_param = taskSearchFilter.StatusId,
+                 priority_min = taskSearchFilter.PriorityMin,
+                 priority_max = taskSearchFilter.PriorityMax,
+                 search_text = taskSearchFilter.SearchText
+             }
+         );
     }
 }

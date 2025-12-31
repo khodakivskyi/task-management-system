@@ -1,4 +1,4 @@
-namespace backend.Models;
+namespace backend.Models.DTO;
 
 /// <summary>
 /// DTO for Task with joined data from related tables
