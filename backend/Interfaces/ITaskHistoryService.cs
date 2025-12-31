@@ -7,6 +7,5 @@ namespace backend.Interfaces;
 /// </summary>
 public interface ITaskHistoryService
 {
-    Task<TaskHistory> CreateAsync(int taskId, int userId, string fieldName, string? oldValue, string? newValue);
     Task<IEnumerable<TaskHistory>> GetByTaskIdAsync(int taskId);
 }

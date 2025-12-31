@@ -1,8 +1,8 @@
 -- ============================================
--- Stored Procedures for Task Management
+-- Stored Procedure for Task Management
 -- ============================================
 
--- Stored Procedure for creating a task with validation and business logic
+-- Stored Procedure for creating a task with validation and business logic (only for demo or big creation!)
 -- Uses INPUT parameters for data, OUTPUT parameters for results, and exception handling
 create or replace function create_task_with_validation(
     -- INPUT parameters

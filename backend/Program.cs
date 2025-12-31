@@ -13,7 +13,7 @@ public partial class Program
     {
         if (File.Exists(".env"))
         {
-            Env.Load(". env");
+            Env.Load(".env");
         }
         else if (File.Exists(".. /.env"))
         {
