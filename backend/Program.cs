@@ -1,5 +1,9 @@
 using backend.GraphQL;
 using backend.Infrastructure.Migrations;
+using backend.Interfaces;
+using backend.Models;
+using backend.Repositories;
+using backend.Services;
 using DotNetEnv;
 using GraphQL.Execution;
 
@@ -35,6 +39,30 @@ public partial class Program
         builder.Services.AddSingleton(new MigrationRunner(connectionString, "Migrations", dbName));
 
         builder.Services.AddSingleton(connectionString);
+
+        // Register Repositories
+        builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+        builder.Services.AddScoped<IRepository<Project>, ProjectRepository>();
+        builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();
+        builder.Services.AddScoped<IRepository<Comment>, CommentRepository>();
+        builder.Services.AddScoped<FavoriteRepository>();
+        builder.Services.AddScoped<EntityTypeRepository>();
+        builder.Services.AddScoped<IRepository<Status>, StatusRepository>();
+        builder.Services.AddScoped<TaskHistoryRepository>();
+        builder.Services.AddScoped<ProjectMemberRepository>();
+        builder.Services.AddScoped<IRepository<User>, UserRepository>();
+        builder.Services.AddScoped<IRepository<ProjectRole>, ProjectRoleRepository>();
+
+        // Register Services
+        builder.Services.AddScoped<ITaskService, TaskService>();
+        builder.Services.AddScoped<IProjectService, ProjectService>();
+        builder.Services.AddScoped<ICategoryService, CategoryService>();
+        builder.Services.AddScoped<ICommentService, CommentService>();
+        builder.Services.AddScoped<IFavoriteService, FavoriteService>();
+        builder.Services.AddScoped<IEntityTypeService, EntityTypeService>();
+        builder.Services.AddScoped<IStatusService, StatusService>();
+        builder.Services.AddScoped<ITaskHistoryService, TaskHistoryService>();
+        builder.Services.AddScoped<IProjectMemberService, ProjectMemberService>();
 
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
