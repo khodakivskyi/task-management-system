@@ -44,7 +44,7 @@ RUN groupadd --system --gid 1001 appuser && \
 COPY --from=publish /app/publish .
 
 # For MigrationRunner
-COPY --from=build /src/Migrations /app/Migrations
+COPY --from=build /src/Infrastructure/Migrations/Scripts /app/Migrations/Scripts
 
 # Set ownership
 RUN chown -R appuser:appuser /app
