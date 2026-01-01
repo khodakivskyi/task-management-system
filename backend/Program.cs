@@ -87,6 +87,7 @@ public partial class Program
         using (var scope = app.Services.CreateScope())
         {
             var runner = scope.ServiceProvider.GetRequiredService<MigrationRunner>();
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
             var maxRetries = 10;
             var delay = TimeSpan.FromSeconds(5);
@@ -95,21 +96,20 @@ public partial class Program
             {
                 try
                 {
-                    Console.WriteLine($"Attempting to run migrations (attempt {i + 1}/{maxRetries})...");
+                    logger.LogInformation("Attempting to run migrations (attempt {Attempt}/{MaxRetries})...", i + 1, maxRetries);
                     await runner.RunMigrationsAsync();
-                    Console.WriteLine("SUCCESS: Migrations completed successfully!");
+                    logger.LogInformation("SUCCESS: Migrations completed successfully!");
                     break;
                 }
                 catch (Exception ex)
                 {
                     if (i == maxRetries - 1)
                     {
-                        Console.WriteLine($"FAIL: Failed to run migrations after {maxRetries} attempts: {ex.Message}");
+                        logger.LogError(ex, "FAIL: Failed to run migrations after {MaxRetries} attempts", maxRetries);
                         throw;
                     }
 
-                    Console.WriteLine($"Database not ready, retrying in {delay.TotalSeconds}s...  ({i + 1}/{maxRetries})");
-                    Console.WriteLine($"ERROR: {ex.Message}");
+                    logger.LogWarning(ex, "Database not ready, retrying in {DelaySeconds}s... ({Attempt}/{MaxRetries})", delay.TotalSeconds, i + 1, maxRetries);
                     await Task.Delay(delay);
                 }
             }
