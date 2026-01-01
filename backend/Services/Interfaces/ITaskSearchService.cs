@@ -1,7 +1,7 @@
 using backend.Models;
 using backend.Models.DTO;
 
-namespace backend.Interfaces;
+namespace backend.Services.Interfaces;
 
 public interface ITaskSearchService
 {

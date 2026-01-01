@@ -1,6 +1,6 @@
 using backend.Models.DTO;
 
-namespace backend.Interfaces;
+namespace backend.Infrastructure.Repositories.Interfaces;
 
 /// <summary>
 /// Defines methods for Project statistics

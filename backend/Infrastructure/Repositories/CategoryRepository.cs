@@ -1,4 +1,4 @@
-using backend.Interfaces;
+using backend.Infrastructure.Repositories.Interfaces;
 using backend.Models;
 using Dapper;
 

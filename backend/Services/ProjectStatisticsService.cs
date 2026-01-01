@@ -1,7 +1,8 @@
 using backend.Exceptions;
 using backend.Helpers;
-using backend.Interfaces;
+using backend.Infrastructure.Repositories.Interfaces;
 using backend.Models.DTO;
+using backend.Services.Interfaces;
 
 namespace backend.Services;
 

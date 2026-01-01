@@ -1,9 +1,10 @@
 using backend.GraphQL;
 using backend.Infrastructure.Migrations;
 using backend.Infrastructure.Repositories;
-using backend.Interfaces;
+using backend.Infrastructure.Repositories.Interfaces;
 using backend.Models;
 using backend.Services;
+using backend.Services.Interfaces;
 using DotNetEnv;
 using GraphQL.Execution;
 

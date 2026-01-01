@@ -1,6 +1,6 @@
 using backend.Models;
 
-namespace backend.Interfaces;
+namespace backend.Services.Interfaces;
 
 /// <summary>
 /// Service interface for Favorite operations

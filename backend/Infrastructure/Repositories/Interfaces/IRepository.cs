@@ -1,4 +1,4 @@
-namespace backend.Interfaces;
+namespace backend.Infrastructure.Repositories.Interfaces;
 
 /// <summary>
 /// Generic repository interface for basic CRUD operations
