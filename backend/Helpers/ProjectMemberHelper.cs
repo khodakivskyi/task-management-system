@@ -21,27 +21,15 @@ public static class ProjectMemberHelper
         IRepository<ProjectRole>? projectRoleRepository = null)
     {
         // Validate ProjectId exists
-        var project = await projectRepository.GetByIdAsync(projectId);
-        if (project == null)
-        {
-            throw new NotFoundException($"Project with id {projectId} not found");
-        }
+        await EntityValidationHelper.EnsureEntityExistsAsync(projectId, projectRepository, "Project");
 
         // Validate UserId exists
-        var user = await userRepository.GetByIdAsync(userId);
-        if (user == null)
-        {
-            throw new NotFoundException($"User with id {userId} not found");
-        }
+        await EntityValidationHelper.EnsureEntityExistsAsync(userId, userRepository, "User");
 
         // Validate RoleId exists if repository is provided
         if (projectRoleRepository != null)
         {
-            var role = await projectRoleRepository.GetByIdAsync(roleId);
-            if (role == null)
-            {
-                throw new NotFoundException($"Project role with id {roleId} not found");
-            }
+            await EntityValidationHelper.EnsureEntityExistsAsync(roleId, projectRoleRepository, "Project role");
         }
     }
 }

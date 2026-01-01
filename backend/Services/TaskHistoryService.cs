@@ -25,7 +25,7 @@ public class TaskHistoryService : ITaskHistoryService
     public async Task<IEnumerable<TaskHistory>> GetByTaskIdAsync(int taskId)
     {
         ValidationHelper.ValidateId(taskId, "Task");
-        await TaskHistoryHelper.ValidateTaskExistsAsync(taskId, _taskRepository);
+        await EntityValidationHelper.EnsureEntityExistsAsync(taskId, _taskRepository, "Task");
         return await _taskHistoryRepository.GetByTaskIdAsync(taskId);
     }
 }

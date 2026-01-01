@@ -17,20 +17,12 @@ public static class FavoriteHelper
         int userId,
         int entityTypeId,
         IRepository<User> userRepository,
-        EntityTypeRepository entityTypeRepository)
+        IRepository<EntityType> entityTypeRepository)
     {
         // Validate UserId exists
-        var user = await userRepository.GetByIdAsync(userId);
-        if (user == null)
-        {
-            throw new NotFoundException($"User with id {userId} not found");
-        }
+        await EntityValidationHelper.EnsureEntityExistsAsync(userId, userRepository, "User");
 
         // Validate EntityTypeId exists
-        var entityType = await entityTypeRepository.GetByIdAsync(entityTypeId);
-        if (entityType == null)
-        {
-            throw new NotFoundException($"Entity type with id {entityTypeId} not found");
-        }
+        await EntityValidationHelper.EnsureEntityExistsAsync(entityTypeId, entityTypeRepository, "Entity type");
     }
 }

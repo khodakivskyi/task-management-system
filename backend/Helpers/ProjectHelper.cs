@@ -28,10 +28,6 @@ public static class ProjectHelper
         }
 
         // Validate OwnerId exists
-        var owner = await userRepository.GetByIdAsync(project.OwnerId);
-        if (owner == null)
-        {
-            throw new NotFoundException($"User with id {project.OwnerId} not found");
-        }
+        await EntityValidationHelper.EnsureEntityExistsAsync(project.OwnerId, userRepository, "User");
     }
 }

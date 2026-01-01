@@ -24,17 +24,9 @@ public static class CommentHelper
         }
 
         // Validate TaskId exists
-        var task = await taskRepository.GetByIdAsync(comment.TaskId);
-        if (task == null)
-        {
-            throw new NotFoundException($"Task with id {comment.TaskId} not found");
-        }
+        await EntityValidationHelper.EnsureEntityExistsAsync(comment.TaskId, taskRepository, "Task");
 
         // Validate UserId exists
-        var user = await userRepository.GetByIdAsync(comment.UserId);
-        if (user == null)
-        {
-            throw new NotFoundException($"User with id {comment.UserId} not found");
-        }
+        await EntityValidationHelper.EnsureEntityExistsAsync(comment.UserId, userRepository, "User");
     }
 }

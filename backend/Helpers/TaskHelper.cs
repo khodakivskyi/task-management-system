@@ -31,37 +31,15 @@ public static class TaskHelper
         }
 
         // Validate OwnerId exists
-        var owner = await userRepository.GetByIdAsync(task.OwnerId);
-        if (owner == null)
-        {
-            throw new NotFoundException($"User with id {task.OwnerId} not found");
-        }
+        await EntityValidationHelper.EnsureEntityExistsAsync(task.OwnerId, userRepository, "User");
 
         // Validate StatusId exists
-        var status = await statusRepository.GetByIdAsync(task.StatusId);
-        if (status == null)
-        {
-            throw new NotFoundException($"Status with id {task.StatusId} not found");
-        }
+        await EntityValidationHelper.EnsureEntityExistsAsync(task.StatusId, statusRepository, "Status");
 
         // Validate CategoryId if provided
-        if (task.CategoryId.HasValue && categoryRepository != null)
-        {
-            var category = await categoryRepository.GetByIdAsync(task.CategoryId.Value);
-            if (category == null)
-            {
-                throw new NotFoundException($"Category with id {task.CategoryId.Value} not found");
-            }
-        }
+        await EntityValidationHelper.EnsureEntityExistsIfProvidedAsync(task.CategoryId, categoryRepository, "Category");
 
         // Validate ProjectId if provided
-        if (task.ProjectId.HasValue && projectRepository != null)
-        {
-            var project = await projectRepository.GetByIdAsync(task.ProjectId.Value);
-            if (project == null)
-            {
-                throw new NotFoundException($"Project with id {task.ProjectId.Value} not found");
-            }
-        }
+        await EntityValidationHelper.EnsureEntityExistsIfProvidedAsync(task.ProjectId, projectRepository, "Project");
     }
 }

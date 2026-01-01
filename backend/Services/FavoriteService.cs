@@ -76,14 +76,7 @@ public class FavoriteService : IFavoriteService
     public async Task<IEnumerable<Favorite>> GetUserFavoritesAsync(int userId)
     {
         ValidationHelper.ValidateId(userId, "User");
-
-        // Validate UserId exists
-        var user = await _userRepository.GetByIdAsync(userId);
-        if (user == null)
-        {
-            throw new NotFoundException($"User with id {userId} not found");
-        }
-
+        await EntityValidationHelper.EnsureEntityExistsAsync(userId, _userRepository, "User");
         return await _favoriteRepository.GetByUserIdAsync(userId);
     }
 }
