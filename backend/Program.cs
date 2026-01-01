@@ -1,5 +1,10 @@
 using backend.GraphQL;
 using backend.Infrastructure.Migrations;
+using backend.Infrastructure.Repositories;
+using backend.Infrastructure.Repositories.Interfaces;
+using backend.Models;
+using backend.Services;
+using backend.Services.Interfaces;
 using DotNetEnv;
 using GraphQL.Execution;
 
@@ -9,7 +14,7 @@ public partial class Program
     {
         if (File.Exists(".env"))
         {
-            Env.Load(". env");
+            Env.Load(".env");
         }
         else if (File.Exists(".. /.env"))
         {
@@ -32,9 +37,36 @@ public partial class Program
         // Compile connection string
         string connectionString = $"Host={dbHost};Port={dbPort};Username={dbUser};Password={dbPassword};Database={dbName}";
 
-        builder.Services.AddSingleton(new MigrationRunner(connectionString, "Migrations", dbName));
+        builder.Services.AddSingleton(new MigrationRunner(connectionString, "Migrations/Scripts", dbName));
 
         builder.Services.AddSingleton(connectionString);
+
+        // Register Repositories
+        builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+        builder.Services.AddScoped<IRepository<TaskModel>, TaskRepository>();
+        builder.Services.AddScoped<IRepository<Project>, ProjectRepository>();
+        builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();
+        builder.Services.AddScoped<IRepository<Comment>, CommentRepository>();
+        builder.Services.AddScoped<FavoriteRepository>();
+        builder.Services.AddScoped<EntityTypeRepository>();
+        builder.Services.AddScoped<IRepository<Status>, StatusRepository>();
+        builder.Services.AddScoped<TaskHistoryRepository>();
+        builder.Services.AddScoped<ProjectMemberRepository>();
+        builder.Services.AddScoped<IRepository<User>, UserRepository>();
+        builder.Services.AddScoped<IRepository<ProjectRole>, ProjectRoleRepository>();
+        builder.Services.AddScoped<IProjectStatisticRepository, ProjectStatisticRepository>();
+
+        // Register Services
+        builder.Services.AddScoped<ITaskService, TaskService>();
+        builder.Services.AddScoped<IProjectService, ProjectService>();
+        builder.Services.AddScoped<ICategoryService, CategoryService>();
+        builder.Services.AddScoped<ICommentService, CommentService>();
+        builder.Services.AddScoped<IFavoriteService, FavoriteService>();
+        builder.Services.AddScoped<IEntityTypeService, EntityTypeService>();
+        builder.Services.AddScoped<IStatusService, StatusService>();
+        builder.Services.AddScoped<ITaskHistoryService, TaskHistoryService>();
+        builder.Services.AddScoped<IProjectMemberService, ProjectMemberService>();
+        builder.Services.AddScoped<ITaskSearchService, TaskSearchService>();
 
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
@@ -55,6 +87,7 @@ public partial class Program
         using (var scope = app.Services.CreateScope())
         {
             var runner = scope.ServiceProvider.GetRequiredService<MigrationRunner>();
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
             var maxRetries = 10;
             var delay = TimeSpan.FromSeconds(5);
@@ -63,21 +96,20 @@ public partial class Program
             {
                 try
                 {
-                    Console.WriteLine($"Attempting to run migrations (attempt {i + 1}/{maxRetries})...");
+                    logger.LogInformation("Attempting to run migrations (attempt {Attempt}/{MaxRetries})...", i + 1, maxRetries);
                     await runner.RunMigrationsAsync();
-                    Console.WriteLine("SUCCESS: Migrations completed successfully!");
+                    logger.LogInformation("SUCCESS: Migrations completed successfully!");
                     break;
                 }
                 catch (Exception ex)
                 {
                     if (i == maxRetries - 1)
                     {
-                        Console.WriteLine($"FAIL: Failed to run migrations after {maxRetries} attempts: {ex.Message}");
+                        logger.LogError(ex, "FAIL: Failed to run migrations after {MaxRetries} attempts", maxRetries);
                         throw;
                     }
 
-                    Console.WriteLine($"Database not ready, retrying in {delay.TotalSeconds}s...  ({i + 1}/{maxRetries})");
-                    Console.WriteLine($"ERROR: {ex.Message}");
+                    logger.LogWarning(ex, "Database not ready, retrying in {DelaySeconds}s... ({Attempt}/{MaxRetries})", delay.TotalSeconds, i + 1, maxRetries);
                     await Task.Delay(delay);
                 }
             }
