@@ -1,4 +1,5 @@
 using backend.Exceptions;
+using backend.Helpers;
 using backend.Interfaces;
 using backend.Models;
 
@@ -22,23 +23,7 @@ public class ProjectService : IProjectService
 
     public async Task<Project> CreateAsync(Project project)
     {
-        // Validation
-        if (string.IsNullOrWhiteSpace(project.Name))
-        {
-            throw new ValidationException("Project name is required");
-        }
-
-        if (project.EndDate < project.StartDate)
-        {
-            throw new ValidationException("End date must be after start date");
-        }
-
-        // Validate OwnerId exists
-        var owner = await _userRepository.GetByIdAsync(project.OwnerId);
-        if (owner == null)
-        {
-            throw new NotFoundException($"User with id {project.OwnerId} not found");
-        }
+        await ProjectHelper.ValidateProjectAsync(project, _userRepository);
 
         var id = await _projectRepository.CreateAsync(project);
         project.Id = id;
@@ -47,11 +32,7 @@ public class ProjectService : IProjectService
 
     public async Task<Project?> GetByIdAsync(int id)
     {
-        if (id <= 0)
-        {
-            throw new BadRequestException("Project id must be greater than 0");
-        }
-
+        ValidationHelper.ValidateId(id, "Project");
         return await _projectRepository.GetByIdAsync(id);
     }
 
@@ -62,10 +43,7 @@ public class ProjectService : IProjectService
 
     public async Task<Project> UpdateAsync(Project project)
     {
-        if (project.Id <= 0)
-        {
-            throw new BadRequestException("Project id must be greater than 0");
-        }
+        ValidationHelper.ValidateId(project.Id, "Project");
 
         // Check if project exists
         var existingProject = await _projectRepository.GetByIdAsync(project.Id);
@@ -74,16 +52,7 @@ public class ProjectService : IProjectService
             throw new NotFoundException($"Project with id {project.Id} not found");
         }
 
-        // Validation
-        if (string.IsNullOrWhiteSpace(project.Name))
-        {
-            throw new ValidationException("Project name is required");
-        }
-
-        if (project.EndDate < project.StartDate)
-        {
-            throw new ValidationException("End date must be after start date");
-        }
+        await ProjectHelper.ValidateProjectAsync(project, _userRepository);
 
         // Preserve OwnerId
         project.OwnerId = existingProject.OwnerId;
@@ -99,10 +68,7 @@ public class ProjectService : IProjectService
 
     public async Task DeleteAsync(int id)
     {
-        if (id <= 0)
-        {
-            throw new BadRequestException("Project id must be greater than 0");
-        }
+        ValidationHelper.ValidateId(id, "Project");
 
         var project = await _projectRepository.GetByIdAsync(id);
         if (project == null)

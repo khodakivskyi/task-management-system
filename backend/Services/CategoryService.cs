@@ -1,4 +1,5 @@
 using backend.Exceptions;
+using backend.Helpers;
 using backend.Interfaces;
 using backend.Models;
 
@@ -18,23 +19,7 @@ public class CategoryService : ICategoryService
 
     public async Task<Category> CreateAsync(Category category)
     {
-        // Validation
-        if (string.IsNullOrWhiteSpace(category.Name))
-        {
-            throw new ValidationException("Category name is required");
-        }
-
-        if (string.IsNullOrWhiteSpace(category.Color))
-        {
-            throw new ValidationException("Category color is required");
-        }
-
-        // Check for duplicate name
-        var existingCategories = await _categoryRepository.GetAllAsync();
-        if (existingCategories.Any(c => c.Name.Equals(category.Name, StringComparison.OrdinalIgnoreCase)))
-        {
-            throw new ConflictException($"Category with name '{category.Name}' already exists");
-        }
+        await CategoryHelper.ValidateCategoryAsync(category, _categoryRepository, checkDuplicate: true);
 
         var id = await _categoryRepository.CreateAsync(category);
         category.Id = id;
@@ -43,11 +28,7 @@ public class CategoryService : ICategoryService
 
     public async Task<Category?> GetByIdAsync(int id)
     {
-        if (id <= 0)
-        {
-            throw new BadRequestException("Category id must be greater than 0");
-        }
-
+        ValidationHelper.ValidateId(id, "Category");
         return await _categoryRepository.GetByIdAsync(id);
     }
 
@@ -58,10 +39,7 @@ public class CategoryService : ICategoryService
 
     public async Task<Category> UpdateAsync(Category category)
     {
-        if (category.Id <= 0)
-        {
-            throw new BadRequestException("Category id must be greater than 0");
-        }
+        ValidationHelper.ValidateId(category.Id, "Category");
 
         // Check if category exists
         var existingCategory = await _categoryRepository.GetByIdAsync(category.Id);
@@ -70,23 +48,7 @@ public class CategoryService : ICategoryService
             throw new NotFoundException($"Category with id {category.Id} not found");
         }
 
-        // Validation
-        if (string.IsNullOrWhiteSpace(category.Name))
-        {
-            throw new ValidationException("Category name is required");
-        }
-
-        if (string.IsNullOrWhiteSpace(category.Color))
-        {
-            throw new ValidationException("Category color is required");
-        }
-
-        // Check for duplicate name (excluding current category)
-        var existingCategories = await _categoryRepository.GetAllAsync();
-        if (existingCategories.Any(c => c.Id != category.Id && c.Name.Equals(category.Name, StringComparison.OrdinalIgnoreCase)))
-        {
-            throw new ConflictException($"Category with name '{category.Name}' already exists");
-        }
+        await CategoryHelper.ValidateCategoryAsync(category, _categoryRepository, checkDuplicate: true, excludeId: category.Id);
 
         var updated = await _categoryRepository.UpdateAsync(category);
         if (!updated)
@@ -99,10 +61,7 @@ public class CategoryService : ICategoryService
 
     public async Task DeleteAsync(int id)
     {
-        if (id <= 0)
-        {
-            throw new BadRequestException("Category id must be greater than 0");
-        }
+        ValidationHelper.ValidateId(id, "Category");
 
         var category = await _categoryRepository.GetByIdAsync(id);
         if (category == null)

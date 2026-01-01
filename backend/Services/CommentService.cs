@@ -1,4 +1,5 @@
 using backend.Exceptions;
+using backend.Helpers;
 using backend.Interfaces;
 using backend.Models;
 
@@ -25,25 +26,7 @@ public class CommentService : ICommentService
 
     public async Task<Comment> CreateAsync(Comment comment)
     {
-        // Validation
-        if (string.IsNullOrWhiteSpace(comment.Content))
-        {
-            throw new ValidationException("Comment content is required");
-        }
-
-        // Validate TaskId exists
-        var task = await _taskRepository.GetByIdAsync(comment.TaskId);
-        if (task == null)
-        {
-            throw new NotFoundException($"Task with id {comment.TaskId} not found");
-        }
-
-        // Validate UserId exists
-        var user = await _userRepository.GetByIdAsync(comment.UserId);
-        if (user == null)
-        {
-            throw new NotFoundException($"User with id {comment.UserId} not found");
-        }
+        await CommentHelper.ValidateCommentAsync(comment, _taskRepository, _userRepository);
 
         // Set timestamp if not provided
         if (comment.CreatedAt == default)
@@ -58,11 +41,7 @@ public class CommentService : ICommentService
 
     public async Task<Comment?> GetByIdAsync(int id)
     {
-        if (id <= 0)
-        {
-            throw new BadRequestException("Comment id must be greater than 0");
-        }
-
+        ValidationHelper.ValidateId(id, "Comment");
         return await _commentRepository.GetByIdAsync(id);
     }
 
@@ -73,10 +52,7 @@ public class CommentService : ICommentService
 
     public async Task<Comment> UpdateAsync(Comment comment)
     {
-        if (comment.Id <= 0)
-        {
-            throw new BadRequestException("Comment id must be greater than 0");
-        }
+        ValidationHelper.ValidateId(comment.Id, "Comment");
 
         // Check if comment exists
         var existingComment = await _commentRepository.GetByIdAsync(comment.Id);
@@ -85,11 +61,7 @@ public class CommentService : ICommentService
             throw new NotFoundException($"Comment with id {comment.Id} not found");
         }
 
-        // Validation
-        if (string.IsNullOrWhiteSpace(comment.Content))
-        {
-            throw new ValidationException("Comment content is required");
-        }
+        await CommentHelper.ValidateCommentAsync(comment, _taskRepository, _userRepository);
 
         // Preserve TaskId, UserId, and CreatedAt
         comment.TaskId = existingComment.TaskId;
@@ -107,10 +79,7 @@ public class CommentService : ICommentService
 
     public async Task DeleteAsync(int id)
     {
-        if (id <= 0)
-        {
-            throw new BadRequestException("Comment id must be greater than 0");
-        }
+        ValidationHelper.ValidateId(id, "Comment");
 
         var comment = await _commentRepository.GetByIdAsync(id);
         if (comment == null)

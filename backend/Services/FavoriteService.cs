@@ -1,4 +1,5 @@
 using backend.Exceptions;
+using backend.Helpers;
 using backend.Interfaces;
 using backend.Models;
 using backend.Repositories;
@@ -26,34 +27,11 @@ public class FavoriteService : IFavoriteService
 
     public async Task<Favorite> AddAsync(int userId, int entityTypeId, int entityId)
     {
-        if (userId <= 0)
-        {
-            throw new BadRequestException("User id must be greater than 0");
-        }
+        ValidationHelper.ValidateId(userId, "User");
+        ValidationHelper.ValidateId(entityTypeId, "Entity type");
+        ValidationHelper.ValidateId(entityId, "Entity");
 
-        if (entityTypeId <= 0)
-        {
-            throw new BadRequestException("Entity type id must be greater than 0");
-        }
-
-        if (entityId <= 0)
-        {
-            throw new BadRequestException("Entity id must be greater than 0");
-        }
-
-        // Validate UserId exists
-        var user = await _userRepository.GetByIdAsync(userId);
-        if (user == null)
-        {
-            throw new NotFoundException($"User with id {userId} not found");
-        }
-
-        // Validate EntityTypeId exists
-        var entityType = await _entityTypeRepository.GetByIdAsync(entityTypeId);
-        if (entityType == null)
-        {
-            throw new NotFoundException($"Entity type with id {entityTypeId} not found");
-        }
+        await FavoriteHelper.ValidateFavoriteAsync(userId, entityTypeId, _userRepository, _entityTypeRepository);
 
         // Check if favorite already exists
         var existingFavorite = await _favoriteRepository.GetByUserAndEntityAsync(userId, entityTypeId, entityId);
@@ -77,20 +55,9 @@ public class FavoriteService : IFavoriteService
 
     public async Task RemoveAsync(int userId, int entityTypeId, int entityId)
     {
-        if (userId <= 0)
-        {
-            throw new BadRequestException("User id must be greater than 0");
-        }
-
-        if (entityTypeId <= 0)
-        {
-            throw new BadRequestException("Entity type id must be greater than 0");
-        }
-
-        if (entityId <= 0)
-        {
-            throw new BadRequestException("Entity id must be greater than 0");
-        }
+        ValidationHelper.ValidateId(userId, "User");
+        ValidationHelper.ValidateId(entityTypeId, "Entity type");
+        ValidationHelper.ValidateId(entityId, "Entity");
 
         // Check if favorite exists
         var favorite = await _favoriteRepository.GetByUserAndEntityAsync(userId, entityTypeId, entityId);
@@ -108,10 +75,7 @@ public class FavoriteService : IFavoriteService
 
     public async Task<IEnumerable<Favorite>> GetUserFavoritesAsync(int userId)
     {
-        if (userId <= 0)
-        {
-            throw new BadRequestException("User id must be greater than 0");
-        }
+        ValidationHelper.ValidateId(userId, "User");
 
         // Validate UserId exists
         var user = await _userRepository.GetByIdAsync(userId);

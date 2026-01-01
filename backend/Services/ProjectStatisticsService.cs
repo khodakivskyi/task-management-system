@@ -1,4 +1,5 @@
 using backend.Exceptions;
+using backend.Helpers;
 using backend.Interfaces;
 using backend.Models.DTO;
 
@@ -17,31 +18,19 @@ public class ProjectStatisticsService : IProjectStatisticsService
 
     public async Task<ProjectAnalyticsDto?> GetAnalyticsAsync(int projectId)
     {
-        if (projectId <= 0)
-        {
-            throw new BadRequestException("Project id must be greater than 0");
-        }
-
+        ValidationHelper.ValidateId(projectId, "Project");
         return await _projectStatisticRepository.GetAnalyticsAsync(projectId);
     }
 
     public async Task<decimal> GetProgressAsync(int projectId)
     {
-        if (projectId <= 0)
-        {
-            throw new BadRequestException("Project id must be greater than 0");
-        }
-
+        ValidationHelper.ValidateId(projectId, "Project");
         return await _projectStatisticRepository.GetProgressAsync(projectId);
     }
 
     public async Task<ProjectStatisticsDto?> GetStatisticsAsync(int projectId)
     {
-        if (projectId <= 0)
-        {
-            throw new BadRequestException("Project id must be greater than 0");
-        }
-
+        ValidationHelper.ValidateId(projectId, "Project");
         return await _projectStatisticRepository.GetStatisticsAsync(projectId);
     }
 }

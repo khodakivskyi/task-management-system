@@ -1,4 +1,5 @@
 using backend.Exceptions;
+using backend.Helpers;
 using backend.Interfaces;
 using backend.Models;
 using backend.Repositories;
@@ -29,44 +30,17 @@ public class ProjectMemberService : IProjectMemberService
 
     public async Task<ProjectMember> AddMemberAsync(int projectId, int userId, int roleId)
     {
-        if (projectId <= 0)
-        {
-            throw new BadRequestException("Project id must be greater than 0");
-        }
+        ValidationHelper.ValidateId(projectId, "Project");
+        ValidationHelper.ValidateId(userId, "User");
+        ValidationHelper.ValidateId(roleId, "Role");
 
-        if (userId <= 0)
-        {
-            throw new BadRequestException("User id must be greater than 0");
-        }
-
-        if (roleId <= 0)
-        {
-            throw new BadRequestException("Role id must be greater than 0");
-        }
-
-        // Validate ProjectId exists
-        var project = await _projectRepository.GetByIdAsync(projectId);
-        if (project == null)
-        {
-            throw new NotFoundException($"Project with id {projectId} not found");
-        }
-
-        // Validate UserId exists
-        var user = await _userRepository.GetByIdAsync(userId);
-        if (user == null)
-        {
-            throw new NotFoundException($"User with id {userId} not found");
-        }
-
-        // Validate RoleId exists if repository is provided
-        if (_projectRoleRepository != null)
-        {
-            var role = await _projectRoleRepository.GetByIdAsync(roleId);
-            if (role == null)
-            {
-                throw new NotFoundException($"Project role with id {roleId} not found");
-            }
-        }
+        await ProjectMemberHelper.ValidateProjectMemberAsync(
+            projectId,
+            userId,
+            roleId,
+            _projectRepository,
+            _userRepository,
+            _projectRoleRepository);
 
         // Check if member already exists
         var existingMember = await _projectMemberRepository.GetByProjectAndUserAsync(projectId, userId);
@@ -90,15 +64,8 @@ public class ProjectMemberService : IProjectMemberService
 
     public async Task RemoveMemberAsync(int projectId, int userId)
     {
-        if (projectId <= 0)
-        {
-            throw new BadRequestException("Project id must be greater than 0");
-        }
-
-        if (userId <= 0)
-        {
-            throw new BadRequestException("User id must be greater than 0");
-        }
+        ValidationHelper.ValidateId(projectId, "Project");
+        ValidationHelper.ValidateId(userId, "User");
 
         // Check if member exists
         var member = await _projectMemberRepository.GetByProjectAndUserAsync(projectId, userId);
@@ -116,20 +83,9 @@ public class ProjectMemberService : IProjectMemberService
 
     public async Task<ProjectMember> UpdateMemberRoleAsync(int projectId, int userId, int newRoleId)
     {
-        if (projectId <= 0)
-        {
-            throw new BadRequestException("Project id must be greater than 0");
-        }
-
-        if (userId <= 0)
-        {
-            throw new BadRequestException("User id must be greater than 0");
-        }
-
-        if (newRoleId <= 0)
-        {
-            throw new BadRequestException("Role id must be greater than 0");
-        }
+        ValidationHelper.ValidateId(projectId, "Project");
+        ValidationHelper.ValidateId(userId, "User");
+        ValidationHelper.ValidateId(newRoleId, "Role");
 
         // Check if member exists
         var member = await _projectMemberRepository.GetByProjectAndUserAsync(projectId, userId);
@@ -161,10 +117,7 @@ public class ProjectMemberService : IProjectMemberService
 
     public async Task<IEnumerable<ProjectMember>> GetProjectMembersAsync(int projectId)
     {
-        if (projectId <= 0)
-        {
-            throw new BadRequestException("Project id must be greater than 0");
-        }
+        ValidationHelper.ValidateId(projectId, "Project");
 
         // Validate ProjectId exists
         var project = await _projectRepository.GetByIdAsync(projectId);
