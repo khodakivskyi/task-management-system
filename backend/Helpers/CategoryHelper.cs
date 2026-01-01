@@ -33,8 +33,8 @@ public static class CategoryHelper
         if (checkDuplicate)
         {
             var existingCategories = await categoryRepository.GetAllAsync();
-            if (existingCategories.Any(c => 
-                (excludeId == null || c.Id != excludeId.Value) && 
+            if (existingCategories.Any(c =>
+                (excludeId == null || c.Id != excludeId.Value) &&
                 c.Name.Equals(category.Name, StringComparison.OrdinalIgnoreCase)))
             {
                 throw new ConflictException($"Category with name '{category.Name}' already exists");
