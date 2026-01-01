@@ -153,11 +153,18 @@ public class TaskRepository : BaseRepository, ITaskRepository
             { "OwnerName", "u.\"Name\"" }
         };
 
-        var orderByColumn = sortColumnMap.ContainsKey(sortBy)
-            ? sortColumnMap[sortBy]
-            : "t.\"CreatedAt\"";
+        if (!sortColumnMap.ContainsKey(sortBy))
+        {
+            sortBy = "CreatedAt";
+        }
+        var orderByColumn = sortColumnMap[sortBy];
 
-        sortDirection = sortDirection.ToUpper() == "ASC" ? "ASC" : "DESC";
+        var allowedDirections = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "ASC", "DESC" };
+        if (!allowedDirections.Contains(sortDirection))
+        {
+            sortDirection = "DESC";
+        }
+        sortDirection = sortDirection.ToUpper();
 
         var whereClause = string.IsNullOrWhiteSpace(filterValue)
             ? ""
