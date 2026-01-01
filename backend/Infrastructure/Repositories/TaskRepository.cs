@@ -4,7 +4,7 @@ using backend.Models.DTO;
 using Dapper;
 using Npgsql;
 
-namespace backend.Repositories;
+namespace backend.Infrastructure.Repositories;
 
 /// <summary>
 /// Repository for Task entity operations

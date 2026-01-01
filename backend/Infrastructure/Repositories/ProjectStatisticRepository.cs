@@ -2,7 +2,7 @@ using backend.Interfaces;
 using backend.Models.DTO;
 using Dapper;
 
-namespace backend.Repositories;
+namespace backend.Infrastructure.Repositories;
 
 /// <summary>
 /// Provides methods for retrieving analytics and statistical data related to projects.

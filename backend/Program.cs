@@ -1,8 +1,8 @@
 using backend.GraphQL;
 using backend.Infrastructure.Migrations;
+using backend.Infrastructure.Repositories;
 using backend.Interfaces;
 using backend.Models;
-using backend.Repositories;
 using backend.Services;
 using DotNetEnv;
 using GraphQL.Execution;
@@ -36,7 +36,7 @@ public partial class Program
         // Compile connection string
         string connectionString = $"Host={dbHost};Port={dbPort};Username={dbUser};Password={dbPassword};Database={dbName}";
 
-        builder.Services.AddSingleton(new MigrationRunner(connectionString, "Migrations", dbName));
+        builder.Services.AddSingleton(new MigrationRunner(connectionString, "Migrations/Scripts", dbName));
 
         builder.Services.AddSingleton(connectionString);
 

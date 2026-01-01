@@ -2,7 +2,7 @@ using backend.Interfaces;
 using backend.Models;
 using Dapper;
 
-namespace backend.Repositories;
+namespace backend.Infrastructure.Repositories;
 
 /// <summary>
 /// Repository for ProjectMember entity operations

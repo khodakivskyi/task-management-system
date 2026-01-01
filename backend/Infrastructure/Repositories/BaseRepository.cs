@@ -1,7 +1,7 @@
 using Dapper;
 using Npgsql;
 
-namespace backend.Repositories;
+namespace backend.Infrastructure.Repositories;
 
 /// <summary>
 /// Base repository class providing common database connection string

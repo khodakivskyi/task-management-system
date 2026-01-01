@@ -1,7 +1,6 @@
 using backend.Exceptions;
 using backend.Interfaces;
 using backend.Models;
-using backend.Repositories;
 
 namespace backend.Helpers;
 

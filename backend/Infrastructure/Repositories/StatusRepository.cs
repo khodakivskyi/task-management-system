@@ -3,7 +3,7 @@ using backend.Interfaces;
 using backend.Models;
 using Dapper;
 
-namespace backend.Repositories;
+namespace backend.Infrastructure.Repositories;
 
 /// <summary>
 /// Repository for Status entity operations (read-only)
