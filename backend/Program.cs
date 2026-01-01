@@ -1,4 +1,4 @@
-using backend.GraphQL;
+using backend.GraphQL.Extensions;
 using backend.Infrastructure.Migrations;
 using backend.Infrastructure.Repositories;
 using backend.Infrastructure.Repositories.Interfaces;
@@ -6,7 +6,6 @@ using backend.Models;
 using backend.Services;
 using backend.Services.Interfaces;
 using DotNetEnv;
-using GraphQL.Execution;
 
 public partial class Program
 {
@@ -72,7 +71,7 @@ public partial class Program
         builder.Services.AddSwaggerGen();
 
         // Exception handling
-        builder.Services.AddScoped<IErrorInfoProvider, CustomErrorInfoProvider>();
+        builder.Services.AddGraphQLServer().AddErrorFilter<GraphQLErrorFilter>();
 
         // Logging
         builder.Logging.ClearProviders();
