@@ -1,3 +1,4 @@
+using backend.Exceptions;
 using backend.Interfaces;
 using backend.Models;
 using Dapper;
@@ -5,7 +6,8 @@ using Dapper;
 namespace backend.Repositories;
 
 /// <summary>
-/// Repository for Status entity operations
+/// Repository for Status entity operations (read-only)
+/// Statuses are default values in the database and cannot be created, updated, or deleted
 /// </summary>
 public class StatusRepository : BaseRepository, IRepository<Status>
 {
@@ -32,37 +34,16 @@ public class StatusRepository : BaseRepository, IRepository<Status>
 
     public async Task<int> CreateAsync(Status entity)
     {
-        await using var connection = await GetConnectionAsync();
-        return await connection.QuerySingleAsync<int>(
-            @"INSERT INTO ""Statuses"" (""Name"", ""Color"")
-              VALUES (@Name, @Color)
-              RETURNING ""Id""",
-            new { entity.Name, entity.Color });
+        throw new ForbiddenException("Statuses are default values and cannot be created. They must be defined in the database.");
     }
 
     public async Task<bool> UpdateAsync(Status entity)
     {
-        await using var connection = await GetConnectionAsync();
-        var affected = await connection.ExecuteAsync(
-            @"UPDATE ""Statuses""
-              SET ""Name"" = @Name, ""Color"" = @Color
-              WHERE ""Id"" = @Id",
-            new { entity.Id, entity.Name, entity.Color });
-        return affected > 0;
+        throw new ForbiddenException("Statuses are default values and cannot be updated. They must be modified in the database.");
     }
 
     public async Task<bool> DeleteAsync(int id)
     {
-        await using var connection = await GetConnectionAsync();
-        var affected = await connection.ExecuteAsync(
-            @"DELETE FROM ""Statuses""
-              WHERE ""Id"" = @Id",
-            new { Id = id });
-        return affected > 0;
+        throw new ForbiddenException("Statuses are default values and cannot be deleted. They must be removed from the database.");
     }
 }
-
-
-
-
-

@@ -1,3 +1,4 @@
+using backend.Exceptions;
 using backend.Interfaces;
 using backend.Models;
 using Dapper;
@@ -5,7 +6,8 @@ using Dapper;
 namespace backend.Repositories;
 
 /// <summary>
-/// Repository for EntityType entity operations
+/// Repository for EntityType entity operations (read-only)
+/// EntityTypes are default values in the database and cannot be created, updated, or deleted
 /// </summary>
 public class EntityTypeRepository : BaseRepository, IRepository<EntityType>
 {
@@ -32,33 +34,17 @@ public class EntityTypeRepository : BaseRepository, IRepository<EntityType>
 
     public async Task<int> CreateAsync(EntityType entity)
     {
-        await using var connection = await GetConnectionAsync();
-        return await connection.QuerySingleAsync<int>(
-            @"INSERT INTO ""EntityTypes"" (""Name"")
-              VALUES (@Name)
-              RETURNING ""Id""",
-            new { entity.Name });
+        throw new ForbiddenException("EntityTypes are default values and cannot be created. They must be defined in the database.");
     }
 
     public async Task<bool> UpdateAsync(EntityType entity)
     {
-        await using var connection = await GetConnectionAsync();
-        var affected = await connection.ExecuteAsync(
-            @"UPDATE ""EntityTypes""
-              SET ""Name"" = @Name
-              WHERE ""Id"" = @Id",
-            new { entity.Id, entity.Name });
-        return affected > 0;
+        throw new ForbiddenException("EntityTypes are default values and cannot be updated. They must be modified in the database.");
     }
 
     public async Task<bool> DeleteAsync(int id)
     {
-        await using var connection = await GetConnectionAsync();
-        var affected = await connection.ExecuteAsync(
-            @"DELETE FROM ""EntityTypes""
-              WHERE ""Id"" = @Id",
-            new { Id = id });
-        return affected > 0;
+        throw new ForbiddenException("EntityTypes are default values and cannot be deleted. They must be removed from the database.");
     }
 
     public async Task<EntityType?> GetByNameAsync(string name)

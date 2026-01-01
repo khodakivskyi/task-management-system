@@ -1,4 +1,4 @@
-using backend.Exceptions;
+using backend.Helpers;
 using backend.Interfaces;
 using backend.Models;
 
@@ -6,6 +6,7 @@ namespace backend.Services;
 
 /// <summary>
 /// Service for Status read-only operations
+/// Statuses are default values in the database and cannot be created, updated, or deleted
 /// </summary>
 public class StatusService : IStatusService
 {
@@ -23,11 +24,7 @@ public class StatusService : IStatusService
 
     public async Task<Status?> GetByIdAsync(int id)
     {
-        if (id <= 0)
-        {
-            throw new BadRequestException("Status id must be greater than 0");
-        }
-
+        ValidationHelper.ValidateId(id, "Status");
         return await _statusRepository.GetByIdAsync(id);
     }
 }

@@ -1,4 +1,4 @@
-using backend.Exceptions;
+using backend.Helpers;
 using backend.Interfaces;
 using backend.Models;
 using backend.Repositories;
@@ -7,6 +7,7 @@ namespace backend.Services;
 
 /// <summary>
 /// Service for TaskHistory operations with business logic and validation
+/// TaskHistory records are automatically created by triggers and cannot be manually created, updated, or deleted
 /// </summary>
 public class TaskHistoryService : ITaskHistoryService
 {
@@ -23,18 +24,8 @@ public class TaskHistoryService : ITaskHistoryService
 
     public async Task<IEnumerable<TaskHistory>> GetByTaskIdAsync(int taskId)
     {
-        if (taskId <= 0)
-        {
-            throw new BadRequestException("Task id must be greater than 0");
-        }
-
-        // Validate TaskId exists
-        var task = await _taskRepository.GetByIdAsync(taskId);
-        if (task == null)
-        {
-            throw new NotFoundException($"Task with id {taskId} not found");
-        }
-
+        ValidationHelper.ValidateId(taskId, "Task");
+        await TaskHistoryHelper.ValidateTaskExistsAsync(taskId, _taskRepository);
         return await _taskHistoryRepository.GetByTaskIdAsync(taskId);
     }
 }

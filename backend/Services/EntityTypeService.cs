@@ -1,4 +1,5 @@
 using backend.Exceptions;
+using backend.Helpers;
 using backend.Interfaces;
 using backend.Models;
 using backend.Repositories;
@@ -7,6 +8,7 @@ namespace backend.Services;
 
 /// <summary>
 /// Service for EntityType read-only operations
+/// EntityTypes are default values in the database and cannot be created, updated, or deleted
 /// </summary>
 public class EntityTypeService : IEntityTypeService
 {
@@ -24,11 +26,7 @@ public class EntityTypeService : IEntityTypeService
 
     public async Task<EntityType?> GetByIdAsync(int id)
     {
-        if (id <= 0)
-        {
-            throw new BadRequestException("Entity type id must be greater than 0");
-        }
-
+        ValidationHelper.ValidateId(id, "Entity type");
         return await _entityTypeRepository.GetByIdAsync(id);
     }
 
