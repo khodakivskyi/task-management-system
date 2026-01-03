@@ -68,8 +68,11 @@ public partial class Program
         builder.Services.AddScoped<IProjectMemberService, ProjectMemberService>();
         builder.Services.AddScoped<ITaskSearchService, TaskSearchService>();
 
-        // Exception handling
-        builder.Services.AddGraphQLServer().AddQueryType<RootQuery>().AddErrorFilter<GraphQLErrorFilter>();
+        // GraphQL
+        builder.Services.AddGraphQLServer()
+            .AddQueryType<RootQuery>()
+            .AddMutationType<RootMutation>()
+            .AddErrorFilter<GraphQLErrorFilter>();
 
         // Logging
         builder.Logging.ClearProviders();
