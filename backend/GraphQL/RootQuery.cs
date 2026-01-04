@@ -1,4 +1,4 @@
-﻿using backend.GraphQL.Queries;
+using backend.GraphQL.Queries;
 
 namespace backend.GraphQL;
 

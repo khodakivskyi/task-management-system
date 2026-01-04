@@ -1,4 +1,4 @@
-﻿using backend.Models;
+using backend.Models;
 using backend.Services.Interfaces;
 
 namespace backend.GraphQL.Queries;

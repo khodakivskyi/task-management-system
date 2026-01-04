@@ -1,4 +1,4 @@
-﻿using backend.Exceptions;
+using backend.Exceptions;
 
 namespace backend.GraphQL.Extensions;
 
