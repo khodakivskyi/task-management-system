@@ -162,7 +162,7 @@ public class MigrationRunner
     /// </summary>
     private List<MigrationRecord> ScanMigrationFiles()
     {
-        var migrationsDir = Path.GetFullPath(_migrationsPath);
+        var migrationsDir = System.IO.Path.GetFullPath(_migrationsPath);
 
         if (!Directory.Exists(migrationsDir))
         {
@@ -175,7 +175,7 @@ public class MigrationRunner
 
         foreach (var filePath in files)
         {
-            var fileName = Path.GetFileName(filePath);
+            var fileName = System.IO.Path.GetFileName(filePath);
             string? version = null;
 
             // Try V###__ format (e.g., V001__initial_schema.sql → "001")

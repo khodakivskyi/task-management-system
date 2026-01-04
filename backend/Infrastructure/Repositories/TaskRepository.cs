@@ -1,6 +1,7 @@
 using backend.Infrastructure.Repositories.Interfaces;
 using backend.Models;
 using backend.Models.DTO;
+using backend.Models.Filters;
 using Dapper;
 using Npgsql;
 

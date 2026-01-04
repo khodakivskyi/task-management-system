@@ -1,5 +1,6 @@
 using backend.Models;
 using backend.Models.DTO;
+using backend.Models.Filters;
 
 namespace backend.Services.Interfaces;
 

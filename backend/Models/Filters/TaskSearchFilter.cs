@@ -1,4 +1,4 @@
-namespace backend.Models.DTO;
+namespace backend.Models.Filters;
 
 /// <summary>
 /// Filter object for task search

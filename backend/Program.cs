@@ -1,4 +1,5 @@
 using backend.GraphQL;
+using backend.GraphQL.Extensions;
 using backend.Infrastructure.Migrations;
 using backend.Infrastructure.Repositories;
 using backend.Infrastructure.Repositories.Interfaces;
@@ -6,7 +7,6 @@ using backend.Models;
 using backend.Services;
 using backend.Services.Interfaces;
 using DotNetEnv;
-using GraphQL.Execution;
 
 public partial class Program
 {
@@ -68,11 +68,11 @@ public partial class Program
         builder.Services.AddScoped<IProjectMemberService, ProjectMemberService>();
         builder.Services.AddScoped<ITaskSearchService, TaskSearchService>();
 
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
-
-        // Exception handling
-        builder.Services.AddScoped<IErrorInfoProvider, CustomErrorInfoProvider>();
+        // GraphQL
+        builder.Services.AddGraphQLServer()
+            .AddQueryType<RootQuery>()
+            .AddMutationType<RootMutation>()
+            .AddErrorFilter<GraphQLErrorFilter>();
 
         // Logging
         builder.Logging.ClearProviders();
@@ -115,23 +115,14 @@ public partial class Program
             }
         }
 
-        // Swagger UI
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger. json", "Task Management API V1");
-                c.RoutePrefix = "swagger";
-            });
-        }
-
         //app.UseHttpsRedirection();
         //app.UseAuthentication();
         //app.UseAuthorization();
 
         Console.WriteLine("App started!");
-        Console.WriteLine($"Swagger UI: http://localhost:{Environment.GetEnvironmentVariable("BACKEND_PORT") ?? "5000"}/swagger");
+        Console.WriteLine($"GraphQl UI: http://localhost:{Environment.GetEnvironmentVariable("BACKEND_PORT") ?? "5000"}/graphql");
+
+        app.MapGraphQL();
 
         app.Run();
     }
