@@ -24,6 +24,8 @@ namespace backend.Infrastructure.Migrations;
 /// </summary>
 public class MigrationRunner
 {
+    private const string ConsoleSeparator = "========================================";
+
     private readonly string _connectionString;
     private readonly string _migrationsPath;
     private readonly string _databaseName;
@@ -64,9 +66,9 @@ public class MigrationRunner
     public async Task<int> RunMigrationsAsync()
     {
         Console.WriteLine();
-        Console.WriteLine("========================================");
+        Console.WriteLine(ConsoleSeparator);
         Console.WriteLine("Migration Runner");
-        Console.WriteLine("========================================");
+        Console.WriteLine(ConsoleSeparator);
         Console.WriteLine();
 
         try
@@ -133,12 +135,12 @@ public class MigrationRunner
 
             // 9. Summary
             Console.WriteLine();
-            Console.WriteLine("========================================");
+            Console.WriteLine(ConsoleSeparator);
             Console.WriteLine($"Migration Complete!");
-            Console.WriteLine("========================================");
+            Console.WriteLine(ConsoleSeparator);
             Console.WriteLine($"Executed: {executedCount} migrations");
             Console.WriteLine($"Total time: {totalStopwatch.ElapsedMilliseconds}ms");
-            Console.WriteLine("========================================");
+            Console.WriteLine(ConsoleSeparator);
             Console.WriteLine();
 
             return executedCount;
@@ -146,11 +148,11 @@ public class MigrationRunner
         catch (Exception ex)
         {
             Console.WriteLine();
-            Console.WriteLine("========================================");
+            Console.WriteLine(ConsoleSeparator);
             Console.WriteLine("Migration Failed!");
-            Console.WriteLine("========================================");
+            Console.WriteLine(ConsoleSeparator);
             Console.WriteLine($"Error: {ex.Message}");
-            Console.WriteLine("========================================");
+            Console.WriteLine(ConsoleSeparator);
             Console.WriteLine();
             throw;
         }
@@ -477,7 +479,7 @@ public class MigrationRunner
     /// Normalizes line endings to LF (\n) to ensure consistent checksums
     /// regardless of the file's original line ending format (CRLF, LF, or CR)
     /// </summary>
-    private string NormalizeLineEndings(string content)
+    private static string NormalizeLineEndings(string content)
     {
         // Replace all variations of line endings with LF
         // \r\n (CRLF) -> \n
@@ -489,7 +491,7 @@ public class MigrationRunner
     /// <summary>
     /// Calculates SHA256 checksum of a string
     /// </summary>
-    private string CalculateSHA256(string content)
+    private static string CalculateSHA256(string content)
     {
         var bytes = Encoding.UTF8.GetBytes(content);
         var hash = SHA256.HashData(bytes);
@@ -499,7 +501,7 @@ public class MigrationRunner
     /// <summary>
     /// Internal record for reading migration history from database
     /// </summary>
-    private class MigrationHistoryRecord
+    private sealed class MigrationHistoryRecord
     {
         public string MigrationVersion { get; set; } = string.Empty;
         public string Checksum { get; set; } = string.Empty;
