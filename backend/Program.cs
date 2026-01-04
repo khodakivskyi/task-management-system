@@ -8,7 +8,8 @@ using backend.Services;
 using backend.Services.Interfaces;
 using DotNetEnv;
 
-public partial class Program
+namespace backend;
+public static partial class Program
 {
     private static async Task Main(string[] args)
     {
@@ -22,7 +23,6 @@ public partial class Program
         }
 
         var builder = WebApplication.CreateBuilder(args);
-        var env = builder.Environment;
 
         // Getting .env variables for db
         string dbHost = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost";
@@ -78,9 +78,6 @@ public partial class Program
         builder.Logging.ClearProviders();
         builder.Logging.AddConsole();
 
-        //builder.Services.AddAuthorization();
-        //builder.Services.AddAuthentication();
-
         var app = builder.Build();
 
         // Run migrations with retry logic
@@ -114,10 +111,6 @@ public partial class Program
                 }
             }
         }
-
-        //app.UseHttpsRedirection();
-        //app.UseAuthentication();
-        //app.UseAuthorization();
 
         Console.WriteLine("App started!");
         Console.WriteLine($"GraphQl UI: http://localhost:{Environment.GetEnvironmentVariable("BACKEND_PORT") ?? "5000"}/graphql");
