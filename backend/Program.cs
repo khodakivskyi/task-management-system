@@ -9,6 +9,7 @@ using backend.Services.Interfaces;
 using DotNetEnv;
 
 namespace backend;
+
 public static partial class Program
 {
     private static async Task Main(string[] args)
@@ -81,36 +82,7 @@ public static partial class Program
         var app = builder.Build();
 
         // Run migrations with retry logic
-        using (var scope = app.Services.CreateScope())
-        {
-            var runner = scope.ServiceProvider.GetRequiredService<MigrationRunner>();
-            var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-
-            var maxRetries = 10;
-            var delay = TimeSpan.FromSeconds(5);
-
-            for (int i = 0; i < maxRetries; i++)
-            {
-                try
-                {
-                    logger.LogInformation("Attempting to run migrations (attempt {Attempt}/{MaxRetries})...", i + 1, maxRetries);
-                    await runner.RunMigrationsAsync();
-                    logger.LogInformation("SUCCESS: Migrations completed successfully!");
-                    break;
-                }
-                catch (Exception ex)
-                {
-                    if (i == maxRetries - 1)
-                    {
-                        logger.LogError(ex, "FAIL: Failed to run migrations after {MaxRetries} attempts", maxRetries);
-                        throw;
-                    }
-
-                    logger.LogWarning(ex, "Database not ready, retrying in {DelaySeconds}s... ({Attempt}/{MaxRetries})", delay.TotalSeconds, i + 1, maxRetries);
-                    await Task.Delay(delay);
-                }
-            }
-        }
+        await app.RunMigrationsWithRetryAsync();
 
         Console.WriteLine("App started!");
         Console.WriteLine($"GraphQl UI: http://localhost:{Environment.GetEnvironmentVariable("BACKEND_PORT") ?? "5000"}/graphql");
