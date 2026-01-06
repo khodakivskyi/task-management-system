@@ -1,4 +1,4 @@
-﻿namespace backend.Infrastructure.Migrations;
+namespace backend.Infrastructure.Migrations;
 
 public static class MigrationExecutor
 {
