@@ -14,13 +14,13 @@ public class ProjectMemberService : IProjectMemberService
 {
     private readonly ProjectMemberRepository _projectMemberRepository;
     private readonly IRepository<Project> _projectRepository;
-    private readonly IRepository<User> _userRepository;
+    private readonly IUserRepository _userRepository;
     private readonly IRepository<ProjectRole>? _projectRoleRepository;
 
     public ProjectMemberService(
         ProjectMemberRepository projectMemberRepository,
         IRepository<Project> projectRepository,
-        IRepository<User> userRepository,
+        IUserRepository userRepository,
         IRepository<ProjectRole>? projectRoleRepository = null)
     {
         _projectMemberRepository = projectMemberRepository ?? throw new ArgumentNullException(nameof(projectMemberRepository));

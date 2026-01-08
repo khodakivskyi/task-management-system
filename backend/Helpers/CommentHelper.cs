@@ -15,7 +15,7 @@ public static class CommentHelper
     public static async Task ValidateCommentAsync(
         Comment comment,
         IRepository<TaskModel> taskRepository,
-        IRepository<User> userRepository)
+        IUserRepository userRepository)
     {
         // Validation
         if (string.IsNullOrWhiteSpace(comment.Content))

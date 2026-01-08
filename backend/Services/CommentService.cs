@@ -13,12 +13,12 @@ public class CommentService : ICommentService
 {
     private readonly IRepository<Comment> _commentRepository;
     private readonly IRepository<TaskModel> _taskRepository;
-    private readonly IRepository<User> _userRepository;
+    private readonly IUserRepository _userRepository;
 
     public CommentService(
         IRepository<Comment> commentRepository,
         IRepository<TaskModel> taskRepository,
-        IRepository<User> userRepository)
+        IUserRepository userRepository)
     {
         _commentRepository = commentRepository ?? throw new ArgumentNullException(nameof(commentRepository));
         _taskRepository = taskRepository ?? throw new ArgumentNullException(nameof(taskRepository));

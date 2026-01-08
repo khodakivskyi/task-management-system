@@ -12,11 +12,11 @@ namespace backend.Services;
 public class ProjectService : IProjectService
 {
     private readonly IRepository<Project> _projectRepository;
-    private readonly IRepository<User> _userRepository;
+    private readonly IUserRepository _userRepository;
 
     public ProjectService(
         IRepository<Project> projectRepository,
-        IRepository<User> userRepository)
+        IUserRepository userRepository)
     {
         _projectRepository = projectRepository ?? throw new ArgumentNullException(nameof(projectRepository));
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));

@@ -12,14 +12,14 @@ namespace backend.Services;
 public class TaskService : ITaskService
 {
     private readonly ITaskRepository _taskRepository;
-    private readonly IRepository<User> _userRepository;
+    private readonly IUserRepository _userRepository;
     private readonly IRepository<Status> _statusRepository;
     private readonly IRepository<Category>? _categoryRepository;
     private readonly IRepository<Project>? _projectRepository;
 
     public TaskService(
         ITaskRepository taskRepository,
-        IRepository<User> userRepository,
+        IUserRepository userRepository,
         IRepository<Status> statusRepository,
         IRepository<Category>? categoryRepository = null,
         IRepository<Project>? projectRepository = null)
