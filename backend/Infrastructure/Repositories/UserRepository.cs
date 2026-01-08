@@ -44,6 +44,37 @@ public class UserRepository : BaseRepository, IUserRepository
             new { Email = email });
     }
 
+    public async Task<User?> GetByLoginOrEmailAsync(string loginOrEmail)
+    {
+        var normalized = loginOrEmail.Trim();
+
+        await using var connection = await GetConnectionAsync();
+        return await connection.QueryFirstOrDefaultAsync<User>(
+            """
+            SELECT
+                "Id",
+                "Name",
+                "Surname",
+                "Email",
+                "Login",
+                "PasswordHash",
+                "Salt",
+                "CreatedAt",
+                "LastLoginAt",
+                "IsActive",
+                "EmailConfirmed"
+            FROM "Users"
+            WHERE "IsActive" = true
+              AND (
+                  LOWER("Email") = @Value
+                  OR LOWER("Login") = @Value
+              )
+            LIMIT 1
+            """,
+                new { Value = normalized }
+            );
+    }
+
 
     public async Task<IEnumerable<User>> GetAllAsync()
     {

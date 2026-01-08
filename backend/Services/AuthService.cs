@@ -1,4 +1,5 @@
-﻿using backend.Helpers;
+﻿using backend.Exceptions;
+using backend.Helpers;
 using backend.Infrastructure.Repositories.Interfaces;
 using backend.Models;
 using backend.Models.DTOs;
@@ -15,7 +16,7 @@ public class AuthService : IAuthService
     }
 
     public async Task<AuthResponse> RegisterAsync(RegisterRequest request)
-    { 
+    {
         AuthHelper.ValidateRegistrationRequest(request);
 
         await AuthHelper.ValidateUserUniquenessAsync(request.Login, request.Email, _userRepository);
@@ -52,7 +53,28 @@ public class AuthService : IAuthService
     }
     public async Task<AuthResponse> LoginAsync(LoginRequest request)
     {
-        throw new NotImplementedException();
+        AuthHelper.ValidateLoginRequest(request);
+
+        var user = await _userRepository.GetByLoginOrEmailAsync(request.LoginOrEmail);
+        if (user == null)
+            throw new UnauthorizedException("Invalid credentials");
+
+        bool isValidPassword = BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash);
+
+        if (isValidPassword)
+            throw new UnauthorizedException("Invalid login credentials");
+
+        user.LastLoginAt = DateTime.UtcNow;
+        await _userRepository.UpdateAsync(user);
+
+        string token = AuthHelper.GenerateJwtToken(user);
+        var expiresAt = DateTime.UtcNow.AddHours(AuthHelper.GetTokenExpirationHours());
+
+        return new AuthResponse(
+            token,
+            expiresAt,
+            AuthHelper.MapToUserDto(user)
+        );
     }
     public async Task<User?> GetUserFromTokenAsync(string token)
     {
