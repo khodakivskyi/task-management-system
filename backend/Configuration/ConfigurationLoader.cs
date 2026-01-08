@@ -9,19 +9,10 @@ public static class ConfigurationLoader
 {
     public static void LoadEnvironmentFile()
     {
-        if (File.Exists(".env"))
-        {
-            Env.Load(".env");
-            Console.WriteLine("SUCCESS: Loaded .env file from current directory");
-        }
-        else if (File.Exists("../.env"))
+        if (File.Exists("../.env"))
         {
             Env.Load("../.env");
             Console.WriteLine("SUCCESS: Loaded .env file from parent directory");
-        }
-        else
-        {
-            Console.WriteLine("FAIL: No .env file found, using system environment variables");
         }
     }
 

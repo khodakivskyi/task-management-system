@@ -10,6 +10,7 @@ using backend.Services;
 using backend.Services.Interfaces;
 using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.IdentityModel.Tokens;
 
 namespace backend;
@@ -26,9 +27,6 @@ public static partial class Program
 
         var builder = WebApplication.CreateBuilder(args);
 
-        // Configure URLs
-        builder.WebHost.UseUrls($"http://0.0.0.0:{appConfig.Port}");
-
         // Register configurations as singletons
         builder.Services.AddSingleton(dbConfig);
         builder.Services.AddSingleton(jwtConfig);
@@ -37,6 +35,11 @@ public static partial class Program
         // Register connection string and migration runner
         builder.Services.AddSingleton(dbConfig.ConnectionString);
         builder.Services.AddSingleton(new MigrationRunner(dbConfig.ConnectionString, "Migrations/Scripts", dbConfig.Database));
+
+        // Configure Data Protection
+        builder.Services.AddDataProtection()
+            .PersistKeysToFileSystem(new DirectoryInfo("/app/.aspnet/DataProtection-Keys"))
+            .SetApplicationName("TaskManagementSystem");
 
         // Register repositories
         ConfigureRepositories(builder);

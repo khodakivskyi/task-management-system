@@ -34,6 +34,11 @@ RUN dotnet publish "backend.csproj" -c Release -o /app/publish /p:UseAppHost=fal
 # ============================================
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 
+# Install required libraries for PostgreSQL
+RUN apt-get update && \
+    apt-get install -y libkrb5-3 libgssapi-krb5-2 && \
+    rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
 # Create a non-root user
@@ -46,15 +51,19 @@ COPY --from=publish /app/publish .
 # For MigrationRunner
 COPY --from=build /src/Infrastructure/Migrations/Scripts /app/Migrations/Scripts
 
+# Copy entrypoint script
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Create DataProtection-Keys directory structure
+RUN mkdir -p /app/.aspnet/DataProtection-Keys
+
 # Set ownership
 RUN chown -R appuser:appuser /app
-
-# Run as non-root user
-USER appuser
 
 # Expose application ports
 EXPOSE 8080
 EXPOSE 8081
 
 # Application entry point
-ENTRYPOINT ["dotnet", "backend.dll"]
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh", "dotnet", "backend.dll"]
