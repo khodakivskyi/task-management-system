@@ -1,3 +1,4 @@
+using backend.Configuration;
 using backend.GraphQL;
 using backend.GraphQL.Extensions;
 using backend.Infrastructure.Migrations;
@@ -22,6 +23,9 @@ public static partial class Program
         string connectionString = BuildConnectionString();
         builder.Services.AddSingleton(new MigrationRunner(connectionString, "Migrations/Scripts", GetEnv("DB_NAME")!));
         builder.Services.AddSingleton(connectionString);
+
+        var jwtOptions = JwtOptions.LoadFromEnvironment();
+        builder.Services.AddSingleton(jwtOptions);
 
         // Register repositories
         ConfigureRepositories(builder);
