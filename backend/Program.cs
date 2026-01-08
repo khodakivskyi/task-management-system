@@ -78,11 +78,11 @@ public static partial class Program
         builder.Services.AddScoped<IRepository<Project>, ProjectRepository>();
         builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();
         builder.Services.AddScoped<IRepository<Comment>, CommentRepository>();
-        builder.Services.AddScoped<IRepository<Favorite>, FavoriteRepository>();
+        builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
         builder.Services.AddScoped<IRepository<EntityType>, EntityTypeRepository>();
         builder.Services.AddScoped<IRepository<Status>, StatusRepository>();
-        builder.Services.AddScoped<IRepository<TaskHistory>, TaskHistoryRepository>();
-        builder.Services.AddScoped<IRepository<ProjectMember>, ProjectMemberRepository>();
+        builder.Services.AddScoped<ITaskHistoryRepository, TaskHistoryRepository>();
+        builder.Services.AddScoped<IProjectMemberRepository, ProjectMemberRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IRepository<User>, UserRepository>();
         builder.Services.AddScoped<IRepository<ProjectRole>, ProjectRoleRepository>();

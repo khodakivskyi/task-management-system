@@ -11,12 +11,12 @@ namespace backend.Services;
 /// </summary>
 public class FavoriteService : IFavoriteService
 {
-    private readonly IRepository<Favorite> _favoriteRepository;
+    private readonly IFavoriteRepository _favoriteRepository;
     private readonly IUserRepository _userRepository;
     private readonly IRepository<EntityType> _entityTypeRepository;
 
     public FavoriteService(
-        IRepository<Favorite> favoriteRepository,
+        IFavoriteRepository favoriteRepository,
         IUserRepository userRepository,
         IRepository<EntityType> entityTypeRepository)
     {

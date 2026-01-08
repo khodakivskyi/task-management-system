@@ -11,13 +11,13 @@ namespace backend.Services;
 /// </summary>
 public class ProjectMemberService : IProjectMemberService
 {
-    private readonly IRepository<ProjectMember> _projectMemberRepository;
+    private readonly IProjectMemberRepository _projectMemberRepository;
     private readonly IRepository<Project> _projectRepository;
     private readonly IUserRepository _userRepository;
     private readonly IRepository<ProjectRole>? _projectRoleRepository;
 
     public ProjectMemberService(
-        IRepository<ProjectMember> projectMemberRepository,
+        IProjectMemberRepository projectMemberRepository,
         IRepository<Project> projectRepository,
         IUserRepository userRepository,
         IRepository<ProjectRole>? projectRoleRepository = null)

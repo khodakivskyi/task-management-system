@@ -8,7 +8,7 @@ namespace backend.Infrastructure.Repositories;
 /// <summary>
 /// Repository for TaskHistory entity operations
 /// </summary>
-public class TaskHistoryRepository : BaseRepository, IRepository<TaskHistory>
+public class TaskHistoryRepository : BaseRepository, ITaskHistoryRepository
 {
     public TaskHistoryRepository(string connectionString) : base(connectionString) { }
 
@@ -79,16 +79,5 @@ public class TaskHistoryRepository : BaseRepository, IRepository<TaskHistory>
               WHERE ""TaskId"" = @TaskId
               ORDER BY ""ChangedAt"" DESC",
             new { TaskId = taskId });
-    }
-
-    public async Task<bool> DeleteByTaskIdAsync(int taskId, NpgsqlTransaction? transaction = null)
-    {
-        var connection = transaction?.Connection ?? await GetConnectionAsync();
-        var affected = await connection.ExecuteAsync(
-            @"DELETE FROM ""TaskHistory""
-              WHERE ""TaskId"" = @TaskId",
-            new { TaskId = taskId },
-            transaction);
-        return affected > 0;
     }
 }

@@ -7,7 +7,7 @@ namespace backend.Infrastructure.Repositories;
 /// <summary>
 /// Repository for Favorite entity operations
 /// </summary>
-public class FavoriteRepository : BaseRepository, IRepository<Favorite>
+public class FavoriteRepository : BaseRepository, IFavoriteRepository
 {
     public FavoriteRepository(string connectionString) : base(connectionString) { }
 
