@@ -71,13 +71,13 @@ public class ProjectMemberService : IProjectMemberService
         var member = await _projectMemberRepository.GetByProjectAndUserAsync(projectId, userId);
         if (member == null)
         {
-            throw new NotFoundException($"User {userId} is not a member of project {projectId}");
+            throw new NotFoundException("User is not a member of this project");
         }
 
         var deleted = await _projectMemberRepository.DeleteAsync(member.Id);
         if (!deleted)
         {
-            throw new NotFoundException($"Failed to remove user {userId} from project {projectId}");
+            throw new NotFoundException("Failed to remove user from project");
         }
     }
 
@@ -91,7 +91,7 @@ public class ProjectMemberService : IProjectMemberService
         var member = await _projectMemberRepository.GetByProjectAndUserAsync(projectId, userId);
         if (member == null)
         {
-            throw new NotFoundException($"User {userId} is not a member of project {projectId}");
+            throw new NotFoundException("User is not a member of this project");
         }
 
         // Validate RoleId exists if repository is provided
@@ -100,7 +100,7 @@ public class ProjectMemberService : IProjectMemberService
             var role = await _projectRoleRepository.GetByIdAsync(newRoleId);
             if (role == null)
             {
-                throw new NotFoundException($"Project role with id {newRoleId} not found");
+                throw new NotFoundException("Project role not found");
             }
         }
 
@@ -109,7 +109,7 @@ public class ProjectMemberService : IProjectMemberService
         var updated = await _projectMemberRepository.UpdateAsync(member);
         if (!updated)
         {
-            throw new NotFoundException($"Failed to update role for user {userId} in project {projectId}");
+            throw new NotFoundException("Failed to update user role in project");
         }
 
         return member;
@@ -120,11 +120,7 @@ public class ProjectMemberService : IProjectMemberService
         ValidationHelper.ValidateId(projectId, "Project");
 
         // Validate ProjectId exists
-        var project = await _projectRepository.GetByIdAsync(projectId);
-        if (project == null)
-        {
-            throw new NotFoundException($"Project with id {projectId} not found");
-        }
+        await EntityValidationHelper.EnsureEntityExistsAsync(projectId, _projectRepository, "Project");
 
         return await _projectMemberRepository.GetByProjectIdAsync(projectId);
     }

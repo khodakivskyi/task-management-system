@@ -17,13 +17,13 @@ public static class AuthHelper
         var existingUserByLogin = await userRepository.GetByLoginAsync(login);
         if (existingUserByLogin != null)
         {
-            throw new ConflictException($"User with login '{login}' already exists"); // TODO: dont reveal which field is duplicated
+            throw new ConflictException("User with this login or email already exists");
         }
 
         var existingUserByEmail = await userRepository.GetByEmailAsync(email);
         if (existingUserByEmail != null)
         {
-            throw new ConflictException($"User with email '{email}' already exists");
+            throw new ConflictException("User with this login or email already exists");
         }
     }
 

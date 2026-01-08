@@ -42,19 +42,14 @@ public class CategoryService : ICategoryService
     {
         ValidationHelper.ValidateId(category.Id, "Category");
 
-        // Check if category exists
-        var existingCategory = await _categoryRepository.GetByIdAsync(category.Id);
-        if (existingCategory == null)
-        {
-            throw new NotFoundException($"Category with id {category.Id} not found");
-        }
+        var existingCategory = await EntityValidationHelper.EnsureEntityExistsAsync(category.Id, _categoryRepository, "Category");
 
         await CategoryHelper.ValidateCategoryAsync(category, _categoryRepository, checkDuplicate: true, excludeId: category.Id);
 
         var updated = await _categoryRepository.UpdateAsync(category);
         if (!updated)
         {
-            throw new NotFoundException($"Failed to update category with id {category.Id}");
+            throw new NotFoundException("Failed to update category");
         }
 
         return category;
@@ -64,16 +59,12 @@ public class CategoryService : ICategoryService
     {
         ValidationHelper.ValidateId(id, "Category");
 
-        var category = await _categoryRepository.GetByIdAsync(id);
-        if (category == null)
-        {
-            throw new NotFoundException($"Category with id {id} not found");
-        }
+        await EntityValidationHelper.EnsureEntityExistsAsync(id, _categoryRepository, "Category");
 
         var deleted = await _categoryRepository.DeleteAsync(id);
         if (!deleted)
         {
-            throw new NotFoundException($"Failed to delete category with id {id}");
+            throw new NotFoundException("Failed to delete category");
         }
     }
 }
