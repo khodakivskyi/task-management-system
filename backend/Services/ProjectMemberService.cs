@@ -1,6 +1,5 @@
 using backend.Exceptions;
 using backend.Helpers;
-using backend.Infrastructure.Repositories;
 using backend.Infrastructure.Repositories.Interfaces;
 using backend.Models;
 using backend.Services.Interfaces;
@@ -12,13 +11,13 @@ namespace backend.Services;
 /// </summary>
 public class ProjectMemberService : IProjectMemberService
 {
-    private readonly ProjectMemberRepository _projectMemberRepository;
+    private readonly IRepository<ProjectMember> _projectMemberRepository;
     private readonly IRepository<Project> _projectRepository;
     private readonly IUserRepository _userRepository;
     private readonly IRepository<ProjectRole>? _projectRoleRepository;
 
     public ProjectMemberService(
-        ProjectMemberRepository projectMemberRepository,
+        IRepository<ProjectMember> projectMemberRepository,
         IRepository<Project> projectRepository,
         IUserRepository userRepository,
         IRepository<ProjectRole>? projectRoleRepository = null)

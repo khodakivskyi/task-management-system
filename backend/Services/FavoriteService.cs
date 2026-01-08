@@ -1,6 +1,5 @@
 using backend.Exceptions;
 using backend.Helpers;
-using backend.Infrastructure.Repositories;
 using backend.Infrastructure.Repositories.Interfaces;
 using backend.Models;
 using backend.Services.Interfaces;
@@ -12,14 +11,14 @@ namespace backend.Services;
 /// </summary>
 public class FavoriteService : IFavoriteService
 {
-    private readonly FavoriteRepository _favoriteRepository;
+    private readonly IRepository<Favorite> _favoriteRepository;
     private readonly IUserRepository _userRepository;
-    private readonly EntityTypeRepository _entityTypeRepository;
+    private readonly IRepository<EntityType> _entityTypeRepository;
 
     public FavoriteService(
-        FavoriteRepository favoriteRepository,
+        IRepository<Favorite> favoriteRepository,
         IUserRepository userRepository,
-        EntityTypeRepository entityTypeRepository)
+        IRepository<EntityType> entityTypeRepository)
     {
         _favoriteRepository = favoriteRepository ?? throw new ArgumentNullException(nameof(favoriteRepository));
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));

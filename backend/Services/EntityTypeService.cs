@@ -1,6 +1,6 @@
 using backend.Exceptions;
 using backend.Helpers;
-using backend.Infrastructure.Repositories;
+using backend.Infrastructure.Repositories.Interfaces;
 using backend.Models;
 using backend.Services.Interfaces;
 
@@ -12,9 +12,9 @@ namespace backend.Services;
 /// </summary>
 public class EntityTypeService : IEntityTypeService
 {
-    private readonly EntityTypeRepository _entityTypeRepository;
+    private readonly IRepository<EntityType> _entityTypeRepository;
 
-    public EntityTypeService(EntityTypeRepository entityTypeRepository)
+    public EntityTypeService(IRepository<EntityType> entityTypeRepository)
     {
         _entityTypeRepository = entityTypeRepository ?? throw new ArgumentNullException(nameof(entityTypeRepository));
     }
