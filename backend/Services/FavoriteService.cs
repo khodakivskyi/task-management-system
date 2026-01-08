@@ -37,7 +37,7 @@ public class FavoriteService : IFavoriteService
         var existingFavorite = await _favoriteRepository.GetByUserAndEntityAsync(userId, entityTypeId, entityId);
         if (existingFavorite != null)
         {
-            throw new ConflictException($"Favorite already exists for user {userId}, entity type {entityTypeId}, entity {entityId}");
+            throw new ConflictException("This item is already in favorites");
         }
 
         var favorite = new Favorite
@@ -63,13 +63,13 @@ public class FavoriteService : IFavoriteService
         var favorite = await _favoriteRepository.GetByUserAndEntityAsync(userId, entityTypeId, entityId);
         if (favorite == null)
         {
-            throw new NotFoundException($"Favorite not found for user {userId}, entity type {entityTypeId}, entity {entityId}");
+            throw new NotFoundException("Favorite not found");
         }
 
         var removed = await _favoriteRepository.DeleteByUserAndEntityAsync(userId, entityTypeId, entityId);
         if (!removed)
         {
-            throw new NotFoundException($"Failed to remove favorite for user {userId}, entity type {entityTypeId}, entity {entityId}");
+            throw new NotFoundException("Failed to remove favorite");
         }
     }
 

@@ -68,7 +68,7 @@ public class AuthService : IAuthService
 
         bool isValidPassword = BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash);
 
-        if (isValidPassword)
+        if (!isValidPassword)
             throw new UnauthorizedException("Invalid credentials");
 
         user.LastLoginAt = DateTime.UtcNow;

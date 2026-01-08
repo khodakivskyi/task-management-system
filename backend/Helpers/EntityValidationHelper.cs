@@ -9,13 +9,13 @@ namespace backend.Helpers;
 public static class EntityValidationHelper
 {
     /// <summary>
-    /// Ensures that an entity exists in the repository, throws NotFoundException if not found
+    /// Gets an entity by ID and throws NotFoundException if not found
     /// </summary>
     /// <typeparam name="T">Entity type</typeparam>
-    /// <param name="entityId">ID of the entity to check</param>
-    /// <param name="repository">Repository to check entity existence</param>
+    /// <param name="entityId">ID of the entity to get</param>
+    /// <param name="repository">Repository to get entity from</param>
     /// <param name="entityName">Name of the entity for error message (e.g., "User", "Task")</param>
-    public static async Task EnsureEntityExistsAsync<T>(
+    public static async Task<T> EnsureEntityExistsAsync<T>(
         int entityId,
         IRepository<T> repository,
         string entityName) where T : class
@@ -23,8 +23,9 @@ public static class EntityValidationHelper
         var entity = await repository.GetByIdAsync(entityId);
         if (entity == null)
         {
-            throw new NotFoundException($"{entityName} with id {entityId} not found");
+            throw new NotFoundException($"{entityName} not found");
         }
+        return entity;
     }
 
     /// <summary>

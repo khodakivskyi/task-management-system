@@ -65,11 +65,7 @@ public class TaskService : ITaskService
         ValidationHelper.ValidateId(task.Id, "Task");
 
         // Check if task exists
-        var existingTask = await _taskRepository.GetByIdAsync(task.Id);
-        if (existingTask == null)
-        {
-            throw new NotFoundException($"Task with id {task.Id} not found");
-        }
+        var existingTask = await EntityValidationHelper.EnsureEntityExistsAsync(task.Id, _taskRepository, "Task");
 
         await TaskHelper.ValidateTaskAsync(
             task,
@@ -86,7 +82,7 @@ public class TaskService : ITaskService
         var updated = await _taskRepository.UpdateAsync(task);
         if (!updated)
         {
-            throw new NotFoundException($"Failed to update task with id {task.Id}");
+            throw new NotFoundException("Failed to update task");
         }
 
         return task;
@@ -96,16 +92,12 @@ public class TaskService : ITaskService
     {
         ValidationHelper.ValidateId(id, "Task");
 
-        var task = await _taskRepository.GetByIdAsync(id);
-        if (task == null)
-        {
-            throw new NotFoundException($"Task with id {id} not found");
-        }
+        await EntityValidationHelper.EnsureEntityExistsAsync(id, _taskRepository, "Task");
 
         var deleted = await _taskRepository.DeleteAsync(id);
         if (!deleted)
         {
-            throw new NotFoundException($"Failed to delete task with id {id}");
+            throw new NotFoundException("Failed to delete task");
         }
     }
 }

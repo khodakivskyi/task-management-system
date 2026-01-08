@@ -55,12 +55,7 @@ public class CommentService : ICommentService
     {
         ValidationHelper.ValidateId(comment.Id, "Comment");
 
-        // Check if comment exists
-        var existingComment = await _commentRepository.GetByIdAsync(comment.Id);
-        if (existingComment == null)
-        {
-            throw new NotFoundException($"Comment with id {comment.Id} not found");
-        }
+        var existingComment = await EntityValidationHelper.EnsureEntityExistsAsync(comment.Id, _commentRepository, "Comment");
 
         await CommentHelper.ValidateCommentAsync(comment, _taskRepository, _userRepository);
 
@@ -72,7 +67,7 @@ public class CommentService : ICommentService
         var updated = await _commentRepository.UpdateAsync(comment);
         if (!updated)
         {
-            throw new NotFoundException($"Failed to update comment with id {comment.Id}");
+            throw new NotFoundException("Failed to update comment");
         }
 
         return comment;
@@ -82,16 +77,12 @@ public class CommentService : ICommentService
     {
         ValidationHelper.ValidateId(id, "Comment");
 
-        var comment = await _commentRepository.GetByIdAsync(id);
-        if (comment == null)
-        {
-            throw new NotFoundException($"Comment with id {id} not found");
-        }
+        await EntityValidationHelper.EnsureEntityExistsAsync(id, _commentRepository, "Comment");
 
         var deleted = await _commentRepository.DeleteAsync(id);
         if (!deleted)
         {
-            throw new NotFoundException($"Failed to delete comment with id {id}");
+            throw new NotFoundException("Failed to delete comment");
         }
     }
 }

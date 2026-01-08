@@ -37,7 +37,7 @@ public static class CategoryHelper
                 (excludeId == null || c.Id != excludeId.Value) &&
                 c.Name.Equals(category.Name, StringComparison.OrdinalIgnoreCase)))
             {
-                throw new ConflictException($"Category with name '{category.Name}' already exists");
+                throw new ConflictException("Category with this name already exists");
             }
         }
     }

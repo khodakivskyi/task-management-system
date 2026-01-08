@@ -47,11 +47,7 @@ public class ProjectService : IProjectService
         ValidationHelper.ValidateId(project.Id, "Project");
 
         // Check if project exists
-        var existingProject = await _projectRepository.GetByIdAsync(project.Id);
-        if (existingProject == null)
-        {
-            throw new NotFoundException($"Project with id {project.Id} not found");
-        }
+        var existingProject = await EntityValidationHelper.EnsureEntityExistsAsync(project.Id, _projectRepository, "Project");
 
         await ProjectHelper.ValidateProjectAsync(project, _userRepository);
 
@@ -61,7 +57,7 @@ public class ProjectService : IProjectService
         var updated = await _projectRepository.UpdateAsync(project);
         if (!updated)
         {
-            throw new NotFoundException($"Failed to update project with id {project.Id}");
+            throw new NotFoundException("Failed to update project");
         }
 
         return project;
@@ -71,16 +67,12 @@ public class ProjectService : IProjectService
     {
         ValidationHelper.ValidateId(id, "Project");
 
-        var project = await _projectRepository.GetByIdAsync(id);
-        if (project == null)
-        {
-            throw new NotFoundException($"Project with id {id} not found");
-        }
+        await EntityValidationHelper.EnsureEntityExistsAsync(id, _projectRepository, "Project");
 
         var deleted = await _projectRepository.DeleteAsync(id);
         if (!deleted)
         {
-            throw new NotFoundException($"Failed to delete project with id {id}");
+            throw new NotFoundException("Failed to delete project");
         }
     }
 }
