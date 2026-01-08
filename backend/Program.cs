@@ -1,3 +1,4 @@
+using System.Text;
 using backend.Configuration;
 using backend.GraphQL;
 using backend.GraphQL.Extensions;
@@ -8,6 +9,8 @@ using backend.Models;
 using backend.Services;
 using backend.Services.Interfaces;
 using DotNetEnv;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 namespace backend;
 
@@ -15,23 +18,34 @@ public static partial class Program
 {
     private static async Task Main(string[] args)
     {
-        LoadEnv();
+        // Load . env file
+        ConfigurationLoader.LoadEnvironmentFile();
+
+        // Load all configurations
+        var (dbConfig, jwtConfig, appConfig) = ConfigurationLoader.LoadAll();
 
         var builder = WebApplication.CreateBuilder(args);
 
-        // Build database connection string
-        string connectionString = BuildConnectionString();
-        builder.Services.AddSingleton(new MigrationRunner(connectionString, "Migrations/Scripts", GetEnv("DB_NAME")!));
-        builder.Services.AddSingleton(connectionString);
+        // Configure URLs
+        builder.WebHost.UseUrls($"http://0.0.0.0:{appConfig.Port}");
 
-        var jwtOptions = JwtOptions.LoadFromEnvironment();
-        builder.Services.AddSingleton(jwtOptions);
+        // Register configurations as singletons
+        builder.Services.AddSingleton(dbConfig);
+        builder.Services.AddSingleton(jwtConfig);
+        builder.Services.AddSingleton(appConfig);
+
+        // Register connection string and migration runner
+        builder.Services.AddSingleton(dbConfig.ConnectionString);
+        builder.Services.AddSingleton(new MigrationRunner(dbConfig.ConnectionString, "Migrations/Scripts", dbConfig.Database));
 
         // Register repositories
         ConfigureRepositories(builder);
 
         // Register services
         ConfigureServices(builder);
+
+        // Configure JWT Authentication
+        ConfigureJwtAuthentication(builder, jwtConfig);
 
         // GraphQL
         builder.Services.AddGraphQLServer()
@@ -49,37 +63,13 @@ public static partial class Program
         await app.RunMigrationsWithRetryAsync();
 
         Console.WriteLine("App started!");
-        Console.WriteLine($"GraphQL UI: http://localhost:{GetEnv("BACKEND_PORT") ?? "5000"}/graphql");
+        Console.WriteLine($"GraphQL UI: http://localhost:{appConfig.Port}/graphql");
 
         app.MapGraphQL();
         await app.RunAsync();
     }
 
     #region Helpers
-
-    // Load environment variables from .env file if it exists
-    private static void LoadEnv()
-    {
-        if (File.Exists(".env")) Env.Load(".env");
-        else if (File.Exists("../.env")) Env.Load("../.env");
-    }
-
-    // Get environment variable by key
-    private static string? GetEnv(string key) =>
-        Environment.GetEnvironmentVariable(key);
-
-    // Build PostgreSQL connection string from environment variables
-    private static string BuildConnectionString()
-    {
-        string host = GetEnv("DB_HOST") ?? "localhost";
-        string port = GetEnv("DB_PORT") ?? "5432";
-        string user = GetEnv("DB_USER") ?? throw new InvalidOperationException("DB_USER is not set");
-        string password = GetEnv("DB_PASSWORD") ?? throw new InvalidOperationException("DB_PASSWORD is not set");
-        string db = GetEnv("DB_NAME") ?? throw new InvalidOperationException("DB_NAME is not set");
-
-        return $"Host={host};Port={port};Username={user};Password={password};Database={db}";
-    }
-
     // Register all repositories
     private static void ConfigureRepositories(WebApplicationBuilder builder)
     {
@@ -112,6 +102,35 @@ public static partial class Program
         builder.Services.AddScoped<IProjectMemberService, ProjectMemberService>();
         builder.Services.AddScoped<ITaskSearchService, TaskSearchService>();
     }
+    #endregion
 
+
+    #region Configuration
+    private static void ConfigureJwtAuthentication(WebApplicationBuilder builder, JwtOptions jwtConfig)
+    {
+        var key = Encoding.UTF8.GetBytes(jwtConfig.Secret);
+
+        builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = true,
+                ValidIssuer = jwtConfig.Issuer,
+                ValidateAudience = true,
+                ValidAudience = jwtConfig.Audience,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
+            };
+        });
+
+        builder.Services.AddAuthorization();
+    }
     #endregion
 }
