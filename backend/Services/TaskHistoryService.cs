@@ -11,11 +11,11 @@ namespace backend.Services;
 /// </summary>
 public class TaskHistoryService : ITaskHistoryService
 {
-    private readonly IRepository<TaskHistory> _taskHistoryRepository;
+    private readonly ITaskHistoryRepository _taskHistoryRepository;
     private readonly IRepository<TaskModel> _taskRepository;
 
     public TaskHistoryService(
-        IRepository<TaskHistory> taskHistoryRepository,
+        ITaskHistoryRepository taskHistoryRepository,
         IRepository<TaskModel> taskRepository)
     {
         _taskHistoryRepository = taskHistoryRepository ?? throw new ArgumentNullException(nameof(taskHistoryRepository));

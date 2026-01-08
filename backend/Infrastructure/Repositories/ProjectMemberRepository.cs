@@ -7,7 +7,7 @@ namespace backend.Infrastructure.Repositories;
 /// <summary>
 /// Repository for ProjectMember entity operations
 /// </summary>
-public class ProjectMemberRepository : BaseRepository, IRepository<ProjectMember>
+public class ProjectMemberRepository : BaseRepository, IProjectMemberRepository
 {
     public ProjectMemberRepository(string connectionString) : base(connectionString) { }
 
@@ -88,8 +88,3 @@ public class ProjectMemberRepository : BaseRepository, IRepository<ProjectMember
             new { ProjectId = projectId });
     }
 }
-
-
-
-
-
