@@ -1,9 +1,12 @@
-﻿using backend.Exceptions;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using backend.Exceptions;
 using backend.Helpers;
 using backend.Infrastructure.Repositories.Interfaces;
 using backend.Models;
 using backend.Models.DTOs;
 using backend.Services.Interfaces;
+using Microsoft.IdentityModel.Tokens;
 
 namespace backend.Services;
 
@@ -78,10 +81,49 @@ public class AuthService : IAuthService
     }
     public async Task<User?> GetUserFromTokenAsync(string token)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadJwtToken(token);
+
+            var userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value;
+
+            if (userIdClaim == null || !int.TryParse(userIdClaim, out int userId))
+            {
+                return null;
+            }
+
+            return await _userRepository.GetByIdAsync(userId);
+        }
+        catch
+        {
+            return null;
+        }
     }
     public async Task<bool> ValidateTokenAsync(string token)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes(AuthHelper.GetJwtSecret());
+
+            tokenHandler.ValidateToken(token, new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = true,
+                ValidIssuer = AuthHelper.GetJwtIssuer(),
+                ValidateAudience = true,
+                ValidAudience = AuthHelper.GetJwtAudience(),
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
+            }, out SecurityToken validatedToken);
+
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 }
