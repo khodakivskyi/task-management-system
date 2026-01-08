@@ -79,7 +79,7 @@ public static partial class Program
         builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();
         builder.Services.AddScoped<IRepository<Comment>, CommentRepository>();
         builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
-        builder.Services.AddScoped<IRepository<EntityType>, EntityTypeRepository>();
+        builder.Services.AddScoped<IEntityTypeRepository, EntityTypeRepository>();
         builder.Services.AddScoped<IRepository<Status>, StatusRepository>();
         builder.Services.AddScoped<ITaskHistoryRepository, TaskHistoryRepository>();
         builder.Services.AddScoped<IProjectMemberRepository, ProjectMemberRepository>();

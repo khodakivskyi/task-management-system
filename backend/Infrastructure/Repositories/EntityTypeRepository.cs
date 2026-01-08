@@ -9,7 +9,7 @@ namespace backend.Infrastructure.Repositories;
 /// Repository for EntityType entity operations (read-only)
 /// EntityTypes are default values in the database and cannot be created, updated, or deleted
 /// </summary>
-public class EntityTypeRepository : BaseRepository, IRepository<EntityType>
+public class EntityTypeRepository : BaseRepository, IEntityTypeRepository
 {
     public EntityTypeRepository(string connectionString) : base(connectionString) { }
 

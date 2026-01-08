@@ -12,9 +12,9 @@ namespace backend.Services;
 /// </summary>
 public class EntityTypeService : IEntityTypeService
 {
-    private readonly IRepository<EntityType> _entityTypeRepository;
+    private readonly IEntityTypeRepository _entityTypeRepository;
 
-    public EntityTypeService(IRepository<EntityType> entityTypeRepository)
+    public EntityTypeService(IEntityTypeRepository entityTypeRepository)
     {
         _entityTypeRepository = entityTypeRepository ?? throw new ArgumentNullException(nameof(entityTypeRepository));
     }
