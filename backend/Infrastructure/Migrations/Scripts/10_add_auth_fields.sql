@@ -54,6 +54,11 @@ begin
     end if;
 end $$;
 
+-- update existing users with dummy emails BEFORE adding unique constraint
+update "Users"
+set "Email" = lower("Login") || '@example.com'
+where "Email" = '' or "Email" is null;
+
 -- add unique constraint on email
 do $$
 begin
@@ -75,8 +80,3 @@ create index if not exists "IX_Users_Email"
 create index if not exists "IX_Users_Login_IsActive"
     on "Users" ("Login")
     where "IsActive" = true;
-
--- update existing users with dummy emails
-update "Users"
-set "Email" = lower("Login") || '@example.com'
-where "Email" = '' or "Email" is null;
