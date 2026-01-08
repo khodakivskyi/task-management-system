@@ -13,12 +13,12 @@ namespace backend.Services;
 public class FavoriteService : IFavoriteService
 {
     private readonly FavoriteRepository _favoriteRepository;
-    private readonly IRepository<User> _userRepository;
+    private readonly IUserRepository _userRepository;
     private readonly EntityTypeRepository _entityTypeRepository;
 
     public FavoriteService(
         FavoriteRepository favoriteRepository,
-        IRepository<User> userRepository,
+        IUserRepository userRepository,
         EntityTypeRepository entityTypeRepository)
     {
         _favoriteRepository = favoriteRepository ?? throw new ArgumentNullException(nameof(favoriteRepository));

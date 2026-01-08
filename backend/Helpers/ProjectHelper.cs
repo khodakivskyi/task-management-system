@@ -14,7 +14,7 @@ public static class ProjectHelper
     /// </summary>
     public static async Task ValidateProjectAsync(
         Project project,
-        IRepository<User> userRepository)
+        IUserRepository userRepository)
     {
         // Validation
         if (string.IsNullOrWhiteSpace(project.Name))

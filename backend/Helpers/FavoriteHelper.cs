@@ -15,7 +15,7 @@ public static class FavoriteHelper
     public static async Task ValidateFavoriteAsync(
         int userId,
         int entityTypeId,
-        IRepository<User> userRepository,
+        IUserRepository userRepository,
         IRepository<EntityType> entityTypeRepository)
     {
         // Validate UserId exists

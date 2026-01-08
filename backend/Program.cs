@@ -18,7 +18,7 @@ public static partial class Program
 {
     private static async Task Main(string[] args)
     {
-        // Load . env file
+        // Load .env file
         ConfigurationLoader.LoadEnvironmentFile();
 
         // Load all configurations
@@ -83,7 +83,7 @@ public static partial class Program
         builder.Services.AddScoped<IRepository<Status>, StatusRepository>();
         builder.Services.AddScoped<TaskHistoryRepository>();
         builder.Services.AddScoped<ProjectMemberRepository>();
-        builder.Services.AddScoped<IRepository<User>, UserRepository>();
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IRepository<ProjectRole>, ProjectRoleRepository>();
         builder.Services.AddScoped<IProjectStatisticRepository, ProjectStatisticRepository>();
     }
@@ -101,6 +101,8 @@ public static partial class Program
         builder.Services.AddScoped<ITaskHistoryService, TaskHistoryService>();
         builder.Services.AddScoped<IProjectMemberService, ProjectMemberService>();
         builder.Services.AddScoped<ITaskSearchService, TaskSearchService>();
+        builder.Services.AddScoped<IProjectStatisticsService, ProjectStatisticsService>();
+        builder.Services.AddScoped<IAuthService, AuthService>();
     }
     #endregion
 

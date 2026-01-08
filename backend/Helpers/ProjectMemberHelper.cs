@@ -17,7 +17,7 @@ public static class ProjectMemberHelper
         int userId,
         int roleId,
         IRepository<Project> projectRepository,
-        IRepository<User> userRepository,
+        IUserRepository userRepository,
         IRepository<ProjectRole>? projectRoleRepository = null)
     {
         // Validate ProjectId exists

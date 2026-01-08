@@ -14,7 +14,7 @@ public static class TaskHelper
     /// </summary>
     public static async Task ValidateTaskAsync(
         TaskModel task,
-        IRepository<User> userRepository,
+        IUserRepository userRepository,
         IRepository<Status> statusRepository,
         IRepository<Category>? categoryRepository = null,
         IRepository<Project>? projectRepository = null)
