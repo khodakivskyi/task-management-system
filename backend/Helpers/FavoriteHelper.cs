@@ -16,7 +16,7 @@ public static class FavoriteHelper
         int userId,
         int entityTypeId,
         IUserRepository userRepository,
-        IRepository<EntityType> entityTypeRepository)
+        IEntityTypeRepository entityTypeRepository)
     {
         // Validate UserId exists
         await EntityValidationHelper.EnsureEntityExistsAsync(userId, userRepository, "User");

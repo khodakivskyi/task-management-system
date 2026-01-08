@@ -13,12 +13,12 @@ public class FavoriteService : IFavoriteService
 {
     private readonly IFavoriteRepository _favoriteRepository;
     private readonly IUserRepository _userRepository;
-    private readonly IRepository<EntityType> _entityTypeRepository;
+    private readonly IEntityTypeRepository _entityTypeRepository;
 
     public FavoriteService(
         IFavoriteRepository favoriteRepository,
         IUserRepository userRepository,
-        IRepository<EntityType> entityTypeRepository)
+        IEntityTypeRepository entityTypeRepository)
     {
         _favoriteRepository = favoriteRepository ?? throw new ArgumentNullException(nameof(favoriteRepository));
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
