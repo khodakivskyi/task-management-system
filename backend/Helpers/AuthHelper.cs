@@ -22,7 +22,7 @@ public class AuthHelper
         var existingUserByLogin = await userRepository.GetByLoginAsync(login);
         if (existingUserByLogin != null)
         {
-            throw new ConflictException($"User with login '{login}' already exists");
+            throw new ConflictException($"User with login '{login}' already exists"); // TODO: dont reveal which field is duplicated
         }
 
         var existingUserByEmail = await userRepository.GetByEmailAsync(email);
@@ -64,6 +64,14 @@ public class AuthHelper
         if (request.Login.Length > 50)
             throw new ValidationException("Login must be at most 50 characters");
 
+        if (string.IsNullOrWhiteSpace(request.Password))
+            throw new ValidationException("Password is required");
+    }
+
+    public static void ValidateLoginRequest(LoginRequest request)
+    {
+        if (string.IsNullOrWhiteSpace(request.LoginOrEmail))
+            throw new ValidationException("Login or Email is required");
         if (string.IsNullOrWhiteSpace(request.Password))
             throw new ValidationException("Password is required");
     }
