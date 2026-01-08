@@ -7,7 +7,7 @@ namespace backend.Infrastructure.Repositories;
 /// <summary>
 /// Repository for User entity operations
 /// </summary>
-public class UserRepository : BaseRepository, IRepository<User>
+public class UserRepository : BaseRepository, IUserRepository
 {
     public UserRepository(string connectionString) : base(connectionString) { }
 
@@ -15,17 +15,42 @@ public class UserRepository : BaseRepository, IRepository<User>
     {
         await using var connection = await GetConnectionAsync();
         return await connection.QueryFirstOrDefaultAsync<User>(
-            @"SELECT ""Id"", ""Name"", ""Surname"", ""Login"", ""PasswordHash"", ""Salt"", ""CreatedAt""
+            @"SELECT ""Id"", ""Name"", ""Surname"", ""Email"", ""Login"", ""PasswordHash"", ""Salt"", 
+                     ""CreatedAt"", ""LastLoginAt"", ""IsActive"", ""EmailConfirmed""
               FROM ""Users""
               WHERE ""Id"" = @Id",
             new { Id = id });
     }
 
+    public async Task<User?> GetByLoginAsync(string login)
+    {
+        await using var connection = await GetConnectionAsync();
+        return await connection.QueryFirstOrDefaultAsync<User>(
+            @"SELECT ""Id"", ""Name"", ""Surname"", ""Email"", ""Login"", ""PasswordHash"", ""Salt"", 
+                     ""CreatedAt"", ""LastLoginAt"", ""IsActive"", ""EmailConfirmed""
+              FROM ""Users""
+              WHERE ""Login"" = @Login",
+            new { Login = login });
+    }
+
+    public async Task<User?> GetByEmailAsync(string email)
+    {
+        await using var connection = await GetConnectionAsync();
+        return await connection.QueryFirstOrDefaultAsync<User>(
+            @"SELECT ""Id"", ""Name"", ""Surname"", ""Email"", ""Login"", ""PasswordHash"", ""Salt"", 
+                     ""CreatedAt"", ""LastLoginAt"", ""IsActive"", ""EmailConfirmed""
+              FROM ""Users""
+              WHERE ""Email"" = @Email",
+            new { Email = email });
+    }
+
+
     public async Task<IEnumerable<User>> GetAllAsync()
     {
         await using var connection = await GetConnectionAsync();
         return await connection.QueryAsync<User>(
-            @"SELECT ""Id"", ""Name"", ""Surname"", ""Login"", ""PasswordHash"", ""Salt"", ""CreatedAt""
+            @"SELECT ""Id"", ""Name"", ""Surname"", ""Email"", ""Login"", ""PasswordHash"", ""Salt"", 
+                     ""CreatedAt"", ""LastLoginAt"", ""IsActive"", ""EmailConfirmed""
               FROM ""Users""
               ORDER BY ""CreatedAt"" DESC");
     }
@@ -34,17 +59,23 @@ public class UserRepository : BaseRepository, IRepository<User>
     {
         await using var connection = await GetConnectionAsync();
         return await connection.QuerySingleAsync<int>(
-            @"INSERT INTO ""Users"" (""Name"", ""Surname"", ""Login"", ""PasswordHash"", ""Salt"", ""CreatedAt"")
-              VALUES (@Name, @Surname, @Login, @PasswordHash, @Salt, @CreatedAt)
+            @"INSERT INTO ""Users"" (""Name"", ""Surname"", ""Email"", ""Login"", ""PasswordHash"", ""Salt"", 
+                                     ""CreatedAt"", ""LastLoginAt"", ""IsActive"", ""EmailConfirmed"")
+              VALUES (@Name, @Surname, @Email, @Login, @PasswordHash, @Salt, 
+                      @CreatedAt, @LastLoginAt, @IsActive, @EmailConfirmed)
               RETURNING ""Id""",
             new
             {
                 user.Name,
                 user.Surname,
+                user.Email,
                 user.Login,
                 user.PasswordHash,
                 user.Salt,
-                user.CreatedAt
+                user.CreatedAt,
+                user.LastLoginAt,
+                user.IsActive,
+                user.EmailConfirmed
             });
     }
 
@@ -53,17 +84,22 @@ public class UserRepository : BaseRepository, IRepository<User>
         await using var connection = await GetConnectionAsync();
         var affected = await connection.ExecuteAsync(
             @"UPDATE ""Users""
-              SET ""Name"" = @Name, ""Surname"" = @Surname, ""Login"" = @Login,
-                  ""PasswordHash"" = @PasswordHash, ""Salt"" = @Salt
+              SET ""Name"" = @Name, ""Surname"" = @Surname, ""Email"" = @Email, ""Login"" = @Login,
+                  ""PasswordHash"" = @PasswordHash, ""Salt"" = @Salt, ""LastLoginAt"" = @LastLoginAt,
+                  ""IsActive"" = @IsActive, ""EmailConfirmed"" = @EmailConfirmed
               WHERE ""Id"" = @Id",
             new
             {
                 user.Id,
                 user.Name,
                 user.Surname,
+                user.Email,
                 user.Login,
                 user.PasswordHash,
-                user.Salt
+                user.Salt,
+                user.LastLoginAt,
+                user.IsActive,
+                user.EmailConfirmed
             });
         return affected > 0;
     }
