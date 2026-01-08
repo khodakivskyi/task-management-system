@@ -2,21 +2,16 @@
 using System.Security.Claims;
 using System.Text;
 using System.Text.RegularExpressions;
-using Microsoft.IdentityModel.Tokens;
 using backend.Exceptions;
 using backend.Infrastructure.Repositories.Interfaces;
 using backend.Models;
 using backend.Models.DTOs;
+using Microsoft.IdentityModel.Tokens;
 
 namespace backend.Helpers;
 
-public class AuthHelper
+public static class AuthHelper
 {
-
-    public static void SetConfiguration()
-    {
-    }
-
     public static async Task ValidateUserUniquenessAsync(string login, string email, IUserRepository userRepository)
     {
         var existingUserByLogin = await userRepository.GetByLoginAsync(login);
@@ -97,10 +92,10 @@ public class AuthHelper
         return emailRegex.IsMatch(email);
     }
 
-    public static string GenerateJwtToken(User user)
+    public static string GenerateJwtToken(User user, string secret, int expirationHours, string issuer, string audience)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.UTF8.GetBytes(GetJwtSecret());
+        var key = Encoding.UTF8.GetBytes(secret);
 
         var claims = new List<Claim>
         {
@@ -119,9 +114,9 @@ public class AuthHelper
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.AddHours(GetTokenExpirationHours()),
-            Issuer = GetJwtIssuer(),
-            Audience = GetJwtAudience(),
+            Expires = DateTime.UtcNow.AddHours(expirationHours),
+            Issuer = issuer,
+            Audience = audience,
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(key),
                 SecurityAlgorithms.HmacSha256Signature)
@@ -141,37 +136,4 @@ public class AuthHelper
         user.LastLoginAt,
         user.EmailConfirmed
     );
-
-    public static string GetJwtSecret()
-    {
-        var secret = _configuration["JWT_SECRET"] ??
-                     Environment.GetEnvironmentVariable("JWT_SECRET");
-
-        if (string.IsNullOrEmpty(secret))
-            throw new InvalidOperationException("JWT_SECRET is not configured");
-
-        if (secret.Length < 32)
-            throw new InvalidOperationException("JWT_SECRET must be at least 32 characters");
-
-        return secret;
-    }
-
-    public static string GetJwtIssuer() =>
-        _configuration["JWT_ISSUER"] ??
-        Environment.GetEnvironmentVariable("JWT_ISSUER") ??
-        "TaskManagementSystem";
-
-    public static string GetJwtAudience() =>
-        _configuration["JWT_AUDIENCE"] ??
-        Environment.GetEnvironmentVariable("JWT_AUDIENCE") ??
-        "TaskManagementSystem";
-
-    public static int GetTokenExpirationHours()
-    {
-        var hours = _configuration["JWT_EXPIRATION_HOURS"] ??
-                    Environment.GetEnvironmentVariable("JWT_EXPIRATION_HOURS") ??
-                    "24";
-
-        return int.Parse(hours);
-    }
 }

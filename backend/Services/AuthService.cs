@@ -1,5 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using backend.Configuration;
 using backend.Exceptions;
 using backend.Helpers;
 using backend.Infrastructure.Repositories.Interfaces;
@@ -13,9 +14,12 @@ namespace backend.Services;
 public class AuthService : IAuthService
 {
     private readonly IUserRepository _userRepository;
-    public AuthService(IUserRepository userRepository)
+    private readonly JwtOptions _jwtOptions;
+
+    public AuthService(IUserRepository userRepository, JwtOptions jwtOptions)
     {
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+        _jwtOptions = jwtOptions ?? throw new ArgumentNullException(nameof(jwtOptions));
     }
 
     public async Task<AuthResponse> RegisterAsync(RegisterRequest request)
@@ -44,8 +48,8 @@ public class AuthService : IAuthService
 
         user.Id = await _userRepository.CreateAsync(user);
 
-        string token = AuthHelper.GenerateJwtToken(user);
-        var expiresAt = DateTime.UtcNow.AddHours(AuthHelper.GetTokenExpirationHours());
+        string token = AuthHelper.GenerateJwtToken(user, _jwtOptions.Secret, _jwtOptions.ExpirationHours, _jwtOptions.Issuer, _jwtOptions.Audience);
+        var expiresAt = DateTime.UtcNow.AddHours(_jwtOptions.ExpirationHours);
 
         return new AuthResponse(
             token,
@@ -70,8 +74,8 @@ public class AuthService : IAuthService
         user.LastLoginAt = DateTime.UtcNow;
         await _userRepository.UpdateAsync(user);
 
-        string token = AuthHelper.GenerateJwtToken(user);
-        var expiresAt = DateTime.UtcNow.AddHours(AuthHelper.GetTokenExpirationHours());
+        string token = AuthHelper.GenerateJwtToken(user, _jwtOptions.Secret, _jwtOptions.ExpirationHours, _jwtOptions.Issuer, _jwtOptions.Audience);
+        var expiresAt = DateTime.UtcNow.AddHours(_jwtOptions.ExpirationHours);
 
         return new AuthResponse(
             token,
@@ -105,16 +109,16 @@ public class AuthService : IAuthService
         try
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.UTF8.GetBytes(AuthHelper.GetJwtSecret());
+            var key = Encoding.UTF8.GetBytes(_jwtOptions.Secret);
 
             tokenHandler.ValidateToken(token, new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(key),
                 ValidateIssuer = true,
-                ValidIssuer = AuthHelper.GetJwtIssuer(),
+                ValidIssuer = _jwtOptions.Issuer,
                 ValidateAudience = true,
-                ValidAudience = AuthHelper.GetJwtAudience(),
+                ValidAudience = _jwtOptions.Audience,
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero
             }, out SecurityToken validatedToken);
