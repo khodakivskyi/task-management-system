@@ -18,12 +18,4 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.0.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <EditorConfigFiles Remove="W:\2 курс, 1 семестр\db\task-management-system\backend\.editorconfig" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="Infrastructure\Migrations\Scripts\10_add_auth_fields.sql" />
-  </ItemGroup>
-
 </Project>
