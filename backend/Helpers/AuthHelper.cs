@@ -142,7 +142,7 @@ public class AuthHelper
         user.EmailConfirmed
     );
 
-    private static string GetJwtSecret()
+    public static string GetJwtSecret()
     {
         var secret = _configuration["JWT_SECRET"] ??
                      Environment.GetEnvironmentVariable("JWT_SECRET");
