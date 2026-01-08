@@ -1,5 +1,4 @@
 using backend.Helpers;
-using backend.Infrastructure.Repositories;
 using backend.Infrastructure.Repositories.Interfaces;
 using backend.Models;
 using backend.Services.Interfaces;
@@ -12,11 +11,11 @@ namespace backend.Services;
 /// </summary>
 public class TaskHistoryService : ITaskHistoryService
 {
-    private readonly TaskHistoryRepository _taskHistoryRepository;
+    private readonly IRepository<TaskHistory> _taskHistoryRepository;
     private readonly IRepository<TaskModel> _taskRepository;
 
     public TaskHistoryService(
-        TaskHistoryRepository taskHistoryRepository,
+        IRepository<TaskHistory> taskHistoryRepository,
         IRepository<TaskModel> taskRepository)
     {
         _taskHistoryRepository = taskHistoryRepository ?? throw new ArgumentNullException(nameof(taskHistoryRepository));
