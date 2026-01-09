@@ -1,4 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using backend.Configuration;
 using backend.Exceptions;
@@ -83,27 +84,14 @@ public class AuthService : IAuthService
             AuthHelper.MapToUserDto(user)
         );
     }
-    public async Task<User?> GetUserFromTokenAsync(string token)
+    public async Task<UserDto?> GetCurrentUserAsync(ClaimsPrincipal claimsPrincipal)
     {
-        try
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var jwtToken = tokenHandler.ReadJwtToken(token);
+        var user = await AuthHelper.ExtractUserFromClaims(claimsPrincipal, _userRepository);
+        if (user == null) return null;
 
-            var userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value;
-
-            if (userIdClaim == null || !int.TryParse(userIdClaim, out int userId))
-            {
-                return null;
-            }
-
-            return await _userRepository.GetByIdAsync(userId);
-        }
-        catch
-        {
-            return null;
-        }
+        return AuthHelper.MapToUserDto(user);
     }
+
     public async Task<bool> ValidateTokenAsync(string token)
     {
         try

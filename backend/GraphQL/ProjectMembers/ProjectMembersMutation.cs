@@ -2,7 +2,7 @@ using backend.GraphQL.ProjectMembers.Inputs;
 using backend.Models;
 using backend.Services.Interfaces;
 
-namespace backend.GraphQL.Queries;
+namespace backend.GraphQL.Mutations;
 
 /// <summary>
 /// GraphQL Mutation operations for ProjectMembers

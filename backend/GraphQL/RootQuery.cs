@@ -4,6 +4,7 @@ namespace backend.GraphQL;
 
 public class RootQuery
 {
+    public AuthQuery Auth() => new();
     public TasksQuery Tasks() => new();
     public ProjectsQuery Projects() => new();
     public CategoriesQuery Categories() => new();

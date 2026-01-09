@@ -2,7 +2,7 @@ using backend.GraphQL.Tasks.Inputs;
 using backend.Models;
 using backend.Services.Interfaces;
 
-namespace backend.GraphQL.Queries;
+namespace backend.GraphQL.Mutations;
 
 /// <summary>
 /// GraphQL Mutation operations for Tasks

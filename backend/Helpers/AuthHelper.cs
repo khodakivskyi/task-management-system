@@ -136,4 +136,17 @@ public static class AuthHelper
         user.LastLoginAt,
         user.EmailConfirmed
     );
+
+    public static async Task<User?> ExtractUserFromClaims(ClaimsPrincipal claimsPrincipal, IUserRepository userRepository)
+    {
+        var userIdClaim = claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value ??
+                          claimsPrincipal.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+
+        if (userIdClaim != null && int.TryParse(userIdClaim, out int userId))
+        {
+            return await userRepository.GetByIdAsync(userId);
+        }
+
+        return null;
+    }
 }
