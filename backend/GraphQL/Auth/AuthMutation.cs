@@ -1,4 +1,4 @@
-﻿using backend.Models.DTOs;
+using backend.Models.DTOs;
 using backend.Services.Interfaces;
 
 namespace backend.GraphQL.Mutations;

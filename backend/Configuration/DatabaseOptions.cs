@@ -1,4 +1,4 @@
-﻿namespace backend.Configuration;
+namespace backend.Configuration;
 
 /// <summary>
 /// Database configuration loaded from environment variables

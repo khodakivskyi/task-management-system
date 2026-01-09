@@ -1,4 +1,4 @@
-﻿namespace backend.Configuration;
+namespace backend.Configuration;
 
 /// <summary>
 /// Application-level configuration
