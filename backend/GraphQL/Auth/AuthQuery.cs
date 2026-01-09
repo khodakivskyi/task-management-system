@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using backend.Models.DTOs;
 using backend.Services.Interfaces;
 

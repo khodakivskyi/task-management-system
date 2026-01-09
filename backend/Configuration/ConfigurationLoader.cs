@@ -1,4 +1,4 @@
-﻿using DotNetEnv;
+using DotNetEnv;
 
 namespace backend.Configuration;
 

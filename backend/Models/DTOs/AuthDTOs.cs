@@ -1,4 +1,4 @@
-﻿namespace backend.Models.DTOs;
+namespace backend.Models.DTOs;
 
 /// <summary>
 /// Request for user registration
