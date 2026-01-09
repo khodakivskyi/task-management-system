@@ -86,8 +86,19 @@ public class AuthService : IAuthService
     }
     public async Task<UserDto?> GetCurrentUserAsync(ClaimsPrincipal claimsPrincipal)
     {
-        var user = await AuthHelper.ExtractUserFromClaims(claimsPrincipal, _userRepository);
-        if (user == null) return null;
+        var userId = AuthHelper.ExtractUserIdFromClaims(claimsPrincipal);
+        if (userId == null) return null;
+
+        var user = await _userRepository.GetByIdAsync(userId.Value);
+        if (user == null)
+        {
+            return null;
+        }
+
+        if (!user.IsActive)
+        {
+            return null;
+        }
 
         return AuthHelper.MapToUserDto(user);
     }

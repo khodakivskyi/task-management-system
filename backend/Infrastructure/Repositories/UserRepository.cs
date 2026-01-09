@@ -21,29 +21,6 @@ public class UserRepository : BaseRepository, IUserRepository
               WHERE ""Id"" = @Id",
             new { Id = id });
     }
-
-    public async Task<User?> GetByLoginAsync(string login)
-    {
-        await using var connection = await GetConnectionAsync();
-        return await connection.QueryFirstOrDefaultAsync<User>(
-            @"SELECT ""Id"", ""Name"", ""Surname"", ""Email"", ""Login"", ""PasswordHash"", ""Salt"", 
-                     ""CreatedAt"", ""LastLoginAt"", ""IsActive"", ""EmailConfirmed""
-              FROM ""Users""
-              WHERE ""Login"" = @Login",
-            new { Login = login });
-    }
-
-    public async Task<User?> GetByEmailAsync(string email)
-    {
-        await using var connection = await GetConnectionAsync();
-        return await connection.QueryFirstOrDefaultAsync<User>(
-            @"SELECT ""Id"", ""Name"", ""Surname"", ""Email"", ""Login"", ""PasswordHash"", ""Salt"", 
-                     ""CreatedAt"", ""LastLoginAt"", ""IsActive"", ""EmailConfirmed""
-              FROM ""Users""
-              WHERE ""Email"" = @Email",
-            new { Email = email });
-    }
-
     public async Task<User?> GetByLoginOrEmailAsync(string loginOrEmail)
     {
         var normalized = loginOrEmail.Trim();
@@ -75,6 +52,20 @@ public class UserRepository : BaseRepository, IUserRepository
             );
     }
 
+    public async Task<(bool loginExists, bool emailExists)> CheckUserExistsAsync(string login, string email)
+    {
+        await using var connection = await GetConnectionAsync();
+
+        var result = await connection.QuerySingleAsync<dynamic>(
+            """
+            SELECT 
+                EXISTS(SELECT 1 FROM "Users" WHERE LOWER("Login") = LOWER(@Login)) AS LoginExists,
+                EXISTS(SELECT 1 FROM "Users" WHERE LOWER("Email") = LOWER(@Email)) AS EmailExists
+            """,
+            new { Login = login, Email = email });
+
+        return ((bool)result.loginexists, (bool)result.emailexists);
+    }
 
     public async Task<IEnumerable<User>> GetAllAsync()
     {

@@ -4,7 +4,6 @@ namespace backend.Infrastructure.Repositories.Interfaces;
 
 public interface IUserRepository : IRepository<User>
 {
-    Task<User?> GetByLoginAsync(string login);
-    Task<User?> GetByEmailAsync(string email);
+    Task<(bool loginExists, bool emailExists)> CheckUserExistsAsync(string login, string email);
     Task<User?> GetByLoginOrEmailAsync(string loginOrEmail);
 }

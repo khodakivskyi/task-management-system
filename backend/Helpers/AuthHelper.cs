@@ -14,29 +14,13 @@ public static class AuthHelper
 {
     public static async Task ValidateUserUniquenessAsync(string login, string email, IUserRepository userRepository)
     {
-        var existingUserByLogin = await userRepository.GetByLoginAsync(login);
-        if (existingUserByLogin != null)
-        {
-            throw new ConflictException("User with this login or email already exists");
-        }
+        var (loginTaken, emailTaken) = await userRepository.CheckUserExistsAsync(login, email);
 
-        var existingUserByEmail = await userRepository.GetByEmailAsync(email);
-        if (existingUserByEmail != null)
-        {
-            throw new ConflictException("User with this login or email already exists");
-        }
-    }
+        if (loginTaken)
+            throw new ConflictException("Unable to create account with provided data");
 
-    public static async Task<bool> IsLoginTakenAsync(string login, IUserRepository userRepository)
-    {
-        var user = await userRepository.GetByLoginAsync(login);
-        return user != null;
-    }
-
-    public static async Task<bool> IsEmailTakenAsync(string email, IUserRepository userRepository)
-    {
-        var user = await userRepository.GetByEmailAsync(email);
-        return user != null;
+        if (emailTaken)
+            throw new ConflictException("Unable to create account with provided data");
     }
 
     public static void ValidateRegistrationRequest(RegisterRequest request)
@@ -137,14 +121,14 @@ public static class AuthHelper
         user.EmailConfirmed
     );
 
-    public static async Task<User?> ExtractUserFromClaims(ClaimsPrincipal claimsPrincipal, IUserRepository userRepository)
+    public static int? ExtractUserIdFromClaims(ClaimsPrincipal claimsPrincipal)
     {
         var userIdClaim = claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value ??
                           claimsPrincipal.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
 
         if (userIdClaim != null && int.TryParse(userIdClaim, out int userId))
         {
-            return await userRepository.GetByIdAsync(userId);
+            return userId;
         }
 
         return null;

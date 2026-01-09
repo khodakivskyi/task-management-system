@@ -16,5 +16,4 @@ public class AuthQuery
     {
         return await authService.GetCurrentUserAsync(claimsPrincipal);
     }
-
 }
