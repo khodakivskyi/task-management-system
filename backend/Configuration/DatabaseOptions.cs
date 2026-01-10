@@ -19,7 +19,7 @@ public class DatabaseOptions
         User = user;
         Password = password;
         Database = database;
-        ConnectionString = $"Host={host};Port={port};Username={user};Password={password};Database={database}";
+        ConnectionString = $"Host={host};Port={port};Username={user};Password={password};Database={database};Timezone=UTC";
     }
 
     /// <summary>

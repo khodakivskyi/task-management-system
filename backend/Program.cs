@@ -12,6 +12,7 @@ using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.IdentityModel.Tokens;
+using Npgsql;
 
 namespace backend;
 
@@ -19,6 +20,9 @@ public static partial class Program
 {
     private static async Task Main(string[] args)
     {
+        // Configure Npgsql to always return DateTime in UTC
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", false);
+        
         // Load .env file
         ConfigurationLoader.LoadEnvironmentFile();
 
