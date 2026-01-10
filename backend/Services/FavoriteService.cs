@@ -15,6 +15,10 @@ public class FavoriteService : IFavoriteService
     private readonly IUserRepository _userRepository;
     private readonly IEntityTypeRepository _entityTypeRepository;
 
+    private const string UserEntity = nameof(User);
+    private const string EntityTypeEntity = "Entity type";
+    private const string EntityIdEntity = "Entity";
+
     public FavoriteService(
         IFavoriteRepository favoriteRepository,
         IUserRepository userRepository,
@@ -27,9 +31,9 @@ public class FavoriteService : IFavoriteService
 
     public async Task<Favorite> AddAsync(int userId, int entityTypeId, int entityId)
     {
-        ValidationHelper.ValidateId(userId, "User");
-        ValidationHelper.ValidateId(entityTypeId, "Entity type");
-        ValidationHelper.ValidateId(entityId, "Entity");
+        ValidationHelper.ValidateId(userId, UserEntity);
+        ValidationHelper.ValidateId(entityTypeId, EntityTypeEntity);
+        ValidationHelper.ValidateId(entityId, EntityIdEntity);
 
         await FavoriteHelper.ValidateFavoriteAsync(userId, entityTypeId, _userRepository, _entityTypeRepository);
 
@@ -55,9 +59,9 @@ public class FavoriteService : IFavoriteService
 
     public async Task RemoveAsync(int userId, int entityTypeId, int entityId)
     {
-        ValidationHelper.ValidateId(userId, "User");
-        ValidationHelper.ValidateId(entityTypeId, "Entity type");
-        ValidationHelper.ValidateId(entityId, "Entity");
+        ValidationHelper.ValidateId(userId, UserEntity);
+        ValidationHelper.ValidateId(entityTypeId, EntityTypeEntity);
+        ValidationHelper.ValidateId(entityId, EntityIdEntity);
 
         // Check if favorite exists
         var favorite = await _favoriteRepository.GetByUserAndEntityAsync(userId, entityTypeId, entityId);
@@ -75,8 +79,8 @@ public class FavoriteService : IFavoriteService
 
     public async Task<IEnumerable<Favorite>> GetUserFavoritesAsync(int userId)
     {
-        ValidationHelper.ValidateId(userId, "User");
-        await EntityValidationHelper.EnsureEntityExistsAsync(userId, _userRepository, "User");
+        ValidationHelper.ValidateId(userId, UserEntity);
+        await EntityValidationHelper.EnsureEntityExistsAsync(userId, _userRepository, UserEntity);
         return await _favoriteRepository.GetByUserIdAsync(userId);
     }
 }

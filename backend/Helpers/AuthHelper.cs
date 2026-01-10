@@ -10,8 +10,12 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace backend.Helpers;
 
-public static class AuthHelper
+public static partial class AuthHelper
 {
+    [GeneratedRegex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.CultureInvariant, 200)]
+    private static partial Regex EmailRegexGenerated();
+
+
     public static async Task ValidateUserUniquenessAsync(string login, string email, IUserRepository userRepository)
     {
         var (loginTaken, emailTaken) = await userRepository.CheckUserExistsAsync(login, email);
@@ -72,8 +76,10 @@ public static class AuthHelper
 
     public static bool IsValidEmail(string email)
     {
-        var emailRegex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
-        return emailRegex.IsMatch(email);
+        if (string.IsNullOrWhiteSpace(email))
+            return false;
+
+        return EmailRegexGenerated().IsMatch(email);
     }
 
     public static string GenerateJwtToken(User user, string secret, int expirationHours, string issuer, string audience)

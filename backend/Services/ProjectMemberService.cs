@@ -16,6 +16,10 @@ public class ProjectMemberService : IProjectMemberService
     private readonly IUserRepository _userRepository;
     private readonly IRepository<ProjectRole>? _projectRoleRepository;
 
+    private const string ProjectEntity = nameof(Project);
+    private const string UserEntity = nameof(User);
+    private const string RoleEntity = "Role";
+
     public ProjectMemberService(
         IProjectMemberRepository projectMemberRepository,
         IRepository<Project> projectRepository,
@@ -30,9 +34,9 @@ public class ProjectMemberService : IProjectMemberService
 
     public async Task<ProjectMember> AddMemberAsync(int projectId, int userId, int roleId)
     {
-        ValidationHelper.ValidateId(projectId, "Project");
-        ValidationHelper.ValidateId(userId, "User");
-        ValidationHelper.ValidateId(roleId, "Role");
+        ValidationHelper.ValidateId(projectId, ProjectEntity);
+        ValidationHelper.ValidateId(userId, UserEntity);
+        ValidationHelper.ValidateId(roleId, RoleEntity);
 
         await ProjectMemberHelper.ValidateProjectMemberAsync(
             projectId,
@@ -64,8 +68,8 @@ public class ProjectMemberService : IProjectMemberService
 
     public async Task RemoveMemberAsync(int projectId, int userId)
     {
-        ValidationHelper.ValidateId(projectId, "Project");
-        ValidationHelper.ValidateId(userId, "User");
+        ValidationHelper.ValidateId(projectId, ProjectEntity);
+        ValidationHelper.ValidateId(userId, UserEntity);
 
         // Check if member exists
         var member = await _projectMemberRepository.GetByProjectAndUserAsync(projectId, userId);
@@ -83,9 +87,9 @@ public class ProjectMemberService : IProjectMemberService
 
     public async Task<ProjectMember> UpdateMemberRoleAsync(int projectId, int userId, int newRoleId)
     {
-        ValidationHelper.ValidateId(projectId, "Project");
-        ValidationHelper.ValidateId(userId, "User");
-        ValidationHelper.ValidateId(newRoleId, "Role");
+        ValidationHelper.ValidateId(projectId, ProjectEntity);
+        ValidationHelper.ValidateId(userId, UserEntity);
+        ValidationHelper.ValidateId(newRoleId, RoleEntity);
 
         // Check if member exists
         var member = await _projectMemberRepository.GetByProjectAndUserAsync(projectId, userId);
@@ -117,10 +121,10 @@ public class ProjectMemberService : IProjectMemberService
 
     public async Task<IEnumerable<ProjectMember>> GetProjectMembersAsync(int projectId)
     {
-        ValidationHelper.ValidateId(projectId, "Project");
+        ValidationHelper.ValidateId(projectId, ProjectEntity);
 
         // Validate ProjectId exists
-        await EntityValidationHelper.EnsureEntityExistsAsync(projectId, _projectRepository, "Project");
+        await EntityValidationHelper.EnsureEntityExistsAsync(projectId, _projectRepository, ProjectEntity);
 
         return await _projectMemberRepository.GetByProjectIdAsync(projectId);
     }

@@ -42,7 +42,7 @@ public class CategoryService : ICategoryService
     {
         ValidationHelper.ValidateId(category.Id, "Category");
 
-        var existingCategory = await EntityValidationHelper.EnsureEntityExistsAsync(category.Id, _categoryRepository, "Category");
+        await EntityValidationHelper.EnsureEntityExistsAsync(category.Id, _categoryRepository, "Category");
 
         await CategoryHelper.ValidateCategoryAsync(category, _categoryRepository, checkDuplicate: true, excludeId: category.Id);
 

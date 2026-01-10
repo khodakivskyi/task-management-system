@@ -14,6 +14,8 @@ public class ProjectService : IProjectService
     private readonly IRepository<Project> _projectRepository;
     private readonly IUserRepository _userRepository;
 
+    private const string ProjectEntity = nameof(Project);
+
     public ProjectService(
         IRepository<Project> projectRepository,
         IUserRepository userRepository)
@@ -33,7 +35,7 @@ public class ProjectService : IProjectService
 
     public async Task<Project?> GetByIdAsync(int id)
     {
-        ValidationHelper.ValidateId(id, "Project");
+        ValidationHelper.ValidateId(id, ProjectEntity);
         return await _projectRepository.GetByIdAsync(id);
     }
 
@@ -44,10 +46,10 @@ public class ProjectService : IProjectService
 
     public async Task<Project> UpdateAsync(Project project)
     {
-        ValidationHelper.ValidateId(project.Id, "Project");
+        ValidationHelper.ValidateId(project.Id, ProjectEntity);
 
         // Check if project exists
-        var existingProject = await EntityValidationHelper.EnsureEntityExistsAsync(project.Id, _projectRepository, "Project");
+        var existingProject = await EntityValidationHelper.EnsureEntityExistsAsync(project.Id, _projectRepository, ProjectEntity);
 
         await ProjectHelper.ValidateProjectAsync(project, _userRepository);
 
@@ -65,9 +67,9 @@ public class ProjectService : IProjectService
 
     public async Task DeleteAsync(int id)
     {
-        ValidationHelper.ValidateId(id, "Project");
+        ValidationHelper.ValidateId(id, ProjectEntity);
 
-        await EntityValidationHelper.EnsureEntityExistsAsync(id, _projectRepository, "Project");
+        await EntityValidationHelper.EnsureEntityExistsAsync(id, _projectRepository, ProjectEntity);
 
         var deleted = await _projectRepository.DeleteAsync(id);
         if (!deleted)

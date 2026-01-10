@@ -14,6 +14,8 @@ public class TaskHistoryService : ITaskHistoryService
     private readonly ITaskHistoryRepository _taskHistoryRepository;
     private readonly IRepository<TaskModel> _taskRepository;
 
+    private const string TaskEntity = "Task";
+
     public TaskHistoryService(
         ITaskHistoryRepository taskHistoryRepository,
         IRepository<TaskModel> taskRepository)
@@ -24,8 +26,8 @@ public class TaskHistoryService : ITaskHistoryService
 
     public async Task<IEnumerable<TaskHistory>> GetByTaskIdAsync(int taskId)
     {
-        ValidationHelper.ValidateId(taskId, "Task");
-        await EntityValidationHelper.EnsureEntityExistsAsync(taskId, _taskRepository, "Task");
+        ValidationHelper.ValidateId(taskId, TaskEntity);
+        await EntityValidationHelper.EnsureEntityExistsAsync(taskId, _taskRepository, TaskEntity);
         return await _taskHistoryRepository.GetByTaskIdAsync(taskId);
     }
 }

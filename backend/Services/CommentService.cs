@@ -1,4 +1,4 @@
-using backend.Exceptions;
+    using backend.Exceptions;
 using backend.Helpers;
 using backend.Infrastructure.Repositories.Interfaces;
 using backend.Models;
@@ -14,6 +14,8 @@ public class CommentService : ICommentService
     private readonly IRepository<Comment> _commentRepository;
     private readonly IRepository<TaskModel> _taskRepository;
     private readonly IUserRepository _userRepository;
+
+    private const string CommentEntity = nameof(Comment);
 
     public CommentService(
         IRepository<Comment> commentRepository,
@@ -42,7 +44,7 @@ public class CommentService : ICommentService
 
     public async Task<Comment?> GetByIdAsync(int id)
     {
-        ValidationHelper.ValidateId(id, "Comment");
+        ValidationHelper.ValidateId(id, CommentEntity);
         return await _commentRepository.GetByIdAsync(id);
     }
 
@@ -53,9 +55,9 @@ public class CommentService : ICommentService
 
     public async Task<Comment> UpdateAsync(Comment comment)
     {
-        ValidationHelper.ValidateId(comment.Id, "Comment");
+        ValidationHelper.ValidateId(comment.Id, CommentEntity);
 
-        var existingComment = await EntityValidationHelper.EnsureEntityExistsAsync(comment.Id, _commentRepository, "Comment");
+        var existingComment = await EntityValidationHelper.EnsureEntityExistsAsync(comment.Id, _commentRepository, CommentEntity);
 
         await CommentHelper.ValidateCommentAsync(comment, _taskRepository, _userRepository);
 
@@ -75,9 +77,9 @@ public class CommentService : ICommentService
 
     public async Task DeleteAsync(int id)
     {
-        ValidationHelper.ValidateId(id, "Comment");
+        ValidationHelper.ValidateId(id, CommentEntity);
 
-        await EntityValidationHelper.EnsureEntityExistsAsync(id, _commentRepository, "Comment");
+        await EntityValidationHelper.EnsureEntityExistsAsync(id, _commentRepository, CommentEntity);
 
         var deleted = await _commentRepository.DeleteAsync(id);
         if (!deleted)
