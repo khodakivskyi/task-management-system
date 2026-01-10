@@ -6,10 +6,11 @@
         <Configuration>
           <Format>opencover</Format>
           <UseSourceLink>true</UseSourceLink>
-          <Exclude>[*]*.Models.*,[*]*.Infrastructure.Migrations.*,[*.Tests]*</Exclude>
-          <ExcludeByFile>**/Migrations/**/*.cs,**/obj/**/*.cs,**/bin/**/*.cs</ExcludeByFile>
+          <Exclude>[*.Tests]*</Exclude>
+          <ExcludeByFile>**/Migrations/**,**/obj/**,**/bin/**,**/Program.cs</ExcludeByFile>
           <ExcludeByAttribute>Obsolete,GeneratedCode,CompilerGenerated</ExcludeByAttribute>
           <IncludeTestAssembly>false</IncludeTestAssembly>
+          <SingleHit>false</SingleHit>
         </Configuration>
       </DataCollector>
     </DataCollectors>
