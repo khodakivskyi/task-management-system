@@ -13,6 +13,8 @@ public class CategoryService : ICategoryService
 {
     private readonly IRepository<Category> _categoryRepository;
 
+    private const string CategoryEntity = nameof(Category);
+
     public CategoryService(IRepository<Category> categoryRepository)
     {
         _categoryRepository = categoryRepository ?? throw new ArgumentNullException(nameof(categoryRepository));
@@ -29,7 +31,7 @@ public class CategoryService : ICategoryService
 
     public async Task<Category?> GetByIdAsync(int id)
     {
-        ValidationHelper.ValidateId(id, "Category");
+        ValidationHelper.ValidateId(id, CategoryEntity);
         return await _categoryRepository.GetByIdAsync(id);
     }
 
@@ -40,9 +42,9 @@ public class CategoryService : ICategoryService
 
     public async Task<Category> UpdateAsync(Category category)
     {
-        ValidationHelper.ValidateId(category.Id, "Category");
+        ValidationHelper.ValidateId(category.Id, CategoryEntity);
 
-        await EntityValidationHelper.EnsureEntityExistsAsync(category.Id, _categoryRepository, "Category");
+        await EntityValidationHelper.EnsureEntityExistsAsync(category.Id, _categoryRepository, CategoryEntity);
 
         await CategoryHelper.ValidateCategoryAsync(category, _categoryRepository, checkDuplicate: true, excludeId: category.Id);
 
@@ -57,9 +59,9 @@ public class CategoryService : ICategoryService
 
     public async Task DeleteAsync(int id)
     {
-        ValidationHelper.ValidateId(id, "Category");
+        ValidationHelper.ValidateId(id, CategoryEntity);
 
-        await EntityValidationHelper.EnsureEntityExistsAsync(id, _categoryRepository, "Category");
+        await EntityValidationHelper.EnsureEntityExistsAsync(id, _categoryRepository, CategoryEntity);
 
         var deleted = await _categoryRepository.DeleteAsync(id);
         if (!deleted)
