@@ -51,15 +51,11 @@ COPY --from=publish /app/publish .
 # For MigrationRunner
 COPY --from=build /src/Infrastructure/Migrations/Scripts /app/Migrations/Scripts
 
-# Copy entrypoint script
+# Copy entrypoint script and prepare app directory
 COPY docker-entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-
-# Create DataProtection-Keys directory structure
-RUN mkdir -p /app/.aspnet/DataProtection-Keys
-
-# Set ownership
-RUN chown -R appuser:appuser /app
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh && \
+    mkdir -p /app/.aspnet/DataProtection-Keys && \
+    chown -R appuser:appuser /app
 
 # Switch to non-root user
 USER appuser

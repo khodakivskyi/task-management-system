@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using backend.Models.DTOs;
 using backend.Services.Interfaces;
+using HotChocolate.Authorization;
 
 namespace backend.GraphQL.Queries;
 
@@ -9,6 +10,7 @@ namespace backend.GraphQL.Queries;
 /// </summary>
 public class AuthQuery
 {
+    [Authorize]
     public async Task<UserDto?> Me(
         ClaimsPrincipal claimsPrincipal,
         [Service] IAuthService authService
