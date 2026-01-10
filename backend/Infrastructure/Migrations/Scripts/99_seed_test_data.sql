@@ -3,14 +3,22 @@
 -- ============================================
 
 -- Insert test users (only if they don't exist)
-insert into "Users" ("Name", "Surname", "Login", "PasswordHash", "Salt", "CreatedAt")
+insert into "Users" (
+    "Name", "Surname", "Login", "PasswordHash",
+    "Email", "LastLoginAt", "IsActive", "EmailConfirmed",
+    "CreatedAt"
+)
 select * from (values
-    ('John', 'Doe', 'john.doe', 'hash1', 'salt1', current_timestamp),
-    ('Jane', 'Smith', 'jane.smith', 'hash2', 'salt2', current_timestamp),
-    ('Bob', 'Johnson', 'bob.johnson', 'hash3', 'salt3', current_timestamp),
-    ('Alice', 'Williams', 'alice.williams', 'hash4', 'salt4', current_timestamp),
-    ('Charlie', 'Brown', 'charlie.brown', 'hash5', 'salt5', current_timestamp)
-) as v("Name", "Surname", "Login", "PasswordHash", "Salt", "CreatedAt")
+    ('John', 'Doe', 'john.doe', 'hash1', 'john.doe@example.com', current_timestamp - interval '5 days', true, true, current_timestamp),
+    ('Jane', 'Smith', 'jane.smith', 'hash2', 'jane.smith@example.com', current_timestamp - interval '4 days', true, false, current_timestamp),
+    ('Bob', 'Johnson', 'bob.johnson', 'hash3', 'bob.johnson@example.com', current_timestamp - interval '3 days', true, false, current_timestamp),
+    ('Alice', 'Williams', 'alice.williams', 'hash4', 'alice.williams@example.com', current_timestamp - interval '2 days', true, true, current_timestamp),
+    ('Charlie', 'Brown', 'charlie.brown', 'hash5', 'charlie.brown@example.com', current_timestamp - interval '1 day', true, false, current_timestamp)
+) as v(
+    "Name", "Surname", "Login", "PasswordHash",
+    "Email", "LastLoginAt", "IsActive", "EmailConfirmed",
+    "CreatedAt"
+)
 where not exists (select 1 from "Users" where "Login" = v."Login");
 
 -- Insert test statuses (only if they don't exist)

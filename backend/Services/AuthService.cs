@@ -31,8 +31,7 @@ public class AuthService : IAuthService
 
         AuthHelper.ValidatePassword(request.Password);
 
-        string salt = BCrypt.Net.BCrypt.GenerateSalt(12);
-        string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password, salt);
+        string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password, 12);
 
         var user = new User
         {
@@ -41,7 +40,6 @@ public class AuthService : IAuthService
             Email = request.Email.ToLower().Trim(),
             Login = request.Login.Trim(),
             PasswordHash = passwordHash,
-            Salt = salt,
             CreatedAt = DateTime.UtcNow,
             IsActive = true,
             EmailConfirmed = false

@@ -15,12 +15,13 @@ public class UserRepository : BaseRepository, IUserRepository
     {
         await using var connection = await GetConnectionAsync();
         return await connection.QueryFirstOrDefaultAsync<User>(
-            @"SELECT ""Id"", ""Name"", ""Surname"", ""Email"", ""Login"", ""PasswordHash"", ""Salt"", 
+            @"SELECT ""Id"", ""Name"", ""Surname"", ""Email"", ""Login"", ""PasswordHash"", 
                      ""CreatedAt"", ""LastLoginAt"", ""IsActive"", ""EmailConfirmed""
               FROM ""Users""
               WHERE ""Id"" = @Id",
             new { Id = id });
     }
+
     public async Task<User?> GetByLoginOrEmailAsync(string loginOrEmail)
     {
         var normalized = loginOrEmail.Trim();
@@ -35,7 +36,6 @@ public class UserRepository : BaseRepository, IUserRepository
                 "Email",
                 "Login",
                 "PasswordHash",
-                "Salt",
                 "CreatedAt",
                 "LastLoginAt",
                 "IsActive",
@@ -71,7 +71,7 @@ public class UserRepository : BaseRepository, IUserRepository
     {
         await using var connection = await GetConnectionAsync();
         return await connection.QueryAsync<User>(
-            @"SELECT ""Id"", ""Name"", ""Surname"", ""Email"", ""Login"", ""PasswordHash"", ""Salt"", 
+            @"SELECT ""Id"", ""Name"", ""Surname"", ""Email"", ""Login"", ""PasswordHash"", 
                      ""CreatedAt"", ""LastLoginAt"", ""IsActive"", ""EmailConfirmed""
               FROM ""Users""
               ORDER BY ""CreatedAt"" DESC");
@@ -81,9 +81,9 @@ public class UserRepository : BaseRepository, IUserRepository
     {
         await using var connection = await GetConnectionAsync();
         return await connection.QuerySingleAsync<int>(
-            @"INSERT INTO ""Users"" (""Name"", ""Surname"", ""Email"", ""Login"", ""PasswordHash"", ""Salt"", 
+            @"INSERT INTO ""Users"" (""Name"", ""Surname"", ""Email"", ""Login"", ""PasswordHash"", 
                                      ""CreatedAt"", ""LastLoginAt"", ""IsActive"", ""EmailConfirmed"")
-              VALUES (@Name, @Surname, @Email, @Login, @PasswordHash, @Salt, 
+              VALUES (@Name, @Surname, @Email, @Login, @PasswordHash, 
                       @CreatedAt, @LastLoginAt, @IsActive, @EmailConfirmed)
               RETURNING ""Id""",
             new
@@ -93,7 +93,6 @@ public class UserRepository : BaseRepository, IUserRepository
                 user.Email,
                 user.Login,
                 user.PasswordHash,
-                user.Salt,
                 user.CreatedAt,
                 user.LastLoginAt,
                 user.IsActive,
@@ -107,7 +106,7 @@ public class UserRepository : BaseRepository, IUserRepository
         var affected = await connection.ExecuteAsync(
             @"UPDATE ""Users""
               SET ""Name"" = @Name, ""Surname"" = @Surname, ""Email"" = @Email, ""Login"" = @Login,
-                  ""PasswordHash"" = @PasswordHash, ""Salt"" = @Salt, ""LastLoginAt"" = @LastLoginAt,
+                  ""PasswordHash"" = @PasswordHash, ""LastLoginAt"" = @LastLoginAt,
                   ""IsActive"" = @IsActive, ""EmailConfirmed"" = @EmailConfirmed
               WHERE ""Id"" = @Id",
             new
@@ -118,7 +117,6 @@ public class UserRepository : BaseRepository, IUserRepository
                 user.Email,
                 user.Login,
                 user.PasswordHash,
-                user.Salt,
                 user.LastLoginAt,
                 user.IsActive,
                 user.EmailConfirmed
