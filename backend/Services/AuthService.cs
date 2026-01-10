@@ -120,7 +120,7 @@ public class AuthService : IAuthService
                 ValidAudience = _jwtOptions.Audience,
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero
-            }, out SecurityToken validatedToken);
+            }, out _);
 
             return true;
         }

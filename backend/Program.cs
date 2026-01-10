@@ -54,6 +54,7 @@ public static partial class Program
         builder.Services.AddGraphQLServer()
             .AddQueryType<RootQuery>()
             .AddMutationType<RootMutation>()
+            .AddAuthorization()
             .AddErrorFilter<GraphQLErrorFilter>();
 
         // Logging
@@ -67,6 +68,9 @@ public static partial class Program
 
         Console.WriteLine("App started!");
         Console.WriteLine($"GraphQL UI: http://localhost:{appConfig.Port}/graphql");
+
+        app.UseAuthentication();
+        app.UseAuthorization();
 
         app.MapGraphQL();
         await app.RunAsync();
