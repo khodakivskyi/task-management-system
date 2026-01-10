@@ -40,7 +40,6 @@ public class AuthService : IAuthService
             Email = request.Email.ToLower().Trim(),
             Login = request.Login.Trim(),
             PasswordHash = passwordHash,
-            Salt = salt,
             CreatedAt = DateTime.UtcNow,
             IsActive = true,
             EmailConfirmed = false
