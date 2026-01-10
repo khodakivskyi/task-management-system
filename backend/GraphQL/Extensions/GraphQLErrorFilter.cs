@@ -1,9 +1,10 @@
 using backend.Exceptions;
+using HotChocolate;
 
 namespace backend.GraphQL.Extensions;
 
 /// <summary>
-/// Custom GraphQLErrorFilter for GraphQL to map exceptions to error codes and log errors.
+/// Custom GraphQLErrorFilter for GraphQL to map exceptions to error codes and log errors. 
 /// </summary>
 public class GraphQLErrorFilter : IErrorFilter
 {
@@ -48,9 +49,11 @@ public class GraphQLErrorFilter : IErrorFilter
         };
 
         var builder = error
+            .WithMessage(exception.Message) 
             .WithCode(code)
             .WithException(null);
 
+        // Add validation errors if present
         if (exception is ValidationException ve && ve.Errors is not null)
         {
             builder = builder.SetExtension("errors", ve.Errors);
@@ -59,4 +62,3 @@ public class GraphQLErrorFilter : IErrorFilter
         return builder;
     }
 }
-
