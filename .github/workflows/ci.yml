@@ -34,9 +34,6 @@ jobs:
     - name: Install SonarCloud scanner
       run: dotnet tool install --global dotnet-sonarscanner
 
-    - name: Install ReportGenerator
-      run: dotnet tool install --global dotnet-reportgenerator-globaltool
-
     - name: Restore dependencies
       run: dotnet restore backend/backend.sln
 
@@ -56,7 +53,7 @@ jobs:
           /d:sonar.sources="backend" \
           /d:sonar.tests="backend/backend.Tests" \
           /d:sonar.exclusions="**/obj/**,**/bin/**,**/Migrations/**,**/*.Tests/**,**/Properties/**" \
-          /d:sonar.cs.opencover.reportsPaths="coverage-reports/OpenCover.xml" \
+          /d:sonar.cs.opencover.reportsPaths="coverage-reports/coverage.xml" \
           /d:sonar.coverage.exclusions="**/*.Tests/**,**/Migrations/**,**/Program.cs,**/Models/**"
 
     - name: Build
@@ -79,16 +76,13 @@ jobs:
         echo "=== Looking for coverage files ==="
         find . -type f -name "*.xml" | grep -i coverage || echo "No coverage files found"
 
-    - name: Generate merged coverage report
+    - name: Move coverage to predictable location
       run: |
         mkdir -p ./coverage-reports
-        reportgenerator \
-          "-reports:**/TestResults/**/coverage.opencover.xml" \
-          "-targetdir:./coverage-reports" \
-          "-reporttypes:OpenCover" \
-          "-verbosity:Info"
-        echo "=== Merged coverage report ==="
+        find ./TestResults -type f -name "coverage.opencover.xml" -exec cp {} ./coverage-reports/coverage.xml \;
+        echo "=== Coverage file ==="
         ls -la ./coverage-reports/
+        cat ./coverage-reports/coverage.xml | head -20 || echo "No coverage file"
 
     - name: End SonarCloud analysis
       env:
