@@ -46,6 +46,7 @@ jobs:
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
+        echo "Current directory: $(pwd)"
         dotnet-sonarscanner begin \
           /k:"khodakivskyi_task-management-system" \
           /o:"khodakivskyi" \
@@ -53,7 +54,9 @@ jobs:
           /d:sonar.host.url="https://sonarcloud.io" \
           /d:sonar.exclusions="**/obj/**,**/bin/**,**/Migrations/**,**/*.Tests/**" \
           /d:sonar.cs.opencover.reportsPaths="coverage/coverage.opencover.xml" \
-          /d:sonar.coverage.exclusions="**/*.Tests/**,**/Migrations/**,**/Program.cs"
+          /d:sonar.coverage.exclusions="**/*.Tests/**,**/Migrations/**,**/Program.cs" \
+          /d:sonar.sourceEncoding="UTF-8" \
+          /d:sonar.verbose=true
 
     - name: Build
       run: dotnet build backend/backend.sln --no-restore --configuration Release
@@ -80,14 +83,36 @@ jobs:
       run: |
         if [ -f ./coverage/coverage.opencover.xml ]; then
           echo "=== Coverage file found ==="
-          head -20 ./coverage/coverage.opencover.xml
+          echo "File size: $(du -h ./coverage/coverage.opencover.xml)"
+          echo "=== First 30 lines ==="
+          head -30 ./coverage/coverage.opencover.xml
+          echo "=== Checking for Module elements ==="
+          grep -c "<Module" ./coverage/coverage.opencover.xml || echo "No Module elements found"
+          echo "=== Coverage statistics ==="
+          grep "sequenceCoverage\|branchCoverage" ./coverage/coverage.opencover.xml | head -5
         else
           echo "ERROR: Coverage file not found!"
           exit 1
         fi
 
+    - name: List all coverage files recursively
+      run: |
+        echo "=== All .xml files in workspace ==="
+        find . -name "*.xml" -type f | grep -i coverage || echo "No coverage XML files found"
+        echo "=== All files in TestResults ==="
+        find ./TestResults -type f || echo "TestResults directory is empty"
+
     - name: End SonarCloud analysis
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
+        echo "=== Final check before SonarCloud end ==="
+        echo "Current directory: $(pwd)"
+        echo "Absolute path to coverage: $(pwd)/coverage/coverage.opencover.xml"
+        ls -la ./coverage/ || echo "Coverage directory not found"
+        if [ -f ./coverage/coverage.opencover.xml ]; then
+          echo "✓ Coverage file exists at expected location"
+        else
+          echo "✗ Coverage file NOT found at expected location"
+        fi
         dotnet-sonarscanner end /d:sonar.token="$SONAR_TOKEN"
