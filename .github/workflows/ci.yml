@@ -34,6 +34,9 @@ jobs:
     - name: Install SonarCloud scanner
       run: dotnet tool install --global dotnet-sonarscanner
 
+    - name: Install ReportGenerator
+      run: dotnet tool install --global dotnet-reportgenerator-globaltool
+
     - name: Restore dependencies
       run: dotnet restore backend/backend.sln
 
@@ -49,11 +52,12 @@ jobs:
           /o:"khodakivskyi" \
           /d:sonar.token="$SONAR_TOKEN" \
           /d:sonar.host.url="https://sonarcloud.io" \
+          /d:sonar.projectBaseDir="." \
           /d:sonar.sources="backend" \
           /d:sonar.tests="backend/backend.Tests" \
-          /d:sonar.exclusions="**/obj/**,**/bin/**,**/Migrations/**,**/*.Tests/**" \
-          /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml" \
-          /d:sonar.coverage.exclusions="**/*.Tests/**,**/Migrations/**,**/Program.cs"
+          /d:sonar.exclusions="**/obj/**,**/bin/**,**/Migrations/**,**/*.Tests/**,**/Properties/**" \
+          /d:sonar.cs.opencover.reportsPaths="coverage-reports/OpenCover.xml" \
+          /d:sonar.coverage.exclusions="**/*.Tests/**,**/Migrations/**,**/Program.cs,**/Models/**"
 
     - name: Build
       run: dotnet build backend/backend.sln --no-restore --configuration Release
@@ -67,6 +71,24 @@ jobs:
           --collect:"XPlat Code Coverage" \
           --results-directory ./TestResults \
           --settings backend/coverlet.runsettings
+
+    - name: Debug - List all generated files
+      run: |
+        echo "=== TestResults structure ==="
+        ls -R ./TestResults || echo "TestResults not found"
+        echo "=== Looking for coverage files ==="
+        find . -type f -name "*.xml" | grep -i coverage || echo "No coverage files found"
+
+    - name: Generate merged coverage report
+      run: |
+        mkdir -p ./coverage-reports
+        reportgenerator \
+          "-reports:**/TestResults/**/coverage.opencover.xml" \
+          "-targetdir:./coverage-reports" \
+          "-reporttypes:OpenCover" \
+          "-verbosity:Info"
+        echo "=== Merged coverage report ==="
+        ls -la ./coverage-reports/
 
     - name: End SonarCloud analysis
       env:
