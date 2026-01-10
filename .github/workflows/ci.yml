@@ -44,17 +44,14 @@ jobs:
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
-        cd backend
         dotnet-sonarscanner begin \
           /k:"khodakivskyi_task-management-system" \
           /o:"khodakivskyi" \
           /d:sonar.token="$SONAR_TOKEN" \
           /d:sonar.host.url="https://sonarcloud.io" \
-          /d:sonar.projectBaseDir=".." \
-          /d:sonar.working.directory="../.sonarqube" \
-          /d:sonar.exclusions="**/obj/**,**/bin/**,**/Migrations/**,**/*.Tests/**,**/Properties/**" \
-          /d:sonar.cs.opencover.reportsPaths="../coverage-reports/coverage.xml" \
-          /d:sonar.coverage.exclusions="**/*.Tests/**,**/Migrations/**,**/Program.cs,**/Models/**"
+          /d:sonar.exclusions="**/obj/**,**/bin/**,**/Migrations/**,**/*.Tests/**" \
+          /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml" \
+          /d:sonar.coverage.exclusions="**/*.Tests/**,**/Migrations/**"
 
     - name: Build
       run: dotnet build backend/backend.sln --no-restore --configuration Release
@@ -76,17 +73,15 @@ jobs:
         echo "=== Looking for coverage files ==="
         find . -type f -name "*.xml" | grep -i coverage || echo "No coverage files found"
 
-    - name: Move coverage to predictable location
+    - name: Verify coverage file exists
       run: |
-        mkdir -p ./coverage-reports
-        find ./TestResults -type f -name "coverage.opencover.xml" -exec cp {} ./coverage-reports/coverage.xml \;
-        echo "=== Coverage file ==="
-        ls -la ./coverage-reports/
-        cat ./coverage-reports/coverage.xml | head -20 || echo "No coverage file"
+        echo "=== Coverage files found ==="
+        find ./TestResults -name "coverage.opencover.xml" -type f
+        echo "=== Checking content ==="
+        find ./TestResults -name "coverage.opencover.xml" -type f -exec head -5 {} \;
 
     - name: End SonarCloud analysis
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
-        cd backend
         dotnet-sonarscanner end /d:sonar.token="$SONAR_TOKEN"
