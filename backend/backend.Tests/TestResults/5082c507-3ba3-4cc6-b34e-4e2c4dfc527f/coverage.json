@@ -1,0 +1,2235 @@
+{
+  "backend.dll": {
+    "/home/runner/work/task-management-system/task-management-system/backend/Program.cs": {
+      "backend.Program": {
+        "System.Void backend.Program::ConfigureRepositories(Microsoft.AspNetCore.Builder.WebApplicationBuilder)": {
+          "Lines": {
+            "82": 0,
+            "83": 0,
+            "84": 0,
+            "85": 0,
+            "86": 0,
+            "87": 0,
+            "88": 0,
+            "89": 0,
+            "90": 0,
+            "91": 0,
+            "92": 0,
+            "93": 0,
+            "94": 0,
+            "95": 0,
+            "96": 0,
+            "97": 0
+          },
+          "Branches": []
+        },
+        "System.Void backend.Program::ConfigureServices(Microsoft.AspNetCore.Builder.WebApplicationBuilder)": {
+          "Lines": {
+            "101": 0,
+            "102": 0,
+            "103": 0,
+            "104": 0,
+            "105": 0,
+            "106": 0,
+            "107": 0,
+            "108": 0,
+            "109": 0,
+            "110": 0,
+            "111": 0,
+            "112": 0,
+            "113": 0,
+            "114": 0
+          },
+          "Branches": []
+        },
+        "System.Void backend.Program::ConfigureJwtAuthentication(Microsoft.AspNetCore.Builder.WebApplicationBuilder,backend.Configuration.JwtOptions)": {
+          "Lines": {
+            "120": 0,
+            "121": 0,
+            "123": 0,
+            "124": 0,
+            "125": 0,
+            "126": 0,
+            "127": 0,
+            "128": 0,
+            "129": 0,
+            "130": 0,
+            "131": 0,
+            "132": 0,
+            "133": 0,
+            "134": 0,
+            "135": 0,
+            "136": 0,
+            "137": 0,
+            "138": 0,
+            "139": 0,
+            "140": 0,
+            "141": 0,
+            "143": 0,
+            "144": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Services/AuthService.cs": {
+      "backend.Services.AuthService": {
+        "System.Void backend.Services.AuthService::.ctor(backend.Infrastructure.Repositories.Interfaces.IUserRepository,backend.Configuration.JwtOptions)": {
+          "Lines": {
+            "20": 10,
+            "21": 10,
+            "22": 10,
+            "23": 10,
+            "24": 10
+          },
+          "Branches": [
+            {
+              "Line": 22,
+              "Offset": 11,
+              "EndOffset": 13,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 0
+            },
+            {
+              "Line": 22,
+              "Offset": 11,
+              "EndOffset": 25,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 10
+            },
+            {
+              "Line": 23,
+              "Offset": 33,
+              "EndOffset": 35,
+              "Path": 0,
+              "Ordinal": 2,
+              "Hits": 0
+            },
+            {
+              "Line": 23,
+              "Offset": 33,
+              "EndOffset": 47,
+              "Path": 1,
+              "Ordinal": 3,
+              "Hits": 10
+            }
+          ]
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Services/CategoryService.cs": {
+      "backend.Services.CategoryService": {
+        "System.Void backend.Services.CategoryService::.ctor(backend.Infrastructure.Repositories.Interfaces.IRepository`1<backend.Models.Category>)": {
+          "Lines": {
+            "18": 0,
+            "19": 0,
+            "20": 0,
+            "21": 0
+          },
+          "Branches": [
+            {
+              "Line": 20,
+              "Offset": 11,
+              "EndOffset": 13,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 0
+            },
+            {
+              "Line": 20,
+              "Offset": 11,
+              "EndOffset": 25,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 0
+            }
+          ]
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Services/CommentService.cs": {
+      "backend.Services.CommentService": {
+        "System.Void backend.Services.CommentService::.ctor(backend.Infrastructure.Repositories.Interfaces.IRepository`1<backend.Models.Comment>,backend.Infrastructure.Repositories.Interfaces.IRepository`1<backend.Models.TaskModel>,backend.Infrastructure.Repositories.Interfaces.IUserRepository)": {
+          "Lines": {
+            "20": 0,
+            "21": 0,
+            "22": 0,
+            "23": 0,
+            "24": 0,
+            "25": 0,
+            "26": 0,
+            "27": 0,
+            "28": 0
+          },
+          "Branches": [
+            {
+              "Line": 25,
+              "Offset": 11,
+              "EndOffset": 13,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 0
+            },
+            {
+              "Line": 25,
+              "Offset": 11,
+              "EndOffset": 25,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 0
+            },
+            {
+              "Line": 26,
+              "Offset": 33,
+              "EndOffset": 35,
+              "Path": 0,
+              "Ordinal": 2,
+              "Hits": 0
+            },
+            {
+              "Line": 26,
+              "Offset": 33,
+              "EndOffset": 47,
+              "Path": 1,
+              "Ordinal": 3,
+              "Hits": 0
+            },
+            {
+              "Line": 27,
+              "Offset": 55,
+              "EndOffset": 57,
+              "Path": 0,
+              "Ordinal": 4,
+              "Hits": 0
+            },
+            {
+              "Line": 27,
+              "Offset": 55,
+              "EndOffset": 69,
+              "Path": 1,
+              "Ordinal": 5,
+              "Hits": 0
+            }
+          ]
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Services/EntityTypeService.cs": {
+      "backend.Services.EntityTypeService": {
+        "System.Void backend.Services.EntityTypeService::.ctor(backend.Infrastructure.Repositories.Interfaces.IEntityTypeRepository)": {
+          "Lines": {
+            "19": 0,
+            "20": 0,
+            "21": 0,
+            "22": 0
+          },
+          "Branches": [
+            {
+              "Line": 21,
+              "Offset": 11,
+              "EndOffset": 13,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 0
+            },
+            {
+              "Line": 21,
+              "Offset": 11,
+              "EndOffset": 25,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 0
+            }
+          ]
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Services/FavoriteService.cs": {
+      "backend.Services.FavoriteService": {
+        "System.Void backend.Services.FavoriteService::.ctor(backend.Infrastructure.Repositories.Interfaces.IFavoriteRepository,backend.Infrastructure.Repositories.Interfaces.IUserRepository,backend.Infrastructure.Repositories.Interfaces.IEntityTypeRepository)": {
+          "Lines": {
+            "22": 0,
+            "23": 0,
+            "24": 0,
+            "25": 0,
+            "26": 0,
+            "27": 0,
+            "28": 0,
+            "29": 0,
+            "30": 0
+          },
+          "Branches": [
+            {
+              "Line": 27,
+              "Offset": 11,
+              "EndOffset": 13,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 0
+            },
+            {
+              "Line": 27,
+              "Offset": 11,
+              "EndOffset": 25,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 0
+            },
+            {
+              "Line": 28,
+              "Offset": 33,
+              "EndOffset": 35,
+              "Path": 0,
+              "Ordinal": 2,
+              "Hits": 0
+            },
+            {
+              "Line": 28,
+              "Offset": 33,
+              "EndOffset": 47,
+              "Path": 1,
+              "Ordinal": 3,
+              "Hits": 0
+            },
+            {
+              "Line": 29,
+              "Offset": 55,
+              "EndOffset": 57,
+              "Path": 0,
+              "Ordinal": 4,
+              "Hits": 0
+            },
+            {
+              "Line": 29,
+              "Offset": 55,
+              "EndOffset": 69,
+              "Path": 1,
+              "Ordinal": 5,
+              "Hits": 0
+            }
+          ]
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Services/ProjectMemberService.cs": {
+      "backend.Services.ProjectMemberService": {
+        "System.Void backend.Services.ProjectMemberService::.ctor(backend.Infrastructure.Repositories.Interfaces.IProjectMemberRepository,backend.Infrastructure.Repositories.Interfaces.IRepository`1<backend.Models.Project>,backend.Infrastructure.Repositories.Interfaces.IUserRepository,backend.Infrastructure.Repositories.Interfaces.IRepository`1<backend.Models.ProjectRole>)": {
+          "Lines": {
+            "23": 0,
+            "24": 0,
+            "25": 0,
+            "26": 0,
+            "27": 0,
+            "28": 0,
+            "29": 0,
+            "30": 0,
+            "31": 0,
+            "32": 0,
+            "33": 0
+          },
+          "Branches": [
+            {
+              "Line": 29,
+              "Offset": 11,
+              "EndOffset": 13,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 0
+            },
+            {
+              "Line": 29,
+              "Offset": 11,
+              "EndOffset": 25,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 0
+            },
+            {
+              "Line": 30,
+              "Offset": 33,
+              "EndOffset": 35,
+              "Path": 0,
+              "Ordinal": 2,
+              "Hits": 0
+            },
+            {
+              "Line": 30,
+              "Offset": 33,
+              "EndOffset": 47,
+              "Path": 1,
+              "Ordinal": 3,
+              "Hits": 0
+            },
+            {
+              "Line": 31,
+              "Offset": 55,
+              "EndOffset": 57,
+              "Path": 0,
+              "Ordinal": 4,
+              "Hits": 0
+            },
+            {
+              "Line": 31,
+              "Offset": 55,
+              "EndOffset": 69,
+              "Path": 1,
+              "Ordinal": 5,
+              "Hits": 0
+            }
+          ]
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Services/ProjectService.cs": {
+      "backend.Services.ProjectService": {
+        "System.Void backend.Services.ProjectService::.ctor(backend.Infrastructure.Repositories.Interfaces.IRepository`1<backend.Models.Project>,backend.Infrastructure.Repositories.Interfaces.IUserRepository)": {
+          "Lines": {
+            "19": 0,
+            "20": 0,
+            "21": 0,
+            "22": 0,
+            "23": 0,
+            "24": 0,
+            "25": 0
+          },
+          "Branches": [
+            {
+              "Line": 23,
+              "Offset": 11,
+              "EndOffset": 13,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 0
+            },
+            {
+              "Line": 23,
+              "Offset": 11,
+              "EndOffset": 25,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 0
+            },
+            {
+              "Line": 24,
+              "Offset": 33,
+              "EndOffset": 35,
+              "Path": 0,
+              "Ordinal": 2,
+              "Hits": 0
+            },
+            {
+              "Line": 24,
+              "Offset": 33,
+              "EndOffset": 47,
+              "Path": 1,
+              "Ordinal": 3,
+              "Hits": 0
+            }
+          ]
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Services/ProjectStatisticsService.cs": {
+      "backend.Services.ProjectStatisticsService": {
+        "System.Void backend.Services.ProjectStatisticsService::.ctor(backend.Infrastructure.Repositories.Interfaces.IProjectStatisticRepository)": {
+          "Lines": {
+            "15": 0,
+            "16": 0,
+            "17": 0,
+            "18": 0
+          },
+          "Branches": [
+            {
+              "Line": 17,
+              "Offset": 11,
+              "EndOffset": 13,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 0
+            },
+            {
+              "Line": 17,
+              "Offset": 11,
+              "EndOffset": 25,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 0
+            }
+          ]
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Services/StatusService.cs": {
+      "backend.Services.StatusService": {
+        "System.Void backend.Services.StatusService::.ctor(backend.Infrastructure.Repositories.Interfaces.IRepository`1<backend.Models.Status>)": {
+          "Lines": {
+            "18": 0,
+            "19": 0,
+            "20": 0,
+            "21": 0
+          },
+          "Branches": [
+            {
+              "Line": 20,
+              "Offset": 11,
+              "EndOffset": 13,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 0
+            },
+            {
+              "Line": 20,
+              "Offset": 11,
+              "EndOffset": 25,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 0
+            }
+          ]
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Services/TaskHistoryService.cs": {
+      "backend.Services.TaskHistoryService": {
+        "System.Void backend.Services.TaskHistoryService::.ctor(backend.Infrastructure.Repositories.Interfaces.ITaskHistoryRepository,backend.Infrastructure.Repositories.Interfaces.IRepository`1<backend.Models.TaskModel>)": {
+          "Lines": {
+            "19": 0,
+            "20": 0,
+            "21": 0,
+            "22": 0,
+            "23": 0,
+            "24": 0,
+            "25": 0
+          },
+          "Branches": [
+            {
+              "Line": 23,
+              "Offset": 11,
+              "EndOffset": 13,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 0
+            },
+            {
+              "Line": 23,
+              "Offset": 11,
+              "EndOffset": 25,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 0
+            },
+            {
+              "Line": 24,
+              "Offset": 33,
+              "EndOffset": 35,
+              "Path": 0,
+              "Ordinal": 2,
+              "Hits": 0
+            },
+            {
+              "Line": 24,
+              "Offset": 33,
+              "EndOffset": 47,
+              "Path": 1,
+              "Ordinal": 3,
+              "Hits": 0
+            }
+          ]
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Services/TaskSearchService.cs": {
+      "backend.Services.TaskSearchService": {
+        "System.Void backend.Services.TaskSearchService::.ctor(backend.Infrastructure.Repositories.Interfaces.ITaskRepository)": {
+          "Lines": {
+            "14": 0,
+            "15": 0,
+            "16": 0,
+            "17": 0
+          },
+          "Branches": [
+            {
+              "Line": 16,
+              "Offset": 11,
+              "EndOffset": 13,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 0
+            },
+            {
+              "Line": 16,
+              "Offset": 11,
+              "EndOffset": 25,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 0
+            }
+          ]
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Services/TaskService.cs": {
+      "backend.Services.TaskService": {
+        "System.Void backend.Services.TaskService::.ctor(backend.Infrastructure.Repositories.Interfaces.ITaskRepository,backend.Infrastructure.Repositories.Interfaces.IUserRepository,backend.Infrastructure.Repositories.Interfaces.IRepository`1<backend.Models.Status>,backend.Infrastructure.Repositories.Interfaces.IRepository`1<backend.Models.Category>,backend.Infrastructure.Repositories.Interfaces.IRepository`1<backend.Models.Project>)": {
+          "Lines": {
+            "22": 0,
+            "23": 0,
+            "24": 0,
+            "25": 0,
+            "26": 0,
+            "27": 0,
+            "28": 0,
+            "29": 0,
+            "30": 0,
+            "31": 0,
+            "32": 0,
+            "33": 0,
+            "34": 0
+          },
+          "Branches": [
+            {
+              "Line": 29,
+              "Offset": 11,
+              "EndOffset": 13,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 0
+            },
+            {
+              "Line": 29,
+              "Offset": 11,
+              "EndOffset": 25,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 0
+            },
+            {
+              "Line": 30,
+              "Offset": 33,
+              "EndOffset": 35,
+              "Path": 0,
+              "Ordinal": 2,
+              "Hits": 0
+            },
+            {
+              "Line": 30,
+              "Offset": 33,
+              "EndOffset": 47,
+              "Path": 1,
+              "Ordinal": 3,
+              "Hits": 0
+            },
+            {
+              "Line": 31,
+              "Offset": 55,
+              "EndOffset": 57,
+              "Path": 0,
+              "Ordinal": 4,
+              "Hits": 0
+            },
+            {
+              "Line": 31,
+              "Offset": 55,
+              "EndOffset": 69,
+              "Path": 1,
+              "Ordinal": 5,
+              "Hits": 0
+            }
+          ]
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Infrastructure/Repositories/BaseRepository.cs": {
+      "backend.Infrastructure.Repositories.BaseRepository": {
+        "System.Void backend.Infrastructure.Repositories.BaseRepository::.ctor(System.String)": {
+          "Lines": {
+            "13": 0,
+            "14": 0,
+            "15": 0,
+            "16": 0
+          },
+          "Branches": [
+            {
+              "Line": 15,
+              "Offset": 11,
+              "EndOffset": 13,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 0
+            },
+            {
+              "Line": 15,
+              "Offset": 11,
+              "EndOffset": 25,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 0
+            }
+          ]
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Infrastructure/Repositories/CategoryRepository.cs": {
+      "backend.Infrastructure.Repositories.CategoryRepository": {
+        "System.Void backend.Infrastructure.Repositories.CategoryRepository::.ctor(System.String)": {
+          "Lines": {
+            "12": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Infrastructure/Repositories/CommentRepository.cs": {
+      "backend.Infrastructure.Repositories.CommentRepository": {
+        "System.Void backend.Infrastructure.Repositories.CommentRepository::.ctor(System.String)": {
+          "Lines": {
+            "13": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Infrastructure/Repositories/EntityTypeRepository.cs": {
+      "backend.Infrastructure.Repositories.EntityTypeRepository": {
+        "System.Void backend.Infrastructure.Repositories.EntityTypeRepository::.ctor(System.String)": {
+          "Lines": {
+            "14": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Infrastructure/Repositories/FavoriteRepository.cs": {
+      "backend.Infrastructure.Repositories.FavoriteRepository": {
+        "System.Void backend.Infrastructure.Repositories.FavoriteRepository::.ctor(System.String)": {
+          "Lines": {
+            "12": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Infrastructure/Repositories/ProjectMemberRepository.cs": {
+      "backend.Infrastructure.Repositories.ProjectMemberRepository": {
+        "System.Void backend.Infrastructure.Repositories.ProjectMemberRepository::.ctor(System.String)": {
+          "Lines": {
+            "12": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Infrastructure/Repositories/ProjectRepository.cs": {
+      "backend.Infrastructure.Repositories.ProjectRepository": {
+        "System.Void backend.Infrastructure.Repositories.ProjectRepository::.ctor(System.String)": {
+          "Lines": {
+            "12": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Infrastructure/Repositories/ProjectRoleRepository.cs": {
+      "backend.Infrastructure.Repositories.ProjectRoleRepository": {
+        "System.Void backend.Infrastructure.Repositories.ProjectRoleRepository::.ctor(System.String)": {
+          "Lines": {
+            "12": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Infrastructure/Repositories/ProjectStatisticRepository.cs": {
+      "backend.Infrastructure.Repositories.ProjectStatisticRepository": {
+        "System.Void backend.Infrastructure.Repositories.ProjectStatisticRepository::.ctor(System.String)": {
+          "Lines": {
+            "12": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Infrastructure/Repositories/StatusRepository.cs": {
+      "backend.Infrastructure.Repositories.StatusRepository": {
+        "System.Void backend.Infrastructure.Repositories.StatusRepository::.ctor(System.String)": {
+          "Lines": {
+            "14": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Infrastructure/Repositories/TaskAssigneeRepository.cs": {
+      "backend.Infrastructure.Repositories.TaskAssigneeRepository": {
+        "System.Void backend.Infrastructure.Repositories.TaskAssigneeRepository::.ctor(System.String)": {
+          "Lines": {
+            "13": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Infrastructure/Repositories/TaskHistoryRepository.cs": {
+      "backend.Infrastructure.Repositories.TaskHistoryRepository": {
+        "System.Void backend.Infrastructure.Repositories.TaskHistoryRepository::.ctor(System.String)": {
+          "Lines": {
+            "13": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Infrastructure/Repositories/TaskRepository.cs": {
+      "backend.Infrastructure.Repositories.TaskRepository": {
+        "System.Void backend.Infrastructure.Repositories.TaskRepository::.ctor(System.String)": {
+          "Lines": {
+            "15": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Infrastructure/Repositories/UserRepository.cs": {
+      "backend.Infrastructure.Repositories.UserRepository": {
+        "System.Void backend.Infrastructure.Repositories.UserRepository::.ctor(System.String)": {
+          "Lines": {
+            "12": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Helpers/AuthHelper.cs": {
+      "backend.Helpers.AuthHelper": {
+        "System.Void backend.Helpers.AuthHelper::ValidateRegistrationRequest(backend.Models.DTOs.RegisterRequest)": {
+          "Lines": {
+            "31": 11,
+            "32": 11,
+            "33": 1,
+            "35": 10,
+            "36": 1,
+            "38": 9,
+            "39": 1,
+            "41": 8,
+            "42": 1,
+            "44": 7,
+            "45": 1,
+            "47": 6,
+            "48": 1,
+            "50": 5,
+            "51": 1,
+            "52": 4
+          },
+          "Branches": [
+            {
+              "Line": 32,
+              "Offset": 14,
+              "EndOffset": 16,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 1
+            },
+            {
+              "Line": 32,
+              "Offset": 14,
+              "EndOffset": 27,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 10
+            },
+            {
+              "Line": 35,
+              "Offset": 40,
+              "EndOffset": 42,
+              "Path": 0,
+              "Ordinal": 2,
+              "Hits": 1
+            },
+            {
+              "Line": 35,
+              "Offset": 40,
+              "EndOffset": 53,
+              "Path": 1,
+              "Ordinal": 3,
+              "Hits": 9
+            },
+            {
+              "Line": 38,
+              "Offset": 69,
+              "EndOffset": 71,
+              "Path": 0,
+              "Ordinal": 4,
+              "Hits": 1
+            },
+            {
+              "Line": 38,
+              "Offset": 69,
+              "EndOffset": 82,
+              "Path": 1,
+              "Ordinal": 5,
+              "Hits": 8
+            },
+            {
+              "Line": 41,
+              "Offset": 95,
+              "EndOffset": 97,
+              "Path": 0,
+              "Ordinal": 6,
+              "Hits": 1
+            },
+            {
+              "Line": 41,
+              "Offset": 95,
+              "EndOffset": 108,
+              "Path": 1,
+              "Ordinal": 7,
+              "Hits": 7
+            },
+            {
+              "Line": 44,
+              "Offset": 126,
+              "EndOffset": 128,
+              "Path": 0,
+              "Ordinal": 8,
+              "Hits": 1
+            },
+            {
+              "Line": 44,
+              "Offset": 126,
+              "EndOffset": 139,
+              "Path": 1,
+              "Ordinal": 9,
+              "Hits": 6
+            },
+            {
+              "Line": 47,
+              "Offset": 158,
+              "EndOffset": 160,
+              "Path": 0,
+              "Ordinal": 10,
+              "Hits": 1
+            },
+            {
+              "Line": 47,
+              "Offset": 158,
+              "EndOffset": 171,
+              "Path": 1,
+              "Ordinal": 11,
+              "Hits": 5
+            },
+            {
+              "Line": 50,
+              "Offset": 186,
+              "EndOffset": 188,
+              "Path": 0,
+              "Ordinal": 12,
+              "Hits": 1
+            },
+            {
+              "Line": 50,
+              "Offset": 186,
+              "EndOffset": 199,
+              "Path": 1,
+              "Ordinal": 13,
+              "Hits": 4
+            }
+          ]
+        },
+        "System.Void backend.Helpers.AuthHelper::ValidateLoginRequest(backend.Models.DTOs.LoginRequest)": {
+          "Lines": {
+            "55": 6,
+            "56": 6,
+            "57": 1,
+            "58": 5,
+            "59": 1,
+            "60": 4
+          },
+          "Branches": [
+            {
+              "Line": 56,
+              "Offset": 14,
+              "EndOffset": 16,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 1
+            },
+            {
+              "Line": 56,
+              "Offset": 14,
+              "EndOffset": 27,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 5
+            },
+            {
+              "Line": 58,
+              "Offset": 40,
+              "EndOffset": 42,
+              "Path": 0,
+              "Ordinal": 2,
+              "Hits": 1
+            },
+            {
+              "Line": 58,
+              "Offset": 40,
+              "EndOffset": 53,
+              "Path": 1,
+              "Ordinal": 3,
+              "Hits": 4
+            }
+          ]
+        },
+        "System.Void backend.Helpers.AuthHelper::ValidatePassword(System.String)": {
+          "Lines": {
+            "63": 6,
+            "64": 6,
+            "65": 1,
+            "67": 5,
+            "68": 1,
+            "70": 4,
+            "71": 1,
+            "73": 3,
+            "74": 1,
+            "75": 2
+          },
+          "Branches": [
+            {
+              "Line": 64,
+              "Offset": 12,
+              "EndOffset": 14,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 1
+            },
+            {
+              "Line": 64,
+              "Offset": 12,
+              "EndOffset": 25,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 5
+            },
+            {
+              "Line": 67,
+              "Offset": 40,
+              "EndOffset": 42,
+              "Path": 0,
+              "Ordinal": 2,
+              "Hits": 1
+            },
+            {
+              "Line": 67,
+              "Offset": 40,
+              "EndOffset": 53,
+              "Path": 1,
+              "Ordinal": 3,
+              "Hits": 4
+            },
+            {
+              "Line": 70,
+              "Offset": 91,
+              "EndOffset": 93,
+              "Path": 0,
+              "Ordinal": 4,
+              "Hits": 1
+            },
+            {
+              "Line": 70,
+              "Offset": 91,
+              "EndOffset": 104,
+              "Path": 1,
+              "Ordinal": 5,
+              "Hits": 3
+            },
+            {
+              "Line": 73,
+              "Offset": 142,
+              "EndOffset": 144,
+              "Path": 0,
+              "Ordinal": 6,
+              "Hits": 1
+            },
+            {
+              "Line": 73,
+              "Offset": 142,
+              "EndOffset": 155,
+              "Path": 1,
+              "Ordinal": 7,
+              "Hits": 2
+            }
+          ]
+        },
+        "System.Boolean backend.Helpers.AuthHelper::IsValidEmail(System.String)": {
+          "Lines": {
+            "78": 16,
+            "79": 16,
+            "80": 2,
+            "82": 14,
+            "83": 16
+          },
+          "Branches": [
+            {
+              "Line": 79,
+              "Offset": 9,
+              "EndOffset": 11,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 2
+            },
+            {
+              "Line": 79,
+              "Offset": 9,
+              "EndOffset": 15,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 14
+            }
+          ]
+        },
+        "System.String backend.Helpers.AuthHelper::GenerateJwtToken(backend.Models.User,System.String,System.Int32,System.String,System.String)": {
+          "Lines": {
+            "86": 4,
+            "87": 4,
+            "88": 4,
+            "90": 4,
+            "91": 4,
+            "92": 4,
+            "93": 4,
+            "94": 4,
+            "95": 4,
+            "96": 4,
+            "97": 4,
+            "99": 4,
+            "100": 4,
+            "101": 4,
+            "102": 4,
+            "104": 4,
+            "105": 4,
+            "106": 4,
+            "107": 4,
+            "108": 4,
+            "109": 4,
+            "110": 4,
+            "111": 4,
+            "112": 4,
+            "113": 4,
+            "115": 4,
+            "116": 4,
+            "117": 4
+          },
+          "Branches": [
+            {
+              "Line": 99,
+              "Offset": 181,
+              "EndOffset": 183,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 4
+            },
+            {
+              "Line": 99,
+              "Offset": 181,
+              "EndOffset": 208,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 4
+            }
+          ]
+        },
+        "backend.Models.DTOs.UserDto backend.Helpers.AuthHelper::MapToUserDto(backend.Models.User)": {
+          "Lines": {
+            "119": 4,
+            "120": 4,
+            "121": 4,
+            "122": 4,
+            "123": 4,
+            "124": 4,
+            "125": 4,
+            "126": 4,
+            "127": 4,
+            "128": 4
+          },
+          "Branches": []
+        },
+        "System.Nullable`1<System.Int32> backend.Helpers.AuthHelper::ExtractUserIdFromClaims(System.Security.Claims.ClaimsPrincipal)": {
+          "Lines": {
+            "131": 6,
+            "132": 6,
+            "133": 6,
+            "135": 6,
+            "136": 4,
+            "137": 4,
+            "140": 2,
+            "141": 6
+          },
+          "Branches": [
+            {
+              "Line": 132,
+              "Offset": 13,
+              "EndOffset": 15,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 2
+            },
+            {
+              "Line": 132,
+              "Offset": 13,
+              "EndOffset": 19,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 4
+            },
+            {
+              "Line": 132,
+              "Offset": 25,
+              "EndOffset": 27,
+              "Path": 0,
+              "Ordinal": 2,
+              "Hits": 2
+            },
+            {
+              "Line": 132,
+              "Offset": 40,
+              "EndOffset": 42,
+              "Path": 0,
+              "Ordinal": 4,
+              "Hits": 1
+            },
+            {
+              "Line": 132,
+              "Offset": 40,
+              "EndOffset": 46,
+              "Path": 1,
+              "Ordinal": 5,
+              "Hits": 1
+            },
+            {
+              "Line": 132,
+              "Offset": 25,
+              "EndOffset": 51,
+              "Path": 1,
+              "Ordinal": 3,
+              "Hits": 6
+            },
+            {
+              "Line": 135,
+              "Offset": 53,
+              "EndOffset": 55,
+              "Path": 0,
+              "Ordinal": 6,
+              "Hits": 5
+            },
+            {
+              "Line": 135,
+              "Offset": 53,
+              "EndOffset": 65,
+              "Path": 1,
+              "Ordinal": 7,
+              "Hits": 1
+            },
+            {
+              "Line": 135,
+              "Offset": 68,
+              "EndOffset": 70,
+              "Path": 0,
+              "Ordinal": 8,
+              "Hits": 4
+            },
+            {
+              "Line": 135,
+              "Offset": 68,
+              "EndOffset": 80,
+              "Path": 1,
+              "Ordinal": 9,
+              "Hits": 2
+            }
+          ]
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Helpers/ValidationHelper.cs": {
+      "backend.Helpers.ValidationHelper": {
+        "System.Void backend.Helpers.ValidationHelper::ValidateId(System.Int32,System.String)": {
+          "Lines": {
+            "14": 5,
+            "15": 5,
+            "16": 3,
+            "17": 3,
+            "19": 2
+          },
+          "Branches": [
+            {
+              "Line": 15,
+              "Offset": 10,
+              "EndOffset": 12,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 3
+            },
+            {
+              "Line": 15,
+              "Offset": 10,
+              "EndOffset": 30,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 2
+            }
+          ]
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/GraphQL/RootMutation.cs": {
+      "backend.GraphQL.RootMutation": {
+        "backend.GraphQL.Mutations.AuthMutation backend.GraphQL.RootMutation::Auth()": {
+          "Lines": {
+            "7": 0
+          },
+          "Branches": []
+        },
+        "backend.GraphQL.Mutations.TasksMutation backend.GraphQL.RootMutation::Tasks()": {
+          "Lines": {
+            "8": 0
+          },
+          "Branches": []
+        },
+        "backend.GraphQL.Mutations.ProjectsMutation backend.GraphQL.RootMutation::Projects()": {
+          "Lines": {
+            "9": 0
+          },
+          "Branches": []
+        },
+        "backend.GraphQL.Mutations.CategoriesMutation backend.GraphQL.RootMutation::Categories()": {
+          "Lines": {
+            "10": 0
+          },
+          "Branches": []
+        },
+        "backend.GraphQL.Mutations.CommentsMutation backend.GraphQL.RootMutation::Comments()": {
+          "Lines": {
+            "11": 0
+          },
+          "Branches": []
+        },
+        "backend.GraphQL.Mutations.FavoritesMutation backend.GraphQL.RootMutation::Favorites()": {
+          "Lines": {
+            "12": 0
+          },
+          "Branches": []
+        },
+        "backend.GraphQL.Mutations.ProjectMembersMutation backend.GraphQL.RootMutation::ProjectMembers()": {
+          "Lines": {
+            "13": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/GraphQL/RootQuery.cs": {
+      "backend.GraphQL.RootQuery": {
+        "backend.GraphQL.Queries.AuthQuery backend.GraphQL.RootQuery::Auth()": {
+          "Lines": {
+            "7": 0
+          },
+          "Branches": []
+        },
+        "backend.GraphQL.Queries.TasksQuery backend.GraphQL.RootQuery::Tasks()": {
+          "Lines": {
+            "8": 0
+          },
+          "Branches": []
+        },
+        "backend.GraphQL.Queries.ProjectsQuery backend.GraphQL.RootQuery::Projects()": {
+          "Lines": {
+            "9": 0
+          },
+          "Branches": []
+        },
+        "backend.GraphQL.Queries.CategoriesQuery backend.GraphQL.RootQuery::Categories()": {
+          "Lines": {
+            "10": 0
+          },
+          "Branches": []
+        },
+        "backend.GraphQL.Queries.CommentsQuery backend.GraphQL.RootQuery::Comments()": {
+          "Lines": {
+            "11": 0
+          },
+          "Branches": []
+        },
+        "backend.GraphQL.Queries.FavoritesQuery backend.GraphQL.RootQuery::Favorites()": {
+          "Lines": {
+            "12": 0
+          },
+          "Branches": []
+        },
+        "backend.GraphQL.Queries.EntityTypesQuery backend.GraphQL.RootQuery::EntityTypes()": {
+          "Lines": {
+            "13": 0
+          },
+          "Branches": []
+        },
+        "backend.GraphQL.Queries.StatusesQuery backend.GraphQL.RootQuery::Statuses()": {
+          "Lines": {
+            "14": 0
+          },
+          "Branches": []
+        },
+        "backend.GraphQL.Queries.TaskHistoryQuery backend.GraphQL.RootQuery::TaskHistory()": {
+          "Lines": {
+            "15": 0
+          },
+          "Branches": []
+        },
+        "backend.GraphQL.Queries.ProjectMembersQuery backend.GraphQL.RootQuery::ProjectMembers()": {
+          "Lines": {
+            "16": 0
+          },
+          "Branches": []
+        },
+        "backend.GraphQL.Queries.ProjectStatisticsQuery backend.GraphQL.RootQuery::ProjectStatistics()": {
+          "Lines": {
+            "17": 0
+          },
+          "Branches": []
+        },
+        "backend.GraphQL.Queries.TaskSearchQuery backend.GraphQL.RootQuery::TaskSearch()": {
+          "Lines": {
+            "18": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/GraphQL/Extensions/GraphQLErrorFilter.cs": {
+      "backend.GraphQL.Extensions.GraphQLErrorFilter": {
+        "HotChocolate.IError backend.GraphQL.Extensions.GraphQLErrorFilter::OnError(HotChocolate.IError)": {
+          "Lines": {
+            "19": 0,
+            "20": 0,
+            "22": 0,
+            "23": 0,
+            "26": 0,
+            "27": 0,
+            "28": 0,
+            "29": 0,
+            "31": 0,
+            "32": 0,
+            "33": 0,
+            "34": 0,
+            "35": 0,
+            "36": 0,
+            "37": 0,
+            "40": 0,
+            "41": 0,
+            "42": 0,
+            "43": 0,
+            "44": 0,
+            "45": 0,
+            "46": 0,
+            "47": 0,
+            "48": 0,
+            "49": 0,
+            "51": 0,
+            "52": 0,
+            "53": 0,
+            "54": 0,
+            "57": 0,
+            "58": 0,
+            "59": 0,
+            "60": 0,
+            "62": 0,
+            "63": 0
+          },
+          "Branches": [
+            {
+              "Line": 22,
+              "Offset": 16,
+              "EndOffset": 18,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 0
+            },
+            {
+              "Line": 22,
+              "Offset": 16,
+              "EndOffset": 26,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 0
+            },
+            {
+              "Line": 26,
+              "Offset": 32,
+              "EndOffset": 34,
+              "Path": 0,
+              "Ordinal": 2,
+              "Hits": 0
+            },
+            {
+              "Line": 26,
+              "Offset": 32,
+              "EndOffset": 48,
+              "Path": 1,
+              "Ordinal": 3,
+              "Hits": 0
+            },
+            {
+              "Line": 26,
+              "Offset": 53,
+              "EndOffset": 55,
+              "Path": 0,
+              "Ordinal": 4,
+              "Hits": 0
+            },
+            {
+              "Line": 26,
+              "Offset": 53,
+              "EndOffset": 92,
+              "Path": 1,
+              "Ordinal": 5,
+              "Hits": 0
+            },
+            {
+              "Line": 40,
+              "Offset": 150,
+              "EndOffset": 152,
+              "Path": 0,
+              "Ordinal": 6,
+              "Hits": 0
+            },
+            {
+              "Line": 40,
+              "Offset": 158,
+              "EndOffset": 160,
+              "Path": 0,
+              "Ordinal": 8,
+              "Hits": 0
+            },
+            {
+              "Line": 40,
+              "Offset": 166,
+              "EndOffset": 168,
+              "Path": 0,
+              "Ordinal": 10,
+              "Hits": 0
+            },
+            {
+              "Line": 40,
+              "Offset": 174,
+              "EndOffset": 176,
+              "Path": 0,
+              "Ordinal": 12,
+              "Hits": 0
+            },
+            {
+              "Line": 40,
+              "Offset": 182,
+              "EndOffset": 184,
+              "Path": 0,
+              "Ordinal": 14,
+              "Hits": 0
+            },
+            {
+              "Line": 40,
+              "Offset": 150,
+              "EndOffset": 194,
+              "Path": 1,
+              "Ordinal": 7,
+              "Hits": 0
+            },
+            {
+              "Line": 40,
+              "Offset": 158,
+              "EndOffset": 203,
+              "Path": 1,
+              "Ordinal": 9,
+              "Hits": 0
+            },
+            {
+              "Line": 40,
+              "Offset": 166,
+              "EndOffset": 212,
+              "Path": 1,
+              "Ordinal": 11,
+              "Hits": 0
+            },
+            {
+              "Line": 40,
+              "Offset": 174,
+              "EndOffset": 221,
+              "Path": 1,
+              "Ordinal": 13,
+              "Hits": 0
+            },
+            {
+              "Line": 40,
+              "Offset": 182,
+              "EndOffset": 230,
+              "Path": 1,
+              "Ordinal": 15,
+              "Hits": 0
+            },
+            {
+              "Line": 40,
+              "Offset": 190,
+              "EndOffset": 239,
+              "Path": 1,
+              "Ordinal": 17,
+              "Hits": 0
+            },
+            {
+              "Line": 40,
+              "Offset": 190,
+              "EndOffset": 248,
+              "Path": 0,
+              "Ordinal": 16,
+              "Hits": 0
+            },
+            {
+              "Line": 57,
+              "Offset": 297,
+              "EndOffset": 299,
+              "Path": 0,
+              "Ordinal": 18,
+              "Hits": 0
+            },
+            {
+              "Line": 57,
+              "Offset": 297,
+              "EndOffset": 313,
+              "Path": 1,
+              "Ordinal": 19,
+              "Hits": 0
+            },
+            {
+              "Line": 57,
+              "Offset": 318,
+              "EndOffset": 320,
+              "Path": 0,
+              "Ordinal": 20,
+              "Hits": 0
+            },
+            {
+              "Line": 57,
+              "Offset": 318,
+              "EndOffset": 340,
+              "Path": 1,
+              "Ordinal": 21,
+              "Hits": 0
+            }
+          ]
+        },
+        "System.Void backend.GraphQL.Extensions.GraphQLErrorFilter::.ctor(Microsoft.Extensions.Logging.ILogger`1<backend.GraphQL.Extensions.GraphQLErrorFilter>)": {
+          "Lines": {
+            "13": 0,
+            "14": 0,
+            "15": 0,
+            "16": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Exceptions/BadRequestException.cs": {
+      "backend.Exceptions.BadRequestException": {
+        "System.Void backend.Exceptions.BadRequestException::.ctor(System.String)": {
+          "Lines": {
+            "5": 15
+          },
+          "Branches": []
+        },
+        "System.Void backend.Exceptions.BadRequestException::.ctor(System.String,System.Exception)": {
+          "Lines": {
+            "6": 3
+          },
+          "Branches": []
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Exceptions/ConflictException.cs": {
+      "backend.Exceptions.ConflictException": {
+        "System.Void backend.Exceptions.ConflictException::.ctor(System.String)": {
+          "Lines": {
+            "5": 18
+          },
+          "Branches": []
+        },
+        "System.Void backend.Exceptions.ConflictException::.ctor(System.String,System.Exception)": {
+          "Lines": {
+            "6": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Exceptions/ForbiddenException.cs": {
+      "backend.Exceptions.ForbiddenException": {
+        "System.Void backend.Exceptions.ForbiddenException::.ctor(System.String)": {
+          "Lines": {
+            "5": 6
+          },
+          "Branches": []
+        },
+        "System.Void backend.Exceptions.ForbiddenException::.ctor(System.String,System.Exception)": {
+          "Lines": {
+            "6": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Exceptions/NotFoundException.cs": {
+      "backend.Exceptions.NotFoundException": {
+        "System.Void backend.Exceptions.NotFoundException::.ctor(System.String)": {
+          "Lines": {
+            "5": 6
+          },
+          "Branches": []
+        },
+        "System.Void backend.Exceptions.NotFoundException::.ctor(System.String,System.Exception)": {
+          "Lines": {
+            "6": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Exceptions/UnauthorizedException.cs": {
+      "backend.Exceptions.UnauthorizedException": {
+        "System.Void backend.Exceptions.UnauthorizedException::.ctor(System.String)": {
+          "Lines": {
+            "5": 12
+          },
+          "Branches": []
+        },
+        "System.Void backend.Exceptions.UnauthorizedException::.ctor(System.String,System.Exception)": {
+          "Lines": {
+            "6": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Exceptions/ValidationException.cs": {
+      "backend.Exceptions.ValidationException": {
+        "System.Void backend.Exceptions.ValidationException::.ctor(System.String)": {
+          "Lines": {
+            "6": 45
+          },
+          "Branches": []
+        },
+        "System.Void backend.Exceptions.ValidationException::.ctor(System.String,System.Collections.Generic.Dictionary`2<System.String,System.String[]>)": {
+          "Lines": {
+            "7": 1,
+            "8": 1,
+            "9": 1,
+            "10": 1
+          },
+          "Branches": []
+        },
+        "System.Void backend.Exceptions.ValidationException::.ctor(System.String,System.Exception)": {
+          "Lines": {
+            "11": 3
+          },
+          "Branches": []
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Configuration/AppOptions.cs": {
+      "backend.Configuration.AppOptions": {
+        "backend.Configuration.AppOptions backend.Configuration.AppOptions::LoadFromEnvironment()": {
+          "Lines": {
+            "21": 0,
+            "22": 0,
+            "23": 0,
+            "25": 0,
+            "26": 0,
+            "27": 0,
+            "30": 0,
+            "31": 0
+          },
+          "Branches": [
+            {
+              "Line": 22,
+              "Offset": 12,
+              "EndOffset": 14,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 0
+            },
+            {
+              "Line": 22,
+              "Offset": 12,
+              "EndOffset": 20,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 0
+            },
+            {
+              "Line": 23,
+              "Offset": 32,
+              "EndOffset": 34,
+              "Path": 0,
+              "Ordinal": 2,
+              "Hits": 0
+            },
+            {
+              "Line": 23,
+              "Offset": 32,
+              "EndOffset": 40,
+              "Path": 1,
+              "Ordinal": 3,
+              "Hits": 0
+            },
+            {
+              "Line": 25,
+              "Offset": 49,
+              "EndOffset": 51,
+              "Path": 0,
+              "Ordinal": 4,
+              "Hits": 0
+            },
+            {
+              "Line": 25,
+              "Offset": 53,
+              "EndOffset": 55,
+              "Path": 0,
+              "Ordinal": 6,
+              "Hits": 0
+            },
+            {
+              "Line": 25,
+              "Offset": 49,
+              "EndOffset": 65,
+              "Path": 1,
+              "Ordinal": 5,
+              "Hits": 0
+            },
+            {
+              "Line": 25,
+              "Offset": 53,
+              "EndOffset": 65,
+              "Path": 1,
+              "Ordinal": 7,
+              "Hits": 0
+            },
+            {
+              "Line": 25,
+              "Offset": 68,
+              "EndOffset": 70,
+              "Path": 0,
+              "Ordinal": 8,
+              "Hits": 0
+            },
+            {
+              "Line": 25,
+              "Offset": 68,
+              "EndOffset": 88,
+              "Path": 1,
+              "Ordinal": 9,
+              "Hits": 0
+            }
+          ]
+        },
+        "System.String backend.Configuration.AppOptions::GetEnv(System.String)": {
+          "Lines": {
+            "34": 0
+          },
+          "Branches": []
+        },
+        "System.Void backend.Configuration.AppOptions::.ctor(System.Int32,System.String)": {
+          "Lines": {
+            "11": 0,
+            "12": 0,
+            "13": 0,
+            "14": 0,
+            "15": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Configuration/ConfigurationLoader.cs": {
+      "backend.Configuration.ConfigurationLoader": {
+        "System.Void backend.Configuration.ConfigurationLoader::LoadEnvironmentFile()": {
+          "Lines": {
+            "11": 0,
+            "12": 0,
+            "13": 0,
+            "14": 0,
+            "15": 0,
+            "16": 0,
+            "17": 0
+          },
+          "Branches": [
+            {
+              "Line": 12,
+              "Offset": 13,
+              "EndOffset": 15,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 0
+            },
+            {
+              "Line": 12,
+              "Offset": 13,
+              "EndOffset": 40,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 0
+            }
+          ]
+        },
+        "System.ValueTuple`3<backend.Configuration.DatabaseOptions,backend.Configuration.JwtOptions,backend.Configuration.AppOptions> backend.Configuration.ConfigurationLoader::LoadAll()": {
+          "Lines": {
+            "24": 0,
+            "25": 0,
+            "32": 0,
+            "33": 0,
+            "34": 0,
+            "35": 0,
+            "36": 0,
+            "37": 0,
+            "38": 0,
+            "42": 0,
+            "43": 0,
+            "44": 0,
+            "45": 0,
+            "46": 0,
+            "47": 0,
+            "48": 0,
+            "52": 0,
+            "53": 0,
+            "54": 0,
+            "55": 0,
+            "56": 0,
+            "57": 0,
+            "58": 0,
+            "61": 0,
+            "63": 0,
+            "64": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Configuration/DatabaseOptions.cs": {
+      "backend.Configuration.DatabaseOptions": {
+        "backend.Configuration.DatabaseOptions backend.Configuration.DatabaseOptions::LoadFromEnvironment()": {
+          "Lines": {
+            "29": 0,
+            "30": 0,
+            "31": 0,
+            "32": 0,
+            "33": 0,
+            "34": 0,
+            "36": 0,
+            "37": 0,
+            "38": 0,
+            "41": 0,
+            "42": 0
+          },
+          "Branches": [
+            {
+              "Line": 30,
+              "Offset": 12,
+              "EndOffset": 14,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 0
+            },
+            {
+              "Line": 30,
+              "Offset": 12,
+              "EndOffset": 20,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 0
+            },
+            {
+              "Line": 31,
+              "Offset": 32,
+              "EndOffset": 34,
+              "Path": 0,
+              "Ordinal": 2,
+              "Hits": 0
+            },
+            {
+              "Line": 31,
+              "Offset": 32,
+              "EndOffset": 40,
+              "Path": 1,
+              "Ordinal": 3,
+              "Hits": 0
+            },
+            {
+              "Line": 36,
+              "Offset": 83,
+              "EndOffset": 85,
+              "Path": 0,
+              "Ordinal": 4,
+              "Hits": 0
+            },
+            {
+              "Line": 36,
+              "Offset": 88,
+              "EndOffset": 90,
+              "Path": 0,
+              "Ordinal": 6,
+              "Hits": 0
+            },
+            {
+              "Line": 36,
+              "Offset": 83,
+              "EndOffset": 101,
+              "Path": 1,
+              "Ordinal": 5,
+              "Hits": 0
+            },
+            {
+              "Line": 36,
+              "Offset": 88,
+              "EndOffset": 101,
+              "Path": 1,
+              "Ordinal": 7,
+              "Hits": 0
+            },
+            {
+              "Line": 36,
+              "Offset": 106,
+              "EndOffset": 108,
+              "Path": 0,
+              "Ordinal": 8,
+              "Hits": 0
+            },
+            {
+              "Line": 36,
+              "Offset": 106,
+              "EndOffset": 126,
+              "Path": 1,
+              "Ordinal": 9,
+              "Hits": 0
+            }
+          ]
+        },
+        "System.String backend.Configuration.DatabaseOptions::GetEnv(System.String)": {
+          "Lines": {
+            "45": 0
+          },
+          "Branches": []
+        },
+        "System.String backend.Configuration.DatabaseOptions::GetEnvOrThrow(System.String)": {
+          "Lines": {
+            "48": 0,
+            "49": 0,
+            "50": 0,
+            "51": 0,
+            "52": 0,
+            "54": 0,
+            "55": 0
+          },
+          "Branches": [
+            {
+              "Line": 50,
+              "Offset": 16,
+              "EndOffset": 18,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 0
+            },
+            {
+              "Line": 50,
+              "Offset": 16,
+              "EndOffset": 41,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 0
+            }
+          ]
+        },
+        "System.Void backend.Configuration.DatabaseOptions::.ctor(System.String,System.Int32,System.String,System.String,System.String)": {
+          "Lines": {
+            "15": 0,
+            "16": 0,
+            "17": 0,
+            "18": 0,
+            "19": 0,
+            "20": 0,
+            "21": 0,
+            "22": 0,
+            "23": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "/home/runner/work/task-management-system/task-management-system/backend/Configuration/JwtOptions.cs": {
+      "backend.Configuration.JwtOptions": {
+        "backend.Configuration.JwtOptions backend.Configuration.JwtOptions::LoadFromEnvironment()": {
+          "Lines": {
+            "26": 10,
+            "27": 10,
+            "28": 10,
+            "29": 10,
+            "30": 10,
+            "33": 10,
+            "34": 0,
+            "35": 0,
+            "39": 10,
+            "40": 0,
+            "41": 0,
+            "44": 10,
+            "45": 10
+          },
+          "Branches": [
+            {
+              "Line": 28,
+              "Offset": 23,
+              "EndOffset": 25,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 0
+            },
+            {
+              "Line": 28,
+              "Offset": 23,
+              "EndOffset": 31,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 10
+            },
+            {
+              "Line": 29,
+              "Offset": 43,
+              "EndOffset": 45,
+              "Path": 0,
+              "Ordinal": 2,
+              "Hits": 0
+            },
+            {
+              "Line": 29,
+              "Offset": 43,
+              "EndOffset": 51,
+              "Path": 1,
+              "Ordinal": 3,
+              "Hits": 10
+            },
+            {
+              "Line": 30,
+              "Offset": 63,
+              "EndOffset": 65,
+              "Path": 0,
+              "Ordinal": 4,
+              "Hits": 0
+            },
+            {
+              "Line": 30,
+              "Offset": 63,
+              "EndOffset": 71,
+              "Path": 1,
+              "Ordinal": 5,
+              "Hits": 10
+            },
+            {
+              "Line": 33,
+              "Offset": 86,
+              "EndOffset": 88,
+              "Path": 0,
+              "Ordinal": 6,
+              "Hits": 0
+            },
+            {
+              "Line": 33,
+              "Offset": 86,
+              "EndOffset": 152,
+              "Path": 1,
+              "Ordinal": 7,
+              "Hits": 10
+            },
+            {
+              "Line": 39,
+              "Offset": 160,
+              "EndOffset": 162,
+              "Path": 0,
+              "Ordinal": 8,
+              "Hits": 10
+            },
+            {
+              "Line": 39,
+              "Offset": 160,
+              "EndOffset": 169,
+              "Path": 1,
+              "Ordinal": 9,
+              "Hits": 0
+            },
+            {
+              "Line": 39,
+              "Offset": 174,
+              "EndOffset": 176,
+              "Path": 0,
+              "Ordinal": 10,
+              "Hits": 0
+            },
+            {
+              "Line": 39,
+              "Offset": 174,
+              "EndOffset": 199,
+              "Path": 1,
+              "Ordinal": 11,
+              "Hits": 10
+            }
+          ]
+        },
+        "System.String backend.Configuration.JwtOptions::GetEnv(System.String)": {
+          "Lines": {
+            "48": 30
+          },
+          "Branches": []
+        },
+        "System.String backend.Configuration.JwtOptions::GetEnvOrThrow(System.String)": {
+          "Lines": {
+            "51": 10,
+            "52": 10,
+            "53": 10,
+            "54": 0,
+            "55": 0,
+            "57": 10,
+            "58": 10
+          },
+          "Branches": [
+            {
+              "Line": 53,
+              "Offset": 16,
+              "EndOffset": 18,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 0
+            },
+            {
+              "Line": 53,
+              "Offset": 16,
+              "EndOffset": 41,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 10
+            }
+          ]
+        },
+        "System.Void backend.Configuration.JwtOptions::.ctor(System.String,System.String,System.String,System.Int32)": {
+          "Lines": {
+            "13": 10,
+            "14": 10,
+            "15": 10,
+            "16": 10,
+            "17": 10,
+            "18": 10,
+            "19": 10
+          },
+          "Branches": []
+        }
+      }
+    }
+  }
+}
