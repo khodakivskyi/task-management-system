@@ -4,19 +4,19 @@ on:
   pull_request: 
     branches: [ master ]
 
-jobs:
+jobs: 
   backend-ci:
     runs-on:  ubuntu-latest
 
     steps: 
     - uses: actions/checkout@v4
-      with:
+      with: 
         fetch-depth: 0
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
-      with: 
-        dotnet-version: 8.0.x 
+      with:  
+        dotnet-version: 8.0.x
 
     - name: Setup Java 17
       uses: actions/setup-java@v4
@@ -34,8 +34,8 @@ jobs:
     - name: Install SonarCloud scanner
       run: dotnet tool install --global dotnet-sonarscanner
 
-    - name: Restore
-      run: dotnet restore backend/backend.csproj
+    - name: Restore dependencies
+      run: dotnet restore backend/backend.sln
 
     - name: Format check
       run: dotnet format backend/backend.csproj --verify-no-changes
@@ -44,10 +44,30 @@ jobs:
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
-        dotnet-sonarscanner begin /k:"khodakivskyi_task-management-system" /o:"khodakivskyi" /d:sonar.token="$SONAR_TOKEN" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.sources="backend" /d:sonar.exclusions="**/obj/**,**/bin/**,**/Migrations/**"
+        dotnet-sonarscanner begin \
+          /k:"khodakivskyi_task-management-system" \
+          /o:"khodakivskyi" \
+          /d:sonar. token="$SONAR_TOKEN" \
+          /d:sonar.host.url="https://sonarcloud.io" \
+          /d:sonar.sources="backend" \
+          /d:sonar.tests="backend. Tests" \
+          /d: sonar.exclusions="**/obj/**,**/bin/**,**/Migrations/**,**/*. Tests/**" \
+          /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" \
+          /d:sonar.coverage.exclusions="**/*. Tests/**,**/Migrations/**"
 
     - name: Build
-      run: dotnet build backend/backend.csproj --no-restore --configuration Release
+      run: dotnet build backend/backend.sln --no-restore --configuration Release
+
+    - name: Test with Coverage
+      run:  |
+        dotnet test backend/backend.sln \
+          --no-build \
+          --configuration Release \
+          --verbosity normal \
+          --collect:"XPlat Code Coverage" \
+          --results-directory ./TestResults \
+          --settings backend/coverlet.runsettings \
+          -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
 
     - name: End SonarCloud analysis
       env:
