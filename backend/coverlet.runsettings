@@ -4,9 +4,9 @@
     <DataCollectors>
       <DataCollector friendlyName="XPlat Code Coverage">
         <Configuration>
-          <Format>opencover</Format>
-          <UseSourceLink>true</UseSourceLink>
-          <Exclude>[*.Tests]*</Exclude>
+              <Format>opencover</Format>
+              <UseSourceLink>false</UseSourceLink>
+              <Exclude>[*.Tests]*</Exclude>
           <ExcludeByFile>**/Migrations/**,**/obj/**,**/bin/**,**/Program.cs</ExcludeByFile>
           <ExcludeByAttribute>Obsolete,GeneratedCode,CompilerGenerated</ExcludeByAttribute>
           <IncludeTestAssembly>false</IncludeTestAssembly>
