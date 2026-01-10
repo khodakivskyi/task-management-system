@@ -14,6 +14,8 @@ public class EntityTypeService : IEntityTypeService
 {
     private readonly IEntityTypeRepository _entityTypeRepository;
 
+    private const string EntityTypeEntity = "Entity type";
+
     public EntityTypeService(IEntityTypeRepository entityTypeRepository)
     {
         _entityTypeRepository = entityTypeRepository ?? throw new ArgumentNullException(nameof(entityTypeRepository));
@@ -26,7 +28,7 @@ public class EntityTypeService : IEntityTypeService
 
     public async Task<EntityType?> GetByIdAsync(int id)
     {
-        ValidationHelper.ValidateId(id, "Entity type");
+        ValidationHelper.ValidateId(id, EntityTypeEntity);
         return await _entityTypeRepository.GetByIdAsync(id);
     }
 

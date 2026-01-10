@@ -13,6 +13,8 @@ public class StatusService : IStatusService
 {
     private readonly IRepository<Status> _statusRepository;
 
+    private const string StatusEntity = nameof(Status);
+
     public StatusService(IRepository<Status> statusRepository)
     {
         _statusRepository = statusRepository ?? throw new ArgumentNullException(nameof(statusRepository));
@@ -25,7 +27,7 @@ public class StatusService : IStatusService
 
     public async Task<Status?> GetByIdAsync(int id)
     {
-        ValidationHelper.ValidateId(id, "Status");
+        ValidationHelper.ValidateId(id, StatusEntity);
         return await _statusRepository.GetByIdAsync(id);
     }
 }

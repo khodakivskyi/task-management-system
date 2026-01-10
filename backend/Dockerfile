@@ -36,7 +36,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 
 # Install required libraries for PostgreSQL
 RUN apt-get update && \
-    apt-get install -y libkrb5-3 libgssapi-krb5-2 && \
+    apt-get install -y --no-install-recommends libkrb5-3 libgssapi-krb5-2 && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -60,6 +60,9 @@ RUN mkdir -p /app/.aspnet/DataProtection-Keys
 
 # Set ownership
 RUN chown -R appuser:appuser /app
+
+# Switch to non-root user
+USER appuser
 
 # Expose application ports
 EXPOSE 8080

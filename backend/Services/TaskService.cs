@@ -17,6 +17,8 @@ public class TaskService : ITaskService
     private readonly IRepository<Category>? _categoryRepository;
     private readonly IRepository<Project>? _projectRepository;
 
+    private const string TaskEntity = "Task";
+
     public TaskService(
         ITaskRepository taskRepository,
         IUserRepository userRepository,
@@ -51,7 +53,7 @@ public class TaskService : ITaskService
 
     public async Task<TaskModel?> GetByIdAsync(int id)
     {
-        ValidationHelper.ValidateId(id, "Task");
+        ValidationHelper.ValidateId(id, TaskEntity);
         return await _taskRepository.GetByIdAsync(id);
     }
 
@@ -62,10 +64,10 @@ public class TaskService : ITaskService
 
     public async Task<TaskModel> UpdateAsync(TaskModel task)
     {
-        ValidationHelper.ValidateId(task.Id, "Task");
+        ValidationHelper.ValidateId(task.Id, TaskEntity);
 
         // Check if task exists
-        var existingTask = await EntityValidationHelper.EnsureEntityExistsAsync(task.Id, _taskRepository, "Task");
+        var existingTask = await EntityValidationHelper.EnsureEntityExistsAsync(task.Id, _taskRepository, TaskEntity);
 
         await TaskHelper.ValidateTaskAsync(
             task,
@@ -90,9 +92,9 @@ public class TaskService : ITaskService
 
     public async Task DeleteAsync(int id)
     {
-        ValidationHelper.ValidateId(id, "Task");
+        ValidationHelper.ValidateId(id, TaskEntity);
 
-        await EntityValidationHelper.EnsureEntityExistsAsync(id, _taskRepository, "Task");
+        await EntityValidationHelper.EnsureEntityExistsAsync(id, _taskRepository, TaskEntity);
 
         var deleted = await _taskRepository.DeleteAsync(id);
         if (!deleted)
