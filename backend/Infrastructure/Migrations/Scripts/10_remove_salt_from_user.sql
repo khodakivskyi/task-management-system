@@ -4,17 +4,20 @@ begin
         select 1
         from information_schema.columns
         where table_schema = 'public'
-          and lower(table_name) = 'Users'
-          and lower(column_name) = 'Salt'
+          and table_name = 'Users'
+          and column_name = 'Salt'
     ) then
-        execute 'alter table public.users alter column salt drop not null';
-
-        execute 'update public.users set salt = '''' where salt is null';
-
-        execute 'alter table public.users drop column salt';
-
-        raise notice 'Dropped users.salt column safely';
+        raise notice 'Found Salt column, removing... ';
+        
+        alter table "Users" alter column "Salt" drop not null;
+        raise notice 'Dropped NOT NULL constraint';
+        
+        update "Users" set "Salt" = '' where "Salt" is null;
+        raise notice 'Updated NULL values';
+        
+        alter table "Users" drop column "Salt";
+        raise notice 'Dropped Salt column successfully';
     else
-        raise notice 'Salt column does not exist';
+        raise notice 'Salt column does not exist, skipping';
     end if;
 end $$;
