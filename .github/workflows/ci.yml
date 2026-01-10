@@ -50,8 +50,8 @@ jobs:
           /d:sonar.token="$SONAR_TOKEN" \
           /d:sonar.host.url="https://sonarcloud.io" \
           /d:sonar.exclusions="**/obj/**,**/bin/**,**/Migrations/**,**/*.Tests/**" \
-          /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml" \
-          /d:sonar.coverage.exclusions="**/*.Tests/**,**/Migrations/**"
+          /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" \
+          /d:sonar.coverage.exclusions="**/*.Tests/**,**/Migrations/**,**/Program.cs"
 
     - name: Build
       run: dotnet build backend/backend.sln --no-restore --configuration Release
@@ -64,7 +64,7 @@ jobs:
           --verbosity normal \
           --collect:"XPlat Code Coverage" \
           --results-directory ./TestResults \
-          --settings backend/coverlet.runsettings
+          --settings backend/coverlet.runsettings -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
 
     - name: Debug - List all generated files
       run: |
