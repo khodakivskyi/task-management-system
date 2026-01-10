@@ -4,9 +4,11 @@
     <DataCollectors>
       <DataCollector friendlyName="XPlat Code Coverage">
         <Configuration>
-          <Format>opencover,cobertura,json</Format>
-          <Exclude>[*]*.Models.*,[*]*.Infrastructure.Migrations.*</Exclude>
+          <Format>opencover</Format>
+          <Exclude>[*]*.Models.*,[*]*.Infrastructure.Migrations.*,[*.Tests]*</Exclude>
+          <ExcludeByFile>**/Migrations/**/*.cs</ExcludeByFile>
           <ExcludeByAttribute>Obsolete,GeneratedCode,CompilerGenerated</ExcludeByAttribute>
+          <IncludeTestAssembly>false</IncludeTestAssembly>
         </Configuration>
       </DataCollector>
     </DataCollectors>
