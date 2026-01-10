@@ -3,6 +3,8 @@
 # ===============================
 /backend/bin/
 /backend/obj/
+backend/**/bin/
+backend/**/obj/
 /backend/*.user
 /backend/*.suo
 /backend/*.vsp

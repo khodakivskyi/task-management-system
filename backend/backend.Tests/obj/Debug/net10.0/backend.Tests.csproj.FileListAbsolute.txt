@@ -181,3 +181,13 @@
 /home/runner/work/task-management-system/task-management-system/backend/backend.Tests/obj/Debug/net10.0/backend.Tests.pdb
 /home/runner/work/task-management-system/task-management-system/backend/backend.Tests/obj/Debug/net10.0/backend.Tests.genruntimeconfig.cache
 /home/runner/work/task-management-system/task-management-system/backend/backend.Tests/obj/Debug/net10.0/ref/backend.Tests.dll
+/home/runner/work/task-management-system/task-management-system/backend/backend.Tests/bin/Debug/net10.0/backend.Tests/bin/Debug/net10.0/appsettings.Development.json
+/home/runner/work/task-management-system/task-management-system/backend/backend.Tests/bin/Debug/net10.0/backend.Tests/bin/Debug/net10.0/appsettings.json
+/home/runner/work/task-management-system/task-management-system/backend/backend.Tests/bin/Debug/net10.0/backend.Tests/bin/Debug/net10.0/backend.deps.json
+/home/runner/work/task-management-system/task-management-system/backend/backend.Tests/bin/Debug/net10.0/backend.Tests/bin/Debug/net10.0/backend.runtimeconfig.json
+/home/runner/work/task-management-system/task-management-system/backend/backend.Tests/bin/Debug/net10.0/backend.Tests/bin/Debug/net10.0/backend.staticwebassets.endpoints.json
+/home/runner/work/task-management-system/task-management-system/backend/backend.Tests/bin/Debug/net10.0/backend.Tests/bin/Debug/net10.0/backend.Tests.deps.json
+/home/runner/work/task-management-system/task-management-system/backend/backend.Tests/bin/Debug/net10.0/backend.Tests/bin/Debug/net10.0/backend.Tests.runtimeconfig.json
+/home/runner/work/task-management-system/task-management-system/backend/backend.Tests/bin/Debug/net10.0/backend.Tests/bin/Debug/net10.0/backend.Tests/obj/backend.Tests.csproj.nuget.dgspec.json
+/home/runner/work/task-management-system/task-management-system/backend/backend.Tests/bin/Debug/net10.0/backend.Tests/bin/Debug/net10.0/backend.Tests/obj/project.assets.json
+/home/runner/work/task-management-system/task-management-system/backend/backend.Tests/bin/Debug/net10.0/backend.Tests/obj/Debug/net10.0/backend.Tests.sourcelink.json
