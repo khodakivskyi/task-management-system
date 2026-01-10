@@ -1,6 +1,8 @@
 name: CI
 
 on:  
+  push:
+    branches: [ master ]
   pull_request: 
     branches: [ master ]
 
@@ -50,7 +52,7 @@ jobs:
           /d:sonar.token="$SONAR_TOKEN" \
           /d:sonar.host.url="https://sonarcloud.io" \
           /d:sonar.exclusions="**/obj/**,**/bin/**,**/Migrations/**,**/*.Tests/**" \
-          /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" \
+          /d:sonar.cs.opencover.reportsPaths="coverage/coverage.opencover.xml" \
           /d:sonar.coverage.exclusions="**/*.Tests/**,**/Migrations/**,**/Program.cs"
 
     - name: Build
@@ -64,21 +66,25 @@ jobs:
           --verbosity normal \
           --collect:"XPlat Code Coverage" \
           --results-directory ./TestResults \
-          --settings backend/coverlet.runsettings -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+          --settings backend/coverlet.runsettings
 
-    - name: Debug - List all generated files
+    - name: Move coverage files
       run: |
-        echo "=== TestResults structure ==="
-        ls -R ./TestResults || echo "TestResults not found"
-        echo "=== Looking for coverage files ==="
-        find . -type f -name "*.xml" | grep -i coverage || echo "No coverage files found"
-
-    - name: Verify coverage file exists
+        echo "=== Moving coverage files ==="
+        mkdir -p ./coverage
+        find ./TestResults -name "coverage.opencover.xml" -type f -exec cp {} ./coverage/ \;
+        echo "=== Coverage files in ./coverage ==="
+        ls -la ./coverage/
+        
+    - name: Debug - Verify coverage content
       run: |
-        echo "=== Coverage files found ==="
-        find ./TestResults -name "coverage.opencover.xml" -type f
-        echo "=== Checking content ==="
-        find ./TestResults -name "coverage.opencover.xml" -type f -exec head -5 {} \;
+        if [ -f ./coverage/coverage.opencover.xml ]; then
+          echo "=== Coverage file found ==="
+          head -20 ./coverage/coverage.opencover.xml
+        else
+          echo "ERROR: Coverage file not found!"
+          exit 1
+        fi
 
     - name: End SonarCloud analysis
       env:
