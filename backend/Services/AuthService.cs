@@ -31,8 +31,7 @@ public class AuthService : IAuthService
 
         AuthHelper.ValidatePassword(request.Password);
 
-        string salt = BCrypt.Net.BCrypt.GenerateSalt(12);
-        string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password, salt);
+        string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
         var user = new User
         {
