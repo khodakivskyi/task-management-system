@@ -49,7 +49,7 @@ public class GraphQLErrorFilter : IErrorFilter
         };
 
         var builder = error
-            .WithMessage(exception.Message) 
+            .WithMessage(exception.Message)
             .WithCode(code)
             .WithException(null);
 
