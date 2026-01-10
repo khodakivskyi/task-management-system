@@ -22,7 +22,7 @@ public static partial class Program
     {
         // Configure Npgsql to always return DateTime in UTC
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", false);
-        
+
         // Load .env file
         ConfigurationLoader.LoadEnvironmentFile();
 
