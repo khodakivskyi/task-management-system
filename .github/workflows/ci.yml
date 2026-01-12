@@ -1,14 +1,19 @@
 name: CI
 
-on:  
+on:   
   push:
     branches: [ master ]
   pull_request: 
     branches: [ master ]
 
-jobs: 
-  backend-ci:
+env:
+  DOTNET_VERSION: '10.0.x'
+  SOLUTION_PATH: 'backend/backend.sln'
+
+jobs:  
+  backend-ci: 
     runs-on:  ubuntu-latest
+    timeout-minutes: 10
 
     steps: 
     - uses: actions/checkout@v4
@@ -18,103 +23,65 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:  
-        dotnet-version: 10.0.x
+        dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Setup Java 17
       uses: actions/setup-java@v4
-      with: 
+      with:   
         distribution: 'zulu'
         java-version: '17'
 
     - name: Cache SonarCloud packages
       uses: actions/cache@v4
       with: 
-        path:  ~/.sonar/cache
-        key:  ${{ runner.os }}-sonar
+        path: ~/.sonar/cache
+        key: ${{ runner.os }}-sonar
         restore-keys: ${{ runner.os }}-sonar
+
+    - name: Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: ~/. nuget/packages
+        key:  ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: ${{ runner. os }}-nuget-
 
     - name: Install SonarCloud scanner
       run: dotnet tool install --global dotnet-sonarscanner
 
     - name: Restore dependencies
-      run: dotnet restore backend/backend.sln
+      run: dotnet restore ${{ env. SOLUTION_PATH }}
 
     - name: Format check
-      run: dotnet format backend/backend.csproj --verify-no-changes
+      run: dotnet format ${{ env. SOLUTION_PATH }} --verify-no-changes --no-restore
 
     - name: Begin SonarCloud analysis
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
-        echo "Current directory: $(pwd)"
-            dotnet-sonarscanner begin \
-              /k:"khodakivskyi_task-management-system" \
-              /o:"khodakivskyi" \
-              /d:sonar.token="$SONAR_TOKEN" \
-              /d:sonar.host.url="https://sonarcloud.io" \
-              /d:sonar.sources="." \
-              /d:sonar.tests="backend/backend.Tests" \
-              /d:sonar.exclusions="**/obj/**,**/bin/**,**/Migrations/**,**/backend.Tests/**,**/TestResults/**,**/coverage/**" \
-              /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" \
-              /d:sonar.coverage.exclusions="**/backend.Tests/**,**/Migrations/**,**/Program.cs" \
-              /d:sonar.sourceEncoding="UTF-8" \
-              /d:sonar.verbose=true
+        dotnet-sonarscanner begin \
+          /k:"khodakivskyi_task-management-system" \
+          /o:"khodakivskyi" \
+          /d:sonar.token="$SONAR_TOKEN" \
+          /d:sonar.host.url="https://sonarcloud.io" \
+          /d:sonar.cs. opencover.reportsPaths="**/coverage.opencover.xml" \
+          /d:sonar.exclusions="**/obj/**,**/bin/**,**/Migrations/**,**/backend. Tests/**" \
+          /d:sonar.coverage.exclusions="**/backend.Tests/**,**/Migrations/**,**/Program.cs"
 
     - name: Build
-      run: dotnet build backend/backend.sln --no-restore --configuration Release
+      run: dotnet build ${{ env.SOLUTION_PATH }} --no-restore --configuration Release
 
     - name: Test with Coverage
       run:  |
-        dotnet test backend/backend.sln \
+        dotnet test ${{ env.SOLUTION_PATH }} \
           --no-build \
           --configuration Release \
-          --verbosity normal \
           --collect:"XPlat Code Coverage" \
           --results-directory ./TestResults \
           --settings backend/coverlet.runsettings
 
-    - name: Move coverage files
-      run: |
-        echo "=== Moving coverage files ==="
-        mkdir -p ./coverage
-        find ./TestResults -name "coverage.opencover.xml" -type f -exec cp {} ./coverage/ \;
-        echo "=== Coverage files in ./coverage ==="
-        ls -la ./coverage/
-        
-    - name: Debug - Verify coverage content
-      run: |
-        if [ -f ./coverage/coverage.opencover.xml ]; then
-          echo "=== Coverage file found ==="
-          echo "File size: $(du -h ./coverage/coverage.opencover.xml)"
-          echo "=== First 30 lines ==="
-          head -30 ./coverage/coverage.opencover.xml
-          echo "=== Checking for Module elements ==="
-          grep -c "<Module" ./coverage/coverage.opencover.xml || echo "No Module elements found"
-          echo "=== Coverage statistics ==="
-          grep "sequenceCoverage\|branchCoverage" ./coverage/coverage.opencover.xml | head -5
-        else
-          echo "ERROR: Coverage file not found!"
-          exit 1
-        fi
-
-    - name: List all coverage files recursively
-      run: |
-        echo "=== All .xml files in workspace ==="
-        find . -name "*.xml" -type f | grep -i coverage || echo "No coverage XML files found"
-        echo "=== All files in TestResults ==="
-        find ./TestResults -type f || echo "TestResults directory is empty"
-
     - name: End SonarCloud analysis
-      env:
+      env: 
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
-        echo "=== Final check before SonarCloud end ==="
-        echo "Current directory: $(pwd)"
-        echo "Absolute path to coverage: $(pwd)/coverage/coverage.opencover.xml"
         ls -la ./coverage/ || echo "Coverage directory not found"
-        if [ -f ./coverage/coverage.opencover.xml ]; then
-          echo "✓ Coverage file exists at expected location"
-        else
-          echo "✗ Coverage file NOT found at expected location"
-        fi
         dotnet-sonarscanner end /d:sonar.token="$SONAR_TOKEN"
