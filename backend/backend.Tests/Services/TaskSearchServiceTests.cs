@@ -137,9 +137,9 @@ public class TaskSearchServiceTests
     public async Task SearchTasksAsync_WithMultipleFilters_ReturnsFilteredTasks()
     {
         // Arrange
-        var filter = new TaskSearchFilter 
-        { 
-            SearchText = "Important", 
+        var filter = new TaskSearchFilter
+        {
+            SearchText = "Important",
             StatusId = 1,
             PriorityMin = 3,
             PriorityMax = 5
@@ -242,7 +242,7 @@ public class TaskSearchServiceTests
         // Assert
         result.Should().NotBeNull();
         result.Should().HaveCount(3);
-        result.Should().AllSatisfy(t => 
+        result.Should().AllSatisfy(t =>
         {
             t.Priority.Should().BeGreaterOrEqualTo(2);
             t.Priority.Should().BeLessOrEqualTo(4);

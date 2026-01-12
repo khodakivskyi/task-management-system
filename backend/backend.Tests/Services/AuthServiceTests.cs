@@ -20,13 +20,13 @@ public class AuthServiceTests
     public AuthServiceTests()
     {
         _mockUserRepository = new Mock<IUserRepository>();
-        
+
         // Set environment variables for JwtOptions
         Environment.SetEnvironmentVariable("JWT_SECRET", "very-long-secret-key-for-jwt-token-generation-minimum-32-characters");
         Environment.SetEnvironmentVariable("JWT_ISSUER", "TestIssuer");
         Environment.SetEnvironmentVariable("JWT_AUDIENCE", "TestAudience");
         Environment.SetEnvironmentVariable("JWT_EXPIRATION_HOURS", "24");
-        
+
         _jwtOptions = JwtOptions.LoadFromEnvironment();
         _authService = new AuthService(_mockUserRepository.Object, _jwtOptions);
     }
