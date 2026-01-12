@@ -2,6 +2,7 @@ using backend.Exceptions;
 using backend.Helpers;
 using backend.Infrastructure.Repositories.Interfaces;
 using backend.Models;
+using backend.Models.DTO;
 using backend.Services.Interfaces;
 
 namespace backend.Services;
@@ -101,5 +102,52 @@ public class TaskService : ITaskService
         {
             throw new NotFoundException("Failed to delete task");
         }
+    }
+
+    public async Task<IEnumerable<TaskWithDetailsDto>> GetPagedAsync(
+        int pageNumber = 1,
+        int pageSize = 10,
+        string sortBy = "CreatedAt",
+        string sortDirection = "DESC",
+        string? filterValue = null)
+    {
+        if (pageNumber < 1)
+        {
+            throw new BadRequestException("Page number must be greater than or equal to 1");
+        }
+
+        if (pageSize < 1)
+        {
+            throw new BadRequestException("Page size must be greater than or equal to 1");
+        }
+
+        if (pageSize > 100)
+        {
+            throw new BadRequestException("Page size cannot exceed 100");
+        }
+
+        var allowedSortColumns = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "Id", "Title", "Priority", "Deadline", "CreatedAt", "UpdatedAt",
+            "EstimatedHours", "ActualHours", "StatusName", "CategoryName", "OwnerName"
+        };
+
+        if (!allowedSortColumns.Contains(sortBy))
+        {
+            throw new BadRequestException("Invalid sort column");
+        }
+
+        var allowedDirections = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "ASC", "DESC" };
+        if (!allowedDirections.Contains(sortDirection))
+        {
+            throw new BadRequestException("Sort direction must be either 'ASC' or 'DESC'");
+        }
+
+        if (!string.IsNullOrWhiteSpace(filterValue) && filterValue.Length > 200)
+        {
+            throw new BadRequestException("Filter value cannot exceed 200 characters");
+        }
+
+        return await _taskRepository.GetPagedAsync(pageNumber, pageSize, sortBy, sortDirection, filterValue);
     }
 }
