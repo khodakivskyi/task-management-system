@@ -30,8 +30,8 @@ public class TaskSearchQueryTests
 
         var searchResults = new List<TaskSearchResultDto>
         {
-            new() { Id = 1, Title = "Important Task 1", StatusName = "To Do" },
-            new() { Id = 2, Title = "Important Task 2", StatusName = "To Do" }
+            new(1, "Important Task 1", "To Do", null, null),
+            new(2, "Important Task 2", "To Do", null, null)
         };
 
         _mockTaskSearchService.Setup(x => x.SearchTasksAsync(filter))
