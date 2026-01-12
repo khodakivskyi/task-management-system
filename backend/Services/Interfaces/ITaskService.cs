@@ -1,4 +1,5 @@
 using backend.Models;
+using backend.Models.DTO;
 
 namespace backend.Services.Interfaces;
 
@@ -12,4 +13,10 @@ public interface ITaskService
     Task<IEnumerable<TaskModel>> GetAllAsync();
     Task<TaskModel> UpdateAsync(TaskModel task);
     Task DeleteAsync(int id);
+    Task<IEnumerable<TaskWithDetailsDto>> GetPagedAsync(
+        int pageNumber = 1,
+        int pageSize = 10,
+        string sortBy = "CreatedAt",
+        string sortDirection = "DESC",
+        string? filterValue = null);
 }

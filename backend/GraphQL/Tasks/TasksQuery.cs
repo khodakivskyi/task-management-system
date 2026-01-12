@@ -1,4 +1,6 @@
+using backend.GraphQL.Tasks.Inputs;
 using backend.Models;
+using backend.Models.DTO;
 using backend.Services.Interfaces;
 
 namespace backend.GraphQL.Queries;
@@ -19,5 +21,17 @@ public class TasksQuery
         [Service] ITaskService taskService)
     {
         return await taskService.GetByIdAsync(id);
+    }
+
+    public async Task<IEnumerable<TaskWithDetailsDto>> GetPagedTasks(
+        GetPagedTasksInput input,
+        [Service] ITaskService taskService)
+    {
+        return await taskService.GetPagedAsync(
+            input.PageNumber,
+            input.PageSize,
+            input.SortBy,
+            input.SortDirection,
+            input.FilterValue);
     }
 }
