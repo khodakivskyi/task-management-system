@@ -51,6 +51,8 @@ public class ProjectService : IProjectService
         // Check if project exists
         var existingProject = await EntityValidationHelper.EnsureEntityExistsAsync(project.Id, _projectRepository, ProjectEntity);
 
+        AuthorizationHelper.EnsureOwnership(existingProject.OwnerId, project.OwnerId, "project", "update");
+
         await ProjectHelper.ValidateProjectAsync(project, _userRepository);
 
         // Preserve OwnerId
@@ -65,11 +67,13 @@ public class ProjectService : IProjectService
         return project;
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(int id, int requestingUserId)
     {
         ValidationHelper.ValidateId(id, ProjectEntity);
 
-        await EntityValidationHelper.EnsureEntityExistsAsync(id, _projectRepository, ProjectEntity);
+        var existingProject = await EntityValidationHelper.EnsureEntityExistsAsync(id, _projectRepository, ProjectEntity);
+
+        AuthorizationHelper.EnsureOwnership(existingProject.OwnerId, requestingUserId, "project", "delete");
 
         var deleted = await _projectRepository.DeleteAsync(id);
         if (!deleted)

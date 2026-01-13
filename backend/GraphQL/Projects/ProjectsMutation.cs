@@ -43,10 +43,10 @@ public class ProjectsMutation
     }
 
     public async Task<bool> DeleteProject(
-        int id,
+        DeleteProjectInput input,
         [Service] IProjectService projectService)
     {
-        await projectService.DeleteAsync(id);
+        await projectService.DeleteAsync(input.Id, input.OwnerId);
         return true;
     }
 }

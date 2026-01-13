@@ -12,6 +12,8 @@ public class FavoriteServiceTests
     private readonly Mock<IFavoriteRepository> _mockFavoriteRepository;
     private readonly Mock<IUserRepository> _mockUserRepository;
     private readonly Mock<IEntityTypeRepository> _mockEntityTypeRepository;
+    private readonly Mock<IRepository<TaskModel>> _mockTaskRepository;
+    private readonly Mock<IRepository<Project>> _mockProjectRepository;
     private readonly FavoriteService _service;
 
     public FavoriteServiceTests()
@@ -19,20 +21,26 @@ public class FavoriteServiceTests
         _mockFavoriteRepository = new Mock<IFavoriteRepository>();
         _mockUserRepository = new Mock<IUserRepository>();
         _mockEntityTypeRepository = new Mock<IEntityTypeRepository>();
+        _mockTaskRepository = new Mock<IRepository<TaskModel>>();
+        _mockProjectRepository = new Mock<IRepository<Project>>();
         _service = new FavoriteService(
             _mockFavoriteRepository.Object,
             _mockUserRepository.Object,
-            _mockEntityTypeRepository.Object);
+            _mockEntityTypeRepository.Object,
+            _mockTaskRepository.Object,
+            _mockProjectRepository.Object);
     }
 
     [Fact]
-    public async Task AddAsync_WithValidData_ReturnsFavorite()
+    public async Task AddAsync_WithValidTask_ReturnsFavorite()
     {
         // Arrange
         _mockUserRepository.Setup(x => x.GetByIdAsync(1))
             .ReturnsAsync(new User { Id = 1, Login = "testuser", Email = "test@test.com", IsActive = true });
         _mockEntityTypeRepository.Setup(x => x.GetByIdAsync(1))
-            .ReturnsAsync(new EntityType { Id = 1, Name = "Task" });
+            .ReturnsAsync(new EntityType { Id = 1, Name = "task" });
+        _mockTaskRepository.Setup(x => x.GetByIdAsync(1))
+            .ReturnsAsync(new TaskModel { Id = 1, OwnerId = 1, Title = "Test Task", StatusId = 1 });
         _mockFavoriteRepository.Setup(x => x.GetByUserAndEntityAsync(1, 1, 1))
             .ReturnsAsync((Favorite?)null);
         _mockFavoriteRepository.Setup(x => x.CreateAsync(It.IsAny<Favorite>()))
@@ -123,7 +131,9 @@ public class FavoriteServiceTests
         _mockUserRepository.Setup(x => x.GetByIdAsync(1))
             .ReturnsAsync(new User { Id = 1, Login = "testuser", Email = "test@test.com", IsActive = true });
         _mockEntityTypeRepository.Setup(x => x.GetByIdAsync(1))
-            .ReturnsAsync(new EntityType { Id = 1, Name = "Task" });
+            .ReturnsAsync(new EntityType { Id = 1, Name = "task" });
+        _mockTaskRepository.Setup(x => x.GetByIdAsync(1))
+            .ReturnsAsync(new TaskModel { Id = 1, OwnerId = 1, Title = "Test Task", StatusId = 1 });
         _mockFavoriteRepository.Setup(x => x.GetByUserAndEntityAsync(1, 1, 1))
             .ReturnsAsync(new Favorite { Id = 1, UserId = 1, EntityTypeId = 1, EntityId = 1 });
 
@@ -148,6 +158,10 @@ public class FavoriteServiceTests
             CreatedAt = DateTime.UtcNow
         };
 
+        _mockEntityTypeRepository.Setup(x => x.GetByIdAsync(1))
+            .ReturnsAsync(new EntityType { Id = 1, Name = "task" });
+        _mockTaskRepository.Setup(x => x.GetByIdAsync(1))
+            .ReturnsAsync(new TaskModel { Id = 1, OwnerId = 1, Title = "Test Task", StatusId = 1 });
         _mockFavoriteRepository.Setup(x => x.GetByUserAndEntityAsync(1, 1, 1))
             .ReturnsAsync(favorite);
         _mockFavoriteRepository.Setup(x => x.DeleteByUserAndEntityAsync(1, 1, 1))
@@ -175,6 +189,10 @@ public class FavoriteServiceTests
     public async Task RemoveAsync_WithNonExistentFavorite_ThrowsNotFoundException()
     {
         // Arrange
+        _mockEntityTypeRepository.Setup(x => x.GetByIdAsync(1))
+            .ReturnsAsync(new EntityType { Id = 1, Name = "task" });
+        _mockTaskRepository.Setup(x => x.GetByIdAsync(1))
+            .ReturnsAsync(new TaskModel { Id = 1, OwnerId = 1, Title = "Test Task", StatusId = 1 });
         _mockFavoriteRepository.Setup(x => x.GetByUserAndEntityAsync(1, 1, 1))
             .ReturnsAsync((Favorite?)null);
 
@@ -199,6 +217,10 @@ public class FavoriteServiceTests
             CreatedAt = DateTime.UtcNow
         };
 
+        _mockEntityTypeRepository.Setup(x => x.GetByIdAsync(1))
+            .ReturnsAsync(new EntityType { Id = 1, Name = "task" });
+        _mockTaskRepository.Setup(x => x.GetByIdAsync(1))
+            .ReturnsAsync(new TaskModel { Id = 1, OwnerId = 1, Title = "Test Task", StatusId = 1 });
         _mockFavoriteRepository.Setup(x => x.GetByUserAndEntityAsync(1, 1, 1))
             .ReturnsAsync(favorite);
         _mockFavoriteRepository.Setup(x => x.DeleteByUserAndEntityAsync(1, 1, 1))
@@ -210,6 +232,61 @@ public class FavoriteServiceTests
         // Assert
         await act.Should().ThrowAsync<NotFoundException>()
             .WithMessage("Failed to remove favorite");
+    }
+
+    [Fact]
+    public async Task AddAsync_WithTaskOwnedByDifferentUser_ThrowsUnauthorizedException()
+    {
+        // Arrange - user 2 trying to add task owned by user 1 to favorites
+        _mockUserRepository.Setup(x => x.GetByIdAsync(2))
+            .ReturnsAsync(new User { Id = 2, Login = "testuser2", Email = "test2@test.com", IsActive = true });
+        _mockEntityTypeRepository.Setup(x => x.GetByIdAsync(1))
+            .ReturnsAsync(new EntityType { Id = 1, Name = "task" });
+        _mockTaskRepository.Setup(x => x.GetByIdAsync(1))
+            .ReturnsAsync(new TaskModel { Id = 1, OwnerId = 1, Title = "Test Task", StatusId = 1 });
+
+        // Act
+        var act = async () => await _service.AddAsync(2, 1, 1);
+
+        // Assert
+        await act.Should().ThrowAsync<UnauthorizedException>()
+            .WithMessage("You can only add your own tasks to favorites");
+    }
+
+    [Fact]
+    public async Task AddAsync_WithProjectOwnedByDifferentUser_ThrowsUnauthorizedException()
+    {
+        // Arrange - user 2 trying to add project owned by user 1 to favorites
+        _mockUserRepository.Setup(x => x.GetByIdAsync(2))
+            .ReturnsAsync(new User { Id = 2, Login = "testuser2", Email = "test2@test.com", IsActive = true });
+        _mockEntityTypeRepository.Setup(x => x.GetByIdAsync(2))
+            .ReturnsAsync(new EntityType { Id = 2, Name = "project" });
+        _mockProjectRepository.Setup(x => x.GetByIdAsync(1))
+            .ReturnsAsync(new Project { Id = 1, OwnerId = 1, Name = "Test Project", StartDate = DateTime.UtcNow, EndDate = DateTime.UtcNow.AddDays(30) });
+
+        // Act
+        var act = async () => await _service.AddAsync(2, 2, 1);
+
+        // Assert
+        await act.Should().ThrowAsync<UnauthorizedException>()
+            .WithMessage("You can only add your own projects to favorites");
+    }
+
+    [Fact]
+    public async Task RemoveAsync_WithTaskOwnedByDifferentUser_ThrowsUnauthorizedException()
+    {
+        // Arrange - user 2 trying to remove task owned by user 1 from favorites
+        _mockEntityTypeRepository.Setup(x => x.GetByIdAsync(1))
+            .ReturnsAsync(new EntityType { Id = 1, Name = "task" });
+        _mockTaskRepository.Setup(x => x.GetByIdAsync(1))
+            .ReturnsAsync(new TaskModel { Id = 1, OwnerId = 1, Title = "Test Task", StatusId = 1 });
+
+        // Act
+        var act = async () => await _service.RemoveAsync(2, 1, 1);
+
+        // Assert
+        await act.Should().ThrowAsync<UnauthorizedException>()
+            .WithMessage("You can only add your own tasks to favorites");
     }
 
     [Fact]

@@ -7,8 +7,8 @@ namespace backend.Services.Interfaces;
 /// </summary>
 public interface IProjectMemberService
 {
-    Task<ProjectMember> AddMemberAsync(int projectId, int userId, int roleId);
-    Task RemoveMemberAsync(int projectId, int userId);
-    Task<ProjectMember> UpdateMemberRoleAsync(int projectId, int userId, int newRoleId);
+    Task<ProjectMember> AddMemberAsync(int projectId, int userId, int roleId, int requestingUserId);
+    Task RemoveMemberAsync(int projectId, int userId, int requestingUserId);
+    Task<ProjectMember> UpdateMemberRoleAsync(int projectId, int userId, int newRoleId, int requestingUserId);
     Task<IEnumerable<ProjectMember>> GetProjectMembersAsync(int projectId);
 }

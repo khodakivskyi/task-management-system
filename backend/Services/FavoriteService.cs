@@ -14,6 +14,8 @@ public class FavoriteService : IFavoriteService
     private readonly IFavoriteRepository _favoriteRepository;
     private readonly IUserRepository _userRepository;
     private readonly IEntityTypeRepository _entityTypeRepository;
+    private readonly IRepository<TaskModel> _taskRepository;
+    private readonly IRepository<Project> _projectRepository;
 
     private const string UserEntity = nameof(User);
     private const string EntityTypeEntity = "Entity type";
@@ -22,11 +24,15 @@ public class FavoriteService : IFavoriteService
     public FavoriteService(
         IFavoriteRepository favoriteRepository,
         IUserRepository userRepository,
-        IEntityTypeRepository entityTypeRepository)
+        IEntityTypeRepository entityTypeRepository,
+        IRepository<TaskModel> taskRepository,
+        IRepository<Project> projectRepository)
     {
         _favoriteRepository = favoriteRepository ?? throw new ArgumentNullException(nameof(favoriteRepository));
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         _entityTypeRepository = entityTypeRepository ?? throw new ArgumentNullException(nameof(entityTypeRepository));
+        _taskRepository = taskRepository ?? throw new ArgumentNullException(nameof(taskRepository));
+        _projectRepository = projectRepository ?? throw new ArgumentNullException(nameof(projectRepository));
     }
 
     public async Task<Favorite> AddAsync(int userId, int entityTypeId, int entityId)
@@ -36,6 +42,9 @@ public class FavoriteService : IFavoriteService
         ValidationHelper.ValidateId(entityId, EntityIdEntity);
 
         await FavoriteHelper.ValidateFavoriteAsync(userId, entityTypeId, _userRepository, _entityTypeRepository);
+
+        // Check ownership (user can only add their own tasks/projects to favorites)
+        await FavoriteHelper.ValidateEntityOwnershipAsync(userId, entityTypeId, entityId, _entityTypeRepository, _taskRepository, _projectRepository);
 
         // Check if favorite already exists
         var existingFavorite = await _favoriteRepository.GetByUserAndEntityAsync(userId, entityTypeId, entityId);
@@ -62,6 +71,9 @@ public class FavoriteService : IFavoriteService
         ValidationHelper.ValidateId(userId, UserEntity);
         ValidationHelper.ValidateId(entityTypeId, EntityTypeEntity);
         ValidationHelper.ValidateId(entityId, EntityIdEntity);
+
+        // Check ownership (user can only remove their own tasks/projects from favorites)
+        await FavoriteHelper.ValidateEntityOwnershipAsync(userId, entityTypeId, entityId, _entityTypeRepository, _taskRepository, _projectRepository);
 
         // Check if favorite exists
         var favorite = await _favoriteRepository.GetByUserAndEntityAsync(userId, entityTypeId, entityId);

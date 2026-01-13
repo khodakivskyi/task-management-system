@@ -103,18 +103,22 @@ public class ProjectsMutationTests
     }
 
     [Fact]
-    public async Task DeleteProject_WithValidId_ReturnsTrue()
+    public async Task DeleteProject_WithValidInput_ReturnsTrue()
     {
         // Arrange
-        var projectId = 1;
-        _mockProjectService.Setup(x => x.DeleteAsync(projectId))
+        var input = new DeleteProjectInput
+        {
+            Id = 1,
+            OwnerId = 1
+        };
+        _mockProjectService.Setup(x => x.DeleteAsync(input.Id, input.OwnerId))
             .Returns(Task.CompletedTask);
 
         // Act
-        var result = await _mutation.DeleteProject(projectId, _mockProjectService.Object);
+        var result = await _mutation.DeleteProject(input, _mockProjectService.Object);
 
         // Assert
         result.Should().BeTrue();
-        _mockProjectService.Verify(x => x.DeleteAsync(projectId), Times.Once);
+        _mockProjectService.Verify(x => x.DeleteAsync(input.Id, input.OwnerId), Times.Once);
     }
 }

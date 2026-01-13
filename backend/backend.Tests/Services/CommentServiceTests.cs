@@ -279,7 +279,7 @@ public class CommentServiceTests
     }
 
     [Fact]
-    public async Task DeleteAsync_WithValidId_DeletesComment()
+    public async Task DeleteAsync_WithValidIdAndAuthor_DeletesComment()
     {
         // Arrange
         var comment = new Comment
@@ -297,7 +297,7 @@ public class CommentServiceTests
             .ReturnsAsync(true);
 
         // Act
-        await _service.DeleteAsync(1);
+        await _service.DeleteAsync(1, 1);
 
         // Assert
         _mockCommentRepository.Verify(x => x.DeleteAsync(1), Times.Once);
@@ -311,7 +311,7 @@ public class CommentServiceTests
             .ReturnsAsync((Comment?)null);
 
         // Act
-        var act = async () => await _service.DeleteAsync(999);
+        var act = async () => await _service.DeleteAsync(999, 1);
 
         // Assert
         await act.Should().ThrowAsync<NotFoundException>()
@@ -322,7 +322,7 @@ public class CommentServiceTests
     public async Task DeleteAsync_WithInvalidId_ThrowsBadRequestException()
     {
         // Act
-        var act = async () => await _service.DeleteAsync(0);
+        var act = async () => await _service.DeleteAsync(0, 1);
 
         // Assert
         await act.Should().ThrowAsync<BadRequestException>();
@@ -347,10 +347,67 @@ public class CommentServiceTests
             .ReturnsAsync(false);
 
         // Act
-        var act = async () => await _service.DeleteAsync(1);
+        var act = async () => await _service.DeleteAsync(1, 1);
 
         // Assert
         await act.Should().ThrowAsync<NotFoundException>()
             .WithMessage("Failed to delete comment");
+    }
+
+    [Fact]
+    public async Task DeleteAsync_WithDifferentUser_ThrowsUnauthorizedException()
+    {
+        // Arrange
+        var comment = new Comment
+        {
+            Id = 1,
+            TaskId = 1,
+            UserId = 1,
+            Content = "Test",
+            CreatedAt = DateTime.UtcNow
+        };
+
+        _mockCommentRepository.Setup(x => x.GetByIdAsync(1))
+            .ReturnsAsync(comment);
+
+        // Act - user 2 trying to delete comment by user 1
+        var act = async () => await _service.DeleteAsync(1, 2);
+
+        // Assert
+        await act.Should().ThrowAsync<UnauthorizedException>()
+            .WithMessage("Only the comment author can delete this comment");
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WithDifferentUser_ThrowsUnauthorizedException()
+    {
+        // Arrange
+        var existingComment = new Comment
+        {
+            Id = 1,
+            TaskId = 1,
+            UserId = 1,
+            Content = "Original",
+            CreatedAt = DateTime.UtcNow
+        };
+
+        var updatedComment = new Comment
+        {
+            Id = 1,
+            TaskId = 1,
+            UserId = 2, // Different user trying to update
+            Content = "Updated",
+            CreatedAt = DateTime.UtcNow
+        };
+
+        _mockCommentRepository.Setup(x => x.GetByIdAsync(1))
+            .ReturnsAsync(existingComment);
+
+        // Act
+        var act = async () => await _service.UpdateAsync(updatedComment);
+
+        // Assert
+        await act.Should().ThrowAsync<UnauthorizedException>()
+            .WithMessage("Only the comment author can update this comment");
     }
 }

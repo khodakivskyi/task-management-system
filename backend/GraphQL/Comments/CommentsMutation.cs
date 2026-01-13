@@ -38,10 +38,10 @@ public class CommentsMutation
     }
 
     public async Task<bool> DeleteComment(
-        int id,
+        DeleteCommentInput input,
         [Service] ICommentService commentService)
     {
-        await commentService.DeleteAsync(id);
+        await commentService.DeleteAsync(input.Id, input.UserId);
         return true;
     }
 }

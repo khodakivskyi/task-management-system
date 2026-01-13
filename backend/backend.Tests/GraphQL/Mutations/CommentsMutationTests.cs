@@ -93,18 +93,22 @@ public class CommentsMutationTests
     }
 
     [Fact]
-    public async Task DeleteComment_WithValidId_ReturnsTrue()
+    public async Task DeleteComment_WithValidInput_ReturnsTrue()
     {
         // Arrange
-        var commentId = 1;
-        _mockCommentService.Setup(x => x.DeleteAsync(commentId))
+        var input = new DeleteCommentInput
+        {
+            Id = 1,
+            UserId = 1
+        };
+        _mockCommentService.Setup(x => x.DeleteAsync(input.Id, input.UserId))
             .Returns(Task.CompletedTask);
 
         // Act
-        var result = await _mutation.DeleteComment(commentId, _mockCommentService.Object);
+        var result = await _mutation.DeleteComment(input, _mockCommentService.Object);
 
         // Assert
         result.Should().BeTrue();
-        _mockCommentService.Verify(x => x.DeleteAsync(commentId), Times.Once);
+        _mockCommentService.Verify(x => x.DeleteAsync(input.Id, input.UserId), Times.Once);
     }
 }

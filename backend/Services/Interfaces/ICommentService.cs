@@ -11,5 +11,5 @@ public interface ICommentService
     Task<Comment?> GetByIdAsync(int id);
     Task<IEnumerable<Comment>> GetAllAsync();
     Task<Comment> UpdateAsync(Comment comment);
-    Task DeleteAsync(int id);
+    Task DeleteAsync(int id, int requestingUserId);
 }
