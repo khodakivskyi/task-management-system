@@ -70,6 +70,8 @@ public class TaskService : ITaskService
         // Check if task exists
         var existingTask = await EntityValidationHelper.EnsureEntityExistsAsync(task.Id, _taskRepository, TaskEntity);
 
+        AuthorizationHelper.EnsureOwnership(existingTask.OwnerId, task.OwnerId, "task", "update");
+
         await TaskHelper.ValidateTaskAsync(
             task,
             _userRepository,
@@ -91,11 +93,13 @@ public class TaskService : ITaskService
         return task;
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(int id, int requestingUserId)
     {
         ValidationHelper.ValidateId(id, TaskEntity);
 
-        await EntityValidationHelper.EnsureEntityExistsAsync(id, _taskRepository, TaskEntity);
+        var existingTask = await EntityValidationHelper.EnsureEntityExistsAsync(id, _taskRepository, TaskEntity);
+
+        AuthorizationHelper.EnsureOwnership(existingTask.OwnerId, requestingUserId, "task", "delete");
 
         var deleted = await _taskRepository.DeleteAsync(id);
         if (!deleted)

@@ -59,6 +59,8 @@ public class CommentService : ICommentService
 
         var existingComment = await EntityValidationHelper.EnsureEntityExistsAsync(comment.Id, _commentRepository, CommentEntity);
 
+        AuthorizationHelper.EnsureCommentOwnership(existingComment.UserId, comment.UserId, "update");
+
         await CommentHelper.ValidateCommentAsync(comment, _taskRepository, _userRepository);
 
         // Preserve TaskId, UserId, and CreatedAt
@@ -75,11 +77,13 @@ public class CommentService : ICommentService
         return comment;
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(int id, int requestingUserId)
     {
         ValidationHelper.ValidateId(id, CommentEntity);
 
-        await EntityValidationHelper.EnsureEntityExistsAsync(id, _commentRepository, CommentEntity);
+        var existingComment = await EntityValidationHelper.EnsureEntityExistsAsync(id, _commentRepository, CommentEntity);
+
+        AuthorizationHelper.EnsureCommentOwnership(existingComment.UserId, requestingUserId, "delete");
 
         var deleted = await _commentRepository.DeleteAsync(id);
         if (!deleted)

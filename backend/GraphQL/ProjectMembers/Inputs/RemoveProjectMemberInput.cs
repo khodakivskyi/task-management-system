@@ -7,4 +7,5 @@ public class RemoveProjectMemberInput
 {
     public int ProjectId { get; set; }
     public int UserId { get; set; }
+    public int RequestingUserId { get; set; }
 }

@@ -32,11 +32,15 @@ public class ProjectMemberService : IProjectMemberService
         _projectRoleRepository = projectRoleRepository;
     }
 
-    public async Task<ProjectMember> AddMemberAsync(int projectId, int userId, int roleId)
+    public async Task<ProjectMember> AddMemberAsync(int projectId, int userId, int roleId, int requestingUserId)
     {
         ValidationHelper.ValidateId(projectId, ProjectEntity);
         ValidationHelper.ValidateId(userId, UserEntity);
         ValidationHelper.ValidateId(roleId, RoleEntity);
+
+        var project = await EntityValidationHelper.EnsureEntityExistsAsync(projectId, _projectRepository, ProjectEntity);
+
+        AuthorizationHelper.EnsureOwnership(project.OwnerId, requestingUserId, "project members", "add");
 
         await ProjectMemberHelper.ValidateProjectMemberAsync(
             projectId,
@@ -66,10 +70,14 @@ public class ProjectMemberService : IProjectMemberService
         return projectMember;
     }
 
-    public async Task RemoveMemberAsync(int projectId, int userId)
+    public async Task RemoveMemberAsync(int projectId, int userId, int requestingUserId)
     {
         ValidationHelper.ValidateId(projectId, ProjectEntity);
         ValidationHelper.ValidateId(userId, UserEntity);
+
+        var project = await EntityValidationHelper.EnsureEntityExistsAsync(projectId, _projectRepository, ProjectEntity);
+
+        AuthorizationHelper.EnsureOwnership(project.OwnerId, requestingUserId, "project members", "remove");
 
         // Check if member exists
         var member = await _projectMemberRepository.GetByProjectAndUserAsync(projectId, userId);
@@ -85,11 +93,15 @@ public class ProjectMemberService : IProjectMemberService
         }
     }
 
-    public async Task<ProjectMember> UpdateMemberRoleAsync(int projectId, int userId, int newRoleId)
+    public async Task<ProjectMember> UpdateMemberRoleAsync(int projectId, int userId, int newRoleId, int requestingUserId)
     {
         ValidationHelper.ValidateId(projectId, ProjectEntity);
         ValidationHelper.ValidateId(userId, UserEntity);
         ValidationHelper.ValidateId(newRoleId, RoleEntity);
+
+        var project = await EntityValidationHelper.EnsureEntityExistsAsync(projectId, _projectRepository, ProjectEntity);
+
+        AuthorizationHelper.EnsureOwnership(project.OwnerId, requestingUserId, "project members", "update role for");
 
         // Check if member exists
         var member = await _projectMemberRepository.GetByProjectAndUserAsync(projectId, userId);

@@ -195,34 +195,42 @@ public class TasksMutationTests
     }
 
     [Fact]
-    public async Task DeleteTask_WithValidId_ReturnsTrue()
+    public async Task DeleteTask_WithValidInput_ReturnsTrue()
     {
         // Arrange
-        var taskId = 1;
-        _mockTaskService.Setup(x => x.DeleteAsync(taskId))
+        var input = new DeleteTaskInput
+        {
+            Id = 1,
+            OwnerId = 1
+        };
+        _mockTaskService.Setup(x => x.DeleteAsync(input.Id, input.OwnerId))
             .Returns(Task.CompletedTask);
 
         // Act
-        var result = await _mutation.DeleteTask(taskId, _mockTaskService.Object);
+        var result = await _mutation.DeleteTask(input, _mockTaskService.Object);
 
         // Assert
         result.Should().BeTrue();
-        _mockTaskService.Verify(x => x.DeleteAsync(taskId), Times.Once);
+        _mockTaskService.Verify(x => x.DeleteAsync(input.Id, input.OwnerId), Times.Once);
     }
 
     [Fact]
-    public async Task DeleteTask_CallsServiceWithCorrectId()
+    public async Task DeleteTask_CallsServiceWithCorrectParameters()
     {
         // Arrange
-        var taskId = 42;
-        _mockTaskService.Setup(x => x.DeleteAsync(taskId))
+        var input = new DeleteTaskInput
+        {
+            Id = 42,
+            OwnerId = 5
+        };
+        _mockTaskService.Setup(x => x.DeleteAsync(input.Id, input.OwnerId))
             .Returns(Task.CompletedTask);
 
         // Act
-        var result = await _mutation.DeleteTask(taskId, _mockTaskService.Object);
+        var result = await _mutation.DeleteTask(input, _mockTaskService.Object);
 
         // Assert
         result.Should().BeTrue();
-        _mockTaskService.Verify(x => x.DeleteAsync(taskId), Times.Once);
+        _mockTaskService.Verify(x => x.DeleteAsync(input.Id, input.OwnerId), Times.Once);
     }
 }

@@ -13,21 +13,21 @@ public class ProjectMembersMutation
         AddProjectMemberInput input,
         [Service] IProjectMemberService projectMemberService)
     {
-        return await projectMemberService.AddMemberAsync(input.ProjectId, input.UserId, input.RoleId);
+        return await projectMemberService.AddMemberAsync(input.ProjectId, input.UserId, input.RoleId, input.RequestingUserId);
     }
 
     public async Task<ProjectMember> UpdateProjectMemberRole(
         UpdateProjectMemberRoleInput input,
         [Service] IProjectMemberService projectMemberService)
     {
-        return await projectMemberService.UpdateMemberRoleAsync(input.ProjectId, input.UserId, input.NewRoleId);
+        return await projectMemberService.UpdateMemberRoleAsync(input.ProjectId, input.UserId, input.NewRoleId, input.RequestingUserId);
     }
 
     public async Task<bool> RemoveProjectMember(
         RemoveProjectMemberInput input,
         [Service] IProjectMemberService projectMemberService)
     {
-        await projectMemberService.RemoveMemberAsync(input.ProjectId, input.UserId);
+        await projectMemberService.RemoveMemberAsync(input.ProjectId, input.UserId, input.RequestingUserId);
         return true;
     }
 }

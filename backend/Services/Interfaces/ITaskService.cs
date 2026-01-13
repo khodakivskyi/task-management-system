@@ -12,7 +12,7 @@ public interface ITaskService
     Task<TaskModel?> GetByIdAsync(int id);
     Task<IEnumerable<TaskModel>> GetAllAsync();
     Task<TaskModel> UpdateAsync(TaskModel task);
-    Task DeleteAsync(int id);
+    Task DeleteAsync(int id, int requestingUserId);
     Task<IEnumerable<TaskWithDetailsDto>> GetPagedAsync(
         int pageNumber = 1,
         int pageSize = 10,

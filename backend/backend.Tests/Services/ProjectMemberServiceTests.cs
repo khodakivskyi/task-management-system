@@ -47,8 +47,8 @@ public class ProjectMemberServiceTests
         _mockMemberRepository.Setup(x => x.CreateAsync(It.IsAny<ProjectMember>()))
             .ReturnsAsync(1);
 
-        // Act
-        var result = await _service.AddMemberAsync(projectId, userId, roleId);
+        // Act - owner (userId=1) adding member (userId=2)
+        var result = await _service.AddMemberAsync(projectId, userId, roleId, 1);
 
         // Assert
         result.Should().NotBeNull();
@@ -64,7 +64,7 @@ public class ProjectMemberServiceTests
     public async Task AddMemberAsync_WithInvalidProjectId_ThrowsBadRequestException()
     {
         // Act
-        var act = async () => await _service.AddMemberAsync(0, 1, 1);
+        var act = async () => await _service.AddMemberAsync(0, 1, 1, 1);
 
         // Assert
         await act.Should().ThrowAsync<BadRequestException>()
@@ -75,7 +75,7 @@ public class ProjectMemberServiceTests
     public async Task AddMemberAsync_WithInvalidUserId_ThrowsBadRequestException()
     {
         // Act
-        var act = async () => await _service.AddMemberAsync(1, 0, 1);
+        var act = async () => await _service.AddMemberAsync(1, 0, 1, 1);
 
         // Assert
         await act.Should().ThrowAsync<BadRequestException>()
@@ -86,7 +86,7 @@ public class ProjectMemberServiceTests
     public async Task AddMemberAsync_WithInvalidRoleId_ThrowsBadRequestException()
     {
         // Act
-        var act = async () => await _service.AddMemberAsync(1, 1, 0);
+        var act = async () => await _service.AddMemberAsync(1, 1, 0, 1);
 
         // Assert
         await act.Should().ThrowAsync<BadRequestException>()
@@ -101,7 +101,7 @@ public class ProjectMemberServiceTests
             .ReturnsAsync((Project?)null);
 
         // Act
-        var act = async () => await _service.AddMemberAsync(999, 1, 1);
+        var act = async () => await _service.AddMemberAsync(999, 1, 1, 1);
 
         // Assert
         await act.Should().ThrowAsync<NotFoundException>()
@@ -118,7 +118,7 @@ public class ProjectMemberServiceTests
             .ReturnsAsync((User?)null);
 
         // Act
-        var act = async () => await _service.AddMemberAsync(1, 999, 1);
+        var act = async () => await _service.AddMemberAsync(1, 999, 1, 1);
 
         // Assert
         await act.Should().ThrowAsync<NotFoundException>()
@@ -143,11 +143,30 @@ public class ProjectMemberServiceTests
             .ReturnsAsync(new ProjectMember { Id = 1, ProjectId = projectId, UserId = userId, RoleId = roleId });
 
         // Act
-        var act = async () => await _service.AddMemberAsync(projectId, userId, roleId);
+        var act = async () => await _service.AddMemberAsync(projectId, userId, roleId, 1);
 
         // Assert
         await act.Should().ThrowAsync<ConflictException>()
             .WithMessage($"User {userId} is already a member of project {projectId}");
+    }
+
+    [Fact]
+    public async Task AddMemberAsync_WithNonOwnerRequesting_ThrowsUnauthorizedException()
+    {
+        // Arrange - user 2 trying to add member to project owned by user 1
+        var projectId = 1;
+        var userId = 3;
+        var roleId = 1;
+
+        _mockProjectRepository.Setup(x => x.GetByIdAsync(projectId))
+            .ReturnsAsync(new Project { Id = projectId, Name = "Test Project", OwnerId = 1, StartDate = DateTime.UtcNow, EndDate = DateTime.UtcNow.AddDays(30) });
+
+        // Act
+        var act = async () => await _service.AddMemberAsync(projectId, userId, roleId, 2);
+
+        // Assert
+        await act.Should().ThrowAsync<UnauthorizedException>()
+            .WithMessage("Only the project members owner can add this project members");
     }
 
     [Fact]
@@ -158,13 +177,15 @@ public class ProjectMemberServiceTests
         var userId = 2;
         var member = new ProjectMember { Id = 1, ProjectId = projectId, UserId = userId, RoleId = 1 };
 
+        _mockProjectRepository.Setup(x => x.GetByIdAsync(projectId))
+            .ReturnsAsync(new Project { Id = projectId, Name = "Test Project", OwnerId = 1, StartDate = DateTime.UtcNow, EndDate = DateTime.UtcNow.AddDays(30) });
         _mockMemberRepository.Setup(x => x.GetByProjectAndUserAsync(projectId, userId))
             .ReturnsAsync(member);
         _mockMemberRepository.Setup(x => x.DeleteAsync(member.Id))
             .ReturnsAsync(true);
 
         // Act
-        await _service.RemoveMemberAsync(projectId, userId);
+        await _service.RemoveMemberAsync(projectId, userId, 1);
 
         // Assert
         _mockMemberRepository.Verify(x => x.DeleteAsync(member.Id), Times.Once);
@@ -174,11 +195,13 @@ public class ProjectMemberServiceTests
     public async Task RemoveMemberAsync_WithNonExistentMember_ThrowsNotFoundException()
     {
         // Arrange
+        _mockProjectRepository.Setup(x => x.GetByIdAsync(1))
+            .ReturnsAsync(new Project { Id = 1, Name = "Test Project", OwnerId = 1, StartDate = DateTime.UtcNow, EndDate = DateTime.UtcNow.AddDays(30) });
         _mockMemberRepository.Setup(x => x.GetByProjectAndUserAsync(1, 2))
             .ReturnsAsync((ProjectMember?)null);
 
         // Act
-        var act = async () => await _service.RemoveMemberAsync(1, 2);
+        var act = async () => await _service.RemoveMemberAsync(1, 2, 1);
 
         // Assert
         await act.Should().ThrowAsync<NotFoundException>()
@@ -193,17 +216,37 @@ public class ProjectMemberServiceTests
         var userId = 2;
         var member = new ProjectMember { Id = 1, ProjectId = projectId, UserId = userId, RoleId = 1 };
 
+        _mockProjectRepository.Setup(x => x.GetByIdAsync(projectId))
+            .ReturnsAsync(new Project { Id = projectId, Name = "Test Project", OwnerId = 1, StartDate = DateTime.UtcNow, EndDate = DateTime.UtcNow.AddDays(30) });
         _mockMemberRepository.Setup(x => x.GetByProjectAndUserAsync(projectId, userId))
             .ReturnsAsync(member);
         _mockMemberRepository.Setup(x => x.DeleteAsync(member.Id))
             .ReturnsAsync(false);
 
         // Act
-        var act = async () => await _service.RemoveMemberAsync(projectId, userId);
+        var act = async () => await _service.RemoveMemberAsync(projectId, userId, 1);
 
         // Assert
         await act.Should().ThrowAsync<NotFoundException>()
             .WithMessage("Failed to remove user from project");
+    }
+
+    [Fact]
+    public async Task RemoveMemberAsync_WithNonOwnerRequesting_ThrowsUnauthorizedException()
+    {
+        // Arrange - user 2 trying to remove member from project owned by user 1
+        var projectId = 1;
+        var userId = 3;
+
+        _mockProjectRepository.Setup(x => x.GetByIdAsync(projectId))
+            .ReturnsAsync(new Project { Id = projectId, Name = "Test Project", OwnerId = 1, StartDate = DateTime.UtcNow, EndDate = DateTime.UtcNow.AddDays(30) });
+
+        // Act
+        var act = async () => await _service.RemoveMemberAsync(projectId, userId, 2);
+
+        // Assert
+        await act.Should().ThrowAsync<UnauthorizedException>()
+            .WithMessage("Only the project members owner can remove this project members");
     }
 
     [Fact]
@@ -215,6 +258,8 @@ public class ProjectMemberServiceTests
         var newRoleId = 2;
         var member = new ProjectMember { Id = 1, ProjectId = projectId, UserId = userId, RoleId = 1 };
 
+        _mockProjectRepository.Setup(x => x.GetByIdAsync(projectId))
+            .ReturnsAsync(new Project { Id = projectId, Name = "Test Project", OwnerId = 1, StartDate = DateTime.UtcNow, EndDate = DateTime.UtcNow.AddDays(30) });
         _mockMemberRepository.Setup(x => x.GetByProjectAndUserAsync(projectId, userId))
             .ReturnsAsync(member);
         _mockRoleRepository.Setup(x => x.GetByIdAsync(newRoleId))
@@ -223,7 +268,7 @@ public class ProjectMemberServiceTests
             .ReturnsAsync(true);
 
         // Act
-        var result = await _service.UpdateMemberRoleAsync(projectId, userId, newRoleId);
+        var result = await _service.UpdateMemberRoleAsync(projectId, userId, newRoleId, 1);
 
         // Assert
         result.Should().NotBeNull();
@@ -235,11 +280,13 @@ public class ProjectMemberServiceTests
     public async Task UpdateMemberRoleAsync_WithNonExistentMember_ThrowsNotFoundException()
     {
         // Arrange
+        _mockProjectRepository.Setup(x => x.GetByIdAsync(1))
+            .ReturnsAsync(new Project { Id = 1, Name = "Test Project", OwnerId = 1, StartDate = DateTime.UtcNow, EndDate = DateTime.UtcNow.AddDays(30) });
         _mockMemberRepository.Setup(x => x.GetByProjectAndUserAsync(1, 2))
             .ReturnsAsync((ProjectMember?)null);
 
         // Act
-        var act = async () => await _service.UpdateMemberRoleAsync(1, 2, 2);
+        var act = async () => await _service.UpdateMemberRoleAsync(1, 2, 2, 1);
 
         // Assert
         await act.Should().ThrowAsync<NotFoundException>()
@@ -255,17 +302,38 @@ public class ProjectMemberServiceTests
         var newRoleId = 999;
         var member = new ProjectMember { Id = 1, ProjectId = projectId, UserId = userId, RoleId = 1 };
 
+        _mockProjectRepository.Setup(x => x.GetByIdAsync(projectId))
+            .ReturnsAsync(new Project { Id = projectId, Name = "Test Project", OwnerId = 1, StartDate = DateTime.UtcNow, EndDate = DateTime.UtcNow.AddDays(30) });
         _mockMemberRepository.Setup(x => x.GetByProjectAndUserAsync(projectId, userId))
             .ReturnsAsync(member);
         _mockRoleRepository.Setup(x => x.GetByIdAsync(newRoleId))
             .ReturnsAsync((ProjectRole?)null);
 
         // Act
-        var act = async () => await _service.UpdateMemberRoleAsync(projectId, userId, newRoleId);
+        var act = async () => await _service.UpdateMemberRoleAsync(projectId, userId, newRoleId, 1);
 
         // Assert
         await act.Should().ThrowAsync<NotFoundException>()
             .WithMessage("Project role not found");
+    }
+
+    [Fact]
+    public async Task UpdateMemberRoleAsync_WithNonOwnerRequesting_ThrowsUnauthorizedException()
+    {
+        // Arrange - user 2 trying to update member role in project owned by user 1
+        var projectId = 1;
+        var userId = 3;
+        var newRoleId = 2;
+
+        _mockProjectRepository.Setup(x => x.GetByIdAsync(projectId))
+            .ReturnsAsync(new Project { Id = projectId, Name = "Test Project", OwnerId = 1, StartDate = DateTime.UtcNow, EndDate = DateTime.UtcNow.AddDays(30) });
+
+        // Act
+        var act = async () => await _service.UpdateMemberRoleAsync(projectId, userId, newRoleId, 2);
+
+        // Assert
+        await act.Should().ThrowAsync<UnauthorizedException>()
+            .WithMessage("Only the project members owner can update role for this project members");
     }
 
     [Fact]

@@ -53,10 +53,10 @@ public class TasksMutation
     }
 
     public async Task<bool> DeleteTask(
-        int id,
+        DeleteTaskInput input,
         [Service] ITaskService taskService)
     {
-        await taskService.DeleteAsync(id);
+        await taskService.DeleteAsync(input.Id, input.OwnerId);
         return true;
     }
 }

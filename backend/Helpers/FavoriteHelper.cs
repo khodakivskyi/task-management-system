@@ -24,4 +24,52 @@ public static class FavoriteHelper
         // Validate EntityTypeId exists
         await EntityValidationHelper.EnsureEntityExistsAsync(entityTypeId, entityTypeRepository, "Entity type");
     }
+
+    /// <summary>
+    /// Validates that the user is the owner of the entity (task or project)
+    /// </summary>
+    public static async Task ValidateEntityOwnershipAsync(
+        int userId, 
+        int entityTypeId, 
+        int entityId,
+        IEntityTypeRepository entityTypeRepository,
+        IRepository<TaskModel> taskRepository,
+        IRepository<Project> projectRepository)
+    {
+        var entityType = await entityTypeRepository.GetByIdAsync(entityTypeId);
+        if (entityType == null)
+        {
+            throw new NotFoundException("Entity type not found");
+        }
+
+        switch (entityType.Name.ToLower())
+        {
+            case "task":
+                var task = await taskRepository.GetByIdAsync(entityId);
+                if (task == null)
+                {
+                    throw new NotFoundException("Task not found");
+                }
+                if (task.OwnerId != userId)
+                {
+                    throw new UnauthorizedException("You can only add your own tasks to favorites");
+                }
+                break;
+
+            case "project":
+                var project = await projectRepository.GetByIdAsync(entityId);
+                if (project == null)
+                {
+                    throw new NotFoundException("Project not found");
+                }
+                if (project.OwnerId != userId)
+                {
+                    throw new UnauthorizedException("You can only add your own projects to favorites");
+                }
+                break;
+
+            default:
+                throw new BadRequestException($"Unsupported entity type: {entityType.Name}");
+        }
+    }
 }

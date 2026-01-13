@@ -344,7 +344,7 @@ public class ProjectServiceTests
     }
 
     [Fact]
-    public async Task DeleteAsync_WithValidId_DeletesProject()
+    public async Task DeleteAsync_WithValidIdAndOwner_DeletesProject()
     {
         // Arrange
         var project = new Project
@@ -362,7 +362,7 @@ public class ProjectServiceTests
             .ReturnsAsync(true);
 
         // Act
-        await _projectService.DeleteAsync(1);
+        await _projectService.DeleteAsync(1, 1);
 
         // Assert
         _mockProjectRepository.Verify(x => x.DeleteAsync(1), Times.Once);
@@ -376,7 +376,7 @@ public class ProjectServiceTests
             .ReturnsAsync((Project?)null);
 
         // Act
-        var act = async () => await _projectService.DeleteAsync(999);
+        var act = async () => await _projectService.DeleteAsync(999, 1);
 
         // Assert
         await act.Should().ThrowAsync<NotFoundException>()
@@ -387,7 +387,7 @@ public class ProjectServiceTests
     public async Task DeleteAsync_WithInvalidId_ThrowsBadRequestException()
     {
         // Act
-        var act = async () => await _projectService.DeleteAsync(0);
+        var act = async () => await _projectService.DeleteAsync(0, 1);
 
         // Assert
         await act.Should().ThrowAsync<BadRequestException>();
@@ -412,10 +412,69 @@ public class ProjectServiceTests
             .ReturnsAsync(false);
 
         // Act
-        var act = async () => await _projectService.DeleteAsync(1);
+        var act = async () => await _projectService.DeleteAsync(1, 1);
 
         // Assert
         await act.Should().ThrowAsync<NotFoundException>()
             .WithMessage("Failed to delete project");
+    }
+
+    [Fact]
+    public async Task DeleteAsync_WithDifferentOwner_ThrowsUnauthorizedException()
+    {
+        // Arrange
+        var project = new Project
+        {
+            Id = 1,
+            OwnerId = 1,
+            Name = "Test Project",
+            StartDate = DateTime.UtcNow,
+            EndDate = DateTime.UtcNow.AddDays(30)
+        };
+
+        _mockProjectRepository.Setup(x => x.GetByIdAsync(1))
+            .ReturnsAsync(project);
+
+        // Act - user 2 trying to delete project owned by user 1
+        var act = async () => await _projectService.DeleteAsync(1, 2);
+
+        // Assert
+        await act.Should().ThrowAsync<UnauthorizedException>()
+            .WithMessage("Only the project owner can delete this project");
+    }
+
+    [Fact]
+    public async Task UpdateAsync_WithDifferentOwner_ThrowsUnauthorizedException()
+    {
+        // Arrange
+        var existingProject = new Project
+        {
+            Id = 1,
+            OwnerId = 1,
+            Name = "Test Project",
+            Description = "Original Description",
+            StartDate = DateTime.UtcNow,
+            EndDate = DateTime.UtcNow.AddDays(30)
+        };
+
+        var updatedProject = new Project
+        {
+            Id = 1,
+            OwnerId = 2, // Different owner trying to update
+            Name = "Updated Project",
+            Description = "Updated Description",
+            StartDate = DateTime.UtcNow,
+            EndDate = DateTime.UtcNow.AddDays(60)
+        };
+
+        _mockProjectRepository.Setup(x => x.GetByIdAsync(1))
+            .ReturnsAsync(existingProject);
+
+        // Act
+        var act = async () => await _projectService.UpdateAsync(updatedProject);
+
+        // Assert
+        await act.Should().ThrowAsync<UnauthorizedException>()
+            .WithMessage("Only the project owner can update this project");
     }
 }
