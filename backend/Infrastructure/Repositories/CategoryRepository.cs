@@ -29,6 +29,18 @@ public class CategoryRepository : BaseRepository, IRepository<Category>
               FROM ""Categories""
               ORDER BY ""Name""");
     }
+
+    public async Task<int> CreateAsync(Category entity){
+      throw new NotSupportedException("Create operation is not supported for Category");
+    }
+
+    public async Task<bool> UpdateAsync(Category entity){
+      throw new NotSupportedException("Update operation is not supported for Category");
+    }
+
+    public async Task<bool> DeleteAsync(int id){
+      throw new NotSupportedException("Delete operation is not supported for Category");
+    }
 }
 
 
