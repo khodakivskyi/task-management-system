@@ -29,8 +29,8 @@ public static class FavoriteHelper
     /// Validates that the user is the owner of the entity (task or project)
     /// </summary>
     public static async Task ValidateEntityOwnershipAsync(
-        int userId, 
-        int entityTypeId, 
+        int userId,
+        int entityTypeId,
         int entityId,
         IEntityTypeRepository entityTypeRepository,
         IRepository<TaskModel> taskRepository,
