@@ -273,17 +273,19 @@ mutation {
 }
 ```
 
-**Get tasks (requires authentication):**
+**Get tasks:**
 ```graphql
 query {
   tasks {
-    id
-    title
-    description
-    priority
-    deadline
-    createdAt
-    updatedAt
+    tasks {
+      id
+      title
+      description
+      priority
+      deadline
+      createdAt
+      updatedAt
+    }
   }
 }
 ```
@@ -308,11 +310,13 @@ mutation {
 }
 ```
 
-### Authentication
-Add JWT token to HTTP headers:
-```json
-{
-  "Authorization": "Bearer YOUR_JWT_TOKEN_HERE"
+### Testing Note
+For testing purposes, operations currently use `ownerId`/`userId` directly in mutations instead of JWT authentication. Example mutations include the owner/user ID in the input:
+```graphql
+mutation {
+  tasks {
+    deleteTask(input: { id: 1, ownerId: 1 })
+  }
 }
 ```
 
