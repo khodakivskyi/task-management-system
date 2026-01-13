@@ -40,6 +40,7 @@ public class TasksMutation
             StatusId = input.StatusId,
             CategoryId = input.CategoryId,
             ProjectId = input.ProjectId,
+            OwnerId = input.OwnerId,
             Title = input.Title,
             Description = input.Description,
             Priority = input.Priority,

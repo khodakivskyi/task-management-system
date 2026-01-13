@@ -9,6 +9,7 @@ public class UpdateTaskInput
     public int StatusId { get; set; }
     public int? CategoryId { get; set; }
     public int? ProjectId { get; set; }
+    public int OwnerId { get; set; }
     public string Title { get; set; } = string.Empty;
     public string? Description { get; set; }
     public int? Priority { get; set; }
