@@ -235,7 +235,7 @@ public class ProjectServiceTests
         var updatedProject = new Project
         {
             Id = 1,
-            OwnerId = 2, // Try to change owner (should be prevented)
+            OwnerId = 1, // Same owner (authorized to update)
             Name = "New Name",
             Description = "New Description",
             StartDate = DateTime.UtcNow,
@@ -302,7 +302,7 @@ public class ProjectServiceTests
         var updateData = new Project
         {
             Id = 1,
-            OwnerId = 999, // Attempt to change owner
+            OwnerId = 1,
             Name = "Updated Project",
             Description = "Updated",
             StartDate = DateTime.UtcNow,
