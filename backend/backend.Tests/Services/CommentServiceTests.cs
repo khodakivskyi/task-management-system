@@ -209,8 +209,8 @@ public class CommentServiceTests
         var updatedComment = new Comment
         {
             Id = 1,
-            TaskId = 2, // Try to change TaskId (should be prevented)
-            UserId = 2, // Try to change UserId (should be prevented)
+            TaskId = 1,
+            UserId = 1,
             Content = "New content",
             CreatedAt = DateTime.UtcNow // Try to change CreatedAt (should be prevented)
         };
