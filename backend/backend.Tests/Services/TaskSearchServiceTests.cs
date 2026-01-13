@@ -25,9 +25,9 @@ public class TaskSearchServiceTests
         var filter = new TaskSearchFilter();
         var searchResults = new List<TaskSearchResultDto>
         {
-            new(1, "Task 1", "To Do", null, null),
-            new(2, "Task 2", "In Progress", null, null),
-            new(3, "Task 3", "Done", null, null)
+            new() { Id = 1, Title = "Task 1", StatusName = "To Do" },
+            new() { Id = 2, Title = "Task 2", StatusName = "In Progress" },
+            new() { Id = 3, Title = "Task 3", StatusName = "Done" }
         };
 
         _mockRepository.Setup(x => x.SearchTasksAsync(filter))
@@ -49,7 +49,7 @@ public class TaskSearchServiceTests
         var filter = new TaskSearchFilter { SearchText = "Important" };
         var searchResults = new List<TaskSearchResultDto>
         {
-            new(1, "Important Task", "To Do", null, null)
+            new() { Id = 1, Title = "Important Task", StatusName = "To Do" }
         };
 
         _mockRepository.Setup(x => x.SearchTasksAsync(filter))
@@ -71,8 +71,8 @@ public class TaskSearchServiceTests
         var filter = new TaskSearchFilter { StatusId = 1 };
         var searchResults = new List<TaskSearchResultDto>
         {
-            new(1, "Task 1", "To Do", null, null),
-            new(2, "Task 2", "To Do", null, null)
+            new() { Id = 1, Title = "Task 1", StatusName = "To Do" },
+            new() { Id = 2, Title = "Task 2", StatusName = "To Do" }
         };
 
         _mockRepository.Setup(x => x.SearchTasksAsync(filter))
@@ -94,8 +94,8 @@ public class TaskSearchServiceTests
         var filter = new TaskSearchFilter { PriorityMin = 3 };
         var searchResults = new List<TaskSearchResultDto>
         {
-            new(1, "High Priority Task", "To Do", 5, null),
-            new(2, "Medium Priority Task", "Done", 3, null)
+            new() { Id = 1, Title = "High Priority Task", StatusName = "To Do", Priority = 5 },
+            new() { Id = 2, Title = "Medium Priority Task", StatusName = "Done", Priority = 3 }
         };
 
         _mockRepository.Setup(x => x.SearchTasksAsync(filter))
@@ -117,8 +117,8 @@ public class TaskSearchServiceTests
         var filter = new TaskSearchFilter { PriorityMax = 3 };
         var searchResults = new List<TaskSearchResultDto>
         {
-            new(1, "Low Priority Task", "To Do", 1, null),
-            new(2, "Medium Priority Task", "Done", 3, null)
+            new() { Id = 1, Title = "Low Priority Task", StatusName = "To Do", Priority = 1 },
+            new() { Id = 2, Title = "Medium Priority Task", StatusName = "Done", Priority = 3 }
         };
 
         _mockRepository.Setup(x => x.SearchTasksAsync(filter))
@@ -146,7 +146,7 @@ public class TaskSearchServiceTests
         };
         var searchResults = new List<TaskSearchResultDto>
         {
-            new(1, "Important Task", "To Do", 5, null)
+            new() { Id = 1, Title = "Important Task", StatusName = "To Do", Priority = 5 }
         };
 
         _mockRepository.Setup(x => x.SearchTasksAsync(filter))
@@ -185,8 +185,8 @@ public class TaskSearchServiceTests
         var filter = new TaskSearchFilter { UserId = 1 };
         var searchResults = new List<TaskSearchResultDto>
         {
-            new(1, "Task 1", "To Do", null, null),
-            new(2, "Task 2", "Done", null, null)
+            new() { Id = 1, Title = "Task 1", StatusName = "To Do" },
+            new() { Id = 2, Title = "Task 2", StatusName = "Done" }
         };
 
         _mockRepository.Setup(x => x.SearchTasksAsync(filter))
@@ -207,7 +207,7 @@ public class TaskSearchServiceTests
         var filter = new TaskSearchFilter { ProjectId = 1 };
         var searchResults = new List<TaskSearchResultDto>
         {
-            new(1, "Task 1", "To Do", null, null)
+            new() { Id = 1, Title = "Task 1", StatusName = "To Do" }
         };
 
         _mockRepository.Setup(x => x.SearchTasksAsync(filter))
@@ -228,9 +228,9 @@ public class TaskSearchServiceTests
         var filter = new TaskSearchFilter { PriorityMin = 2, PriorityMax = 4 };
         var searchResults = new List<TaskSearchResultDto>
         {
-            new(1, "Task 1", "To Do", 2, null),
-            new(2, "Task 2", "Done", 3, null),
-            new(3, "Task 3", "In Progress", 4, null)
+            new() { Id = 1, Title = "Task 1", StatusName = "To Do", Priority = 2 },
+            new() { Id = 2, Title = "Task 2", StatusName = "Done", Priority = 3 },
+            new() { Id = 3, Title = "Task 3", StatusName = "In Progress", Priority = 4 }
         };
 
         _mockRepository.Setup(x => x.SearchTasksAsync(filter))

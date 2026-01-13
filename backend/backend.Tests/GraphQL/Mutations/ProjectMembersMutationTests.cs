@@ -26,7 +26,8 @@ public class ProjectMembersMutationTests
         {
             ProjectId = 1,
             UserId = 2,
-            RoleId = 1
+            RoleId = 1,
+            RequestingUserId = 1
         };
 
         var member = new ProjectMember
@@ -38,7 +39,7 @@ public class ProjectMembersMutationTests
             JoinedAt = DateTime.UtcNow
         };
 
-        _mockProjectMemberService.Setup(x => x.AddMemberAsync(input.ProjectId, input.UserId, input.RoleId))
+        _mockProjectMemberService.Setup(x => x.AddMemberAsync(input.ProjectId, input.UserId, input.RoleId, input.RequestingUserId))
             .ReturnsAsync(member);
 
         // Act
@@ -50,7 +51,7 @@ public class ProjectMembersMutationTests
         result.ProjectId.Should().Be(input.ProjectId);
         result.UserId.Should().Be(input.UserId);
         result.RoleId.Should().Be(input.RoleId);
-        _mockProjectMemberService.Verify(x => x.AddMemberAsync(input.ProjectId, input.UserId, input.RoleId), Times.Once);
+        _mockProjectMemberService.Verify(x => x.AddMemberAsync(input.ProjectId, input.UserId, input.RoleId, input.RequestingUserId), Times.Once);
     }
 
     [Fact]
@@ -60,10 +61,11 @@ public class ProjectMembersMutationTests
         var input = new RemoveProjectMemberInput
         {
             ProjectId = 1,
-            UserId = 2
+            UserId = 2,
+            RequestingUserId = 1
         };
 
-        _mockProjectMemberService.Setup(x => x.RemoveMemberAsync(input.ProjectId, input.UserId))
+        _mockProjectMemberService.Setup(x => x.RemoveMemberAsync(input.ProjectId, input.UserId, input.RequestingUserId))
             .Returns(Task.CompletedTask);
 
         // Act
@@ -71,7 +73,7 @@ public class ProjectMembersMutationTests
 
         // Assert
         result.Should().BeTrue();
-        _mockProjectMemberService.Verify(x => x.RemoveMemberAsync(input.ProjectId, input.UserId), Times.Once);
+        _mockProjectMemberService.Verify(x => x.RemoveMemberAsync(input.ProjectId, input.UserId, input.RequestingUserId), Times.Once);
     }
 
     [Fact]
@@ -82,7 +84,8 @@ public class ProjectMembersMutationTests
         {
             ProjectId = 1,
             UserId = 2,
-            NewRoleId = 2
+            NewRoleId = 2,
+            RequestingUserId = 1
         };
 
         var member = new ProjectMember
@@ -94,7 +97,7 @@ public class ProjectMembersMutationTests
             JoinedAt = DateTime.UtcNow.AddDays(-30)
         };
 
-        _mockProjectMemberService.Setup(x => x.UpdateMemberRoleAsync(input.ProjectId, input.UserId, input.NewRoleId))
+        _mockProjectMemberService.Setup(x => x.UpdateMemberRoleAsync(input.ProjectId, input.UserId, input.NewRoleId, input.RequestingUserId))
             .ReturnsAsync(member);
 
         // Act
@@ -103,6 +106,6 @@ public class ProjectMembersMutationTests
         // Assert
         result.Should().NotBeNull();
         result.RoleId.Should().Be(input.NewRoleId);
-        _mockProjectMemberService.Verify(x => x.UpdateMemberRoleAsync(input.ProjectId, input.UserId, input.NewRoleId), Times.Once);
+        _mockProjectMemberService.Verify(x => x.UpdateMemberRoleAsync(input.ProjectId, input.UserId, input.NewRoleId, input.RequestingUserId), Times.Once);
     }
 }
