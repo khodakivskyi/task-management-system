@@ -166,7 +166,7 @@ Authorization: Bearer <your_jwt_token>
 ```graphql
 query {
   tasks {
-    getAll {
+    tasks {
       id
       title
       description
@@ -193,7 +193,7 @@ query {
 ```graphql
 query {
   tasks {
-    getById(id:  1) {
+    task(id: 1) {
       id
       title
       description
@@ -286,10 +286,17 @@ mutation {
 ```graphql
 mutation {
   tasks {
-    deleteTask(id: 1)
+    deleteTask(input: {
+      id: 1
+      ownerId: 1
+    })
   }
 }
 ```
+
+**Required Fields:**
+- `id` (integer) - Task ID to delete
+- `ownerId` (integer) - ID of the user requesting deletion (must be the task owner)
 
 **Response:**
 ```json
@@ -306,22 +313,35 @@ mutation {
 
 ### Search Tasks
 
-Search tasks by title, description, or ID.
+Search tasks with flexible filters.
 
 **Query:**
 ```graphql
 query {
   taskSearch {
-    search(searchTerm: "authentication") {
+    searchTasks(filter: {
+      searchText: "authentication"
+      statusId: 2
+      priorityMin: 3
+      priorityMax: 5
+    }) {
       id
       title
-      description
+      statusName
       priority
-      statusId
+      deadline
     }
   }
 }
 ```
+
+**Available Filters (all optional):**
+- `userId` - Filter by task owner
+- `projectId` - Filter by project
+- `statusId` - Filter by status
+- `priorityMin` - Minimum priority (1-5)
+- `priorityMax` - Maximum priority (1-5)
+- `searchText` - Search in title and description
 
 ---
 
@@ -333,14 +353,13 @@ query {
 ```graphql
 query {
   projects {
-    getAll {
+    projects {
       id
       name
       description
       ownerId
       startDate
       endDate
-      createdAt
     }
   }
 }
@@ -354,14 +373,13 @@ query {
 ```graphql
 query {
   projects {
-    getById(id: 1) {
+    project(id: 1) {
       id
       name
       description
       ownerId
       startDate
       endDate
-      createdAt
     }
   }
 }
@@ -431,10 +449,17 @@ mutation {
 ```graphql
 mutation {
   projects {
-    deleteProject(id:  1)
+    deleteProject(input: {
+      id: 1
+      ownerId: 1
+    })
   }
 }
 ```
+
+**Required Fields:**
+- `id` (integer) - Project ID to delete
+- `ownerId` (integer) - ID of the user requesting deletion (must be the project owner)
 
 ---
 
@@ -446,14 +471,15 @@ Get comprehensive project statistics.
 ```graphql
 query {
   projectStatistics {
-    getStatistics(projectId: 1) {
+    projectStatistics(projectId: 1) {
       totalTasks
       completedTasks
       inProgressTasks
       overdueTasks
       totalEstimatedHours
       totalActualHours
-      completionPercentage
+      efficiencyPercentage
+      remainingHours
     }
   }
 }
@@ -464,14 +490,15 @@ query {
 {
   "data": {
     "projectStatistics": {
-      "getStatistics": {
+      "projectStatistics": {
         "totalTasks": 15,
         "completedTasks": 8,
         "inProgressTasks": 5,
         "overdueTasks": 2,
         "totalEstimatedHours": 120,
         "totalActualHours": 95,
-        "completionPercentage": 53.33
+        "efficiencyPercentage": 79.17,
+        "remainingHours": 25
       }
     }
   }
@@ -488,7 +515,7 @@ query {
 ```graphql
 query {
   projectMembers {
-    getByProjectId(projectId: 1) {
+    byProjectId(projectId: 1) {
       id
       projectId
       userId
@@ -507,10 +534,11 @@ query {
 ```graphql
 mutation {
   projectMembers {
-    addMember(input: {
+    addProjectMember(input: {
       projectId: 1
       userId: 2
       roleId: 2
+      requestingUserId: 1
     }) {
       id
       projectId
@@ -521,6 +549,12 @@ mutation {
   }
 }
 ```
+
+**Required Fields:**
+- `projectId` (integer) - Project ID
+- `userId` (integer) - User ID to add as member
+- `roleId` (integer) - Role ID for the member
+- `requestingUserId` (integer) - ID of the user making the request (must be project owner)
 
 **Project Roles:**
 - `1` - Owner
@@ -536,10 +570,19 @@ mutation {
 ```graphql
 mutation {
   projectMembers {
-    removeMember(id:  1)
+    removeProjectMember(input: {
+      projectId: 1
+      userId: 2
+      requestingUserId: 1
+    })
   }
 }
 ```
+
+**Required Fields:**
+- `projectId` (integer) - Project ID
+- `userId` (integer) - User ID to remove
+- `requestingUserId` (integer) - ID of the user making the request (must be project owner)
 
 ---
 
@@ -551,7 +594,7 @@ mutation {
 ```graphql
 query {
   categories {
-    getAll {
+    categories {
       id
       name
       description
@@ -569,7 +612,7 @@ query {
 ```graphql
 query {
   categories {
-    getById(id: 1) {
+    category(id: 1) {
       id
       name
       description
@@ -581,65 +624,7 @@ query {
 
 ---
 
-### Create Category
-
-**Mutation:**
-```graphql
-mutation {
-  categories {
-    createCategory(input: {
-      name: "Bug Fix"
-      description: "Bug fixes and patches"
-      color:  "#FF0000"
-    }) {
-      id
-      name
-      color
-    }
-  }
-}
-```
-
-**Required Fields:**
-- `name` (string, 1-100 characters)
-
-**Optional Fields:**
-- `description` (string)
-- `color` (string, hex format #RRGGBB)
-
----
-
-### Update Category
-
-**Mutation:**
-```graphql
-mutation {
-  categories {
-    updateCategory(input: {
-      id:  1
-      name: "Critical Bug Fix"
-      description: "High priority bug fixes"
-      color: "#CC0000"
-    }) {
-      id
-      name
-    }
-  }
-}
-```
-
----
-
-### Delete Category
-
-**Mutation:**
-```graphql
-mutation {
-  categories {
-    deleteCategory(id: 1)
-  }
-}
-```
+**Note:** Categories are read-only. Create, update, and delete operations are not supported for categories.
 
 ---
 
@@ -651,7 +636,7 @@ mutation {
 ```graphql
 query {
   statuses {
-    getAll {
+    statuses {
       id
       name
       description
@@ -676,7 +661,7 @@ query {
 ```graphql
 query {
   statuses {
-    getById(id: 1) {
+    status(id: 1) {
       id
       name
       description
@@ -696,7 +681,7 @@ query {
 ```graphql
 query {
   comments {
-    getByTaskId(taskId: 1) {
+    byTaskId(taskId: 1) {
       id
       taskId
       userId
@@ -763,10 +748,17 @@ mutation {
 ```graphql
 mutation {
   comments {
-    deleteComment(id: 1)
+    deleteComment(input: {
+      id: 1
+      userId: 1
+    })
   }
 }
 ```
+
+**Required Fields:**
+- `id` (integer) - Comment ID to delete
+- `userId` (integer) - ID of the user requesting deletion (must be the comment author)
 
 ---
 
@@ -778,11 +770,11 @@ mutation {
 ```graphql
 query {
   taskHistory {
-    getByTaskId(taskId: 1) {
+    byTaskId(taskId: 1) {
       id
       taskId
       userId
-      fieldChanged
+      fieldName
       oldValue
       newValue
       changedAt
@@ -808,7 +800,7 @@ query {
 ```graphql
 query {
   favorites {
-    getByUserId(userId: 1) {
+    byUserId(userId: 1) {
       id
       userId
       entityId
@@ -853,10 +845,19 @@ mutation {
 ```graphql
 mutation {
   favorites {
-    removeFavorite(id:  1)
+    removeFavorite(input: {
+      userId: 1
+      entityTypeId: 1
+      entityId: 5
+    })
   }
 }
 ```
+
+**Required Fields:**
+- `userId` (integer) - User ID
+- `entityTypeId` (integer) - Entity type ID (1=Task, 2=Project)
+- `entityId` (integer) - ID of the entity to remove from favorites
 
 ---
 
@@ -868,7 +869,7 @@ mutation {
 ```graphql
 query {
   entityTypes {
-    getAll {
+    entityTypes {
       id
       name
       description
