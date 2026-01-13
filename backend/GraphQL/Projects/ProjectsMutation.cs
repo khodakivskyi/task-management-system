@@ -32,6 +32,7 @@ public class ProjectsMutation
         var project = new Project
         {
             Id = input.Id,
+            OwnerId = input.OwnerId,
             Name = input.Name,
             Description = input.Description,
             StartDate = input.StartDate,
