@@ -6,5 +6,6 @@ namespace backend.GraphQL.Comments.Inputs;
 public class UpdateCommentInput
 {
     public int Id { get; set; }
+    public int UserId { get; set; }
     public string Content { get; set; } = string.Empty;
 }

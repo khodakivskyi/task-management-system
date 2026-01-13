@@ -62,15 +62,16 @@ public class CommentsMutationTests
         var input = new UpdateCommentInput
         {
             Id = 1,
+            UserId = 1,
             Content = "Updated Comment"
         };
 
         var updatedComment = new Comment
         {
             Id = input.Id,
+            UserId = input.UserId,
             Content = input.Content,
             TaskId = 1,
-            UserId = 1,
             CreatedAt = DateTime.UtcNow.AddDays(-1)
         };
 
@@ -86,6 +87,7 @@ public class CommentsMutationTests
         result.Content.Should().Be("Updated Comment");
         _mockCommentService.Verify(x => x.UpdateAsync(It.Is<Comment>(c =>
             c.Id == input.Id &&
+            c.UserId == input.UserId &&
             c.Content == input.Content
         )), Times.Once);
     }

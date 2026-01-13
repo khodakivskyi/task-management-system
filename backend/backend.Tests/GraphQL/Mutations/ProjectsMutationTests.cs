@@ -66,6 +66,7 @@ public class ProjectsMutationTests
         var input = new UpdateProjectInput
         {
             Id = 1,
+            OwnerId = 1,
             Name = "Updated Project",
             Description = "Updated Description",
             StartDate = DateTime.UtcNow,
@@ -75,11 +76,11 @@ public class ProjectsMutationTests
         var updatedProject = new Project
         {
             Id = input.Id,
+            OwnerId = input.OwnerId,
             Name = input.Name,
             Description = input.Description,
             StartDate = input.StartDate,
-            EndDate = input.EndDate,
-            OwnerId = 1
+            EndDate = input.EndDate
         };
 
         _mockProjectService.Setup(x => x.UpdateAsync(It.IsAny<Project>()))
@@ -95,6 +96,7 @@ public class ProjectsMutationTests
         result.Description.Should().Be("Updated Description");
         _mockProjectService.Verify(x => x.UpdateAsync(It.Is<Project>(p =>
             p.Id == input.Id &&
+            p.OwnerId == input.OwnerId &&
             p.Name == input.Name &&
             p.Description == input.Description
         )), Times.Once);

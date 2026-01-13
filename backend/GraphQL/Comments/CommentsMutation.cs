@@ -30,6 +30,7 @@ public class CommentsMutation
         var comment = new Comment
         {
             Id = input.Id,
+            UserId = input.UserId,
             Content = input.Content
         };
 
