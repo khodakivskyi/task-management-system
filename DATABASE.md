@@ -79,10 +79,11 @@ SELECT * FROM create_task_with_validation(1, 2, 'New Task', 1, 1, 'Description',
 ```
 
 #### `get_project_statistics(project_id_param)`
-Returns project statistics: total_tasks, completed_tasks, in_progress_tasks, overdue_tasks, total_estimated_hours, total_actual_hours.
+Returns project statistics with PascalCase column names: `TotalTasks`, `CompletedTasks`, `InProgressTasks`, `OverdueTasks`, `TotalEstimatedHours`, `TotalActualHours`.
 
 ```sql
 SELECT * FROM get_project_statistics(1);
+-- Returns: TotalTasks, CompletedTasks, InProgressTasks, OverdueTasks, TotalEstimatedHours, TotalActualHours
 ```
 
 #### `calculate_project_progress(project_id_param)`
@@ -93,10 +94,11 @@ SELECT calculate_project_progress(1);
 ```
 
 #### `search_tasks(user_id_param, project_id_param, status_id_param, priority_min, priority_max, search_text)`
-Searches tasks with filters (all parameters optional). Returns id, title, status_name, priority, deadline.
+Searches tasks with filters (all parameters optional). Returns PascalCase columns: `Id`, `Title`, `StatusName`, `Priority`, `Deadline`.
 
 ```sql
 SELECT * FROM search_tasks(user_id_param := 1, status_id_param := 2, search_text := 'important');
+-- Returns: Id, Title, StatusName, Priority, Deadline
 ```
 
 #### `archive_old_completed_tasks()`
@@ -135,11 +137,17 @@ Migrations are tracked in `__MigrationsHistory` table with:
 2. `02_add_indexes.sql` - Performance indexes
 3. `03_add_check_constraints.sql` - Data validation
 4. `04_create_entity_types_and_update_favorites.sql` - Entity types refactor
-5. `05_create_stored_procedures.sql` - Stored procedures (task creation)
-6. `06_seed_test_data.sql` - Test data
-7. `07_add_cascades_to_FKs.sql` - Cascade deletes
-8. `08_add_triggers.sql` - Triggers and validation
-9. `09_stored_procedures.sql` - Additional stored procedures (statistics, search, archive)
+5. `05_add_auth_fields.sql` - Authentication fields
+6. `06_remove_salt_from_user.sql` - Password hash refactoring
+7. `07_add_triggers.sql` - Triggers and task history
+8. `08_stored_procedures.sql` - Stored procedures (statistics, search, etc.)
+9. `09_remove_taskcount_column.sql` - Remove redundant column
+10. `10_seed_data_fix_statuses.sql` - Fix status data
+11. `11_convert_to_timestamptz.sql` - UTC timezone support
+12. `12_fix_search_tasks_function.sql` - Fix search function types
+13. `13_fix_project_statistics_join.sql` - Fix statistics query
+14. `14_fix_project_statistics_column_names.sql` - PascalCase column names for project statistics
+15. `15_fix_all_functions_column_names.sql` - PascalCase column names for search tasks
 
 ---
 
